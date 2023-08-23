@@ -33,7 +33,7 @@ export default function SelectInput({
 
   return (
     <StyledSelectInput>
-      <SelectButton type="button" onClick={onToggleIsOpen}>
+      <SelectButton {...{ type: "button", onClick: onToggleIsOpen }}>
         <SelectValue>{value}</SelectValue>
         <img src={isOpen ? chevronUp : chevronDown} alt={name} />
       </SelectButton>

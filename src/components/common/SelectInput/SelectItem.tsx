@@ -17,9 +17,11 @@ export default function SelectItem({
 }: Props) {
   return (
     <StyledSelectItem
-      data-item={JSON.stringify(item)}
-      $isSelected={isSelected}
-      onClick={onClick}>
+      {...{
+        "data-item": JSON.stringify(item),
+        "$isSelected": isSelected,
+        "onClick": onClick,
+      }}>
       {children}
     </StyledSelectItem>
   );
