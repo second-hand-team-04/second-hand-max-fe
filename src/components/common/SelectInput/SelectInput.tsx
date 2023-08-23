@@ -4,17 +4,19 @@ import chevronDown from "@assets/icon/chevron-down.svg";
 import { styled } from "styled-components";
 import { Item } from "./selectInputProps";
 
+type Props = {
+  name: string;
+  value: string;
+  onChange: (newItem: Item) => void;
+  children: ReactNode;
+};
+
 export default function SelectInput({
   name,
   value,
   onChange,
   children,
-}: {
-  name: string;
-  value: string;
-  onChange: (newItem: Item) => void;
-  children: ReactNode;
-}) {
+}: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const onToggleIsOpen = () => {

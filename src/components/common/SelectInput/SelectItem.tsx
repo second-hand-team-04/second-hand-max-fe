@@ -2,15 +2,13 @@ import { ReactNode } from "react";
 import { styled } from "styled-components";
 import { Item } from "./selectInputProps";
 
-export default function SelectItem({
-  isSelected,
-  item,
-  children,
-}: {
+type Props = {
   isSelected: boolean;
   item: Item;
   children: ReactNode;
-}) {
+};
+
+export default function SelectItem({ isSelected, item, children }: Props) {
   return (
     <StyledSelectItem data-item={JSON.stringify(item)} $isSelected={isSelected}>
       {children}
