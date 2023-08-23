@@ -5,12 +5,21 @@ import { Item } from "./selectInputProps";
 type Props = {
   isSelected: boolean;
   item: Item;
+  onClick?: () => void;
   children: ReactNode;
 };
 
-export default function SelectItem({ isSelected, item, children }: Props) {
+export default function SelectItem({
+  isSelected,
+  item,
+  onClick,
+  children,
+}: Props) {
   return (
-    <StyledSelectItem data-item={JSON.stringify(item)} $isSelected={isSelected}>
+    <StyledSelectItem
+      data-item={JSON.stringify(item)}
+      $isSelected={isSelected}
+      onClick={onClick}>
       {children}
     </StyledSelectItem>
   );

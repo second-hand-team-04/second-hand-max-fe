@@ -25,7 +25,9 @@ export default function SelectInput({
 
   const onSelectItem = (e: MouseEvent<HTMLUListElement>) => {
     const target = e.target as HTMLLIElement;
-    onChange(JSON.parse(target.dataset.item as string));
+    if (target.onclick === null) {
+      onChange(JSON.parse(target.dataset.item as string));
+    }
     setIsOpen(false);
   };
 
