@@ -1,46 +1,52 @@
-import x from "@assets/icon/x.svg";
+import xIcon from "@assets/icon/x.svg";
 import {
   IconWrapper,
+  ModalBody,
   ModalHeader,
   ModalList,
   ModalTitle,
-} from "@styles/modal/ModalStyles";
-import Modal from "./Modal";
+} from "@components/common/Modal/ModalStyles";
 import CategoryItem from "./CategoryItem";
 import { useState } from "react";
+import Modal from "@components/common/Modal/Modal";
 
 export default function CategoryModal() {
-  const [selectedCategory, setSelectedCategory] = useState(1);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(1);
+
+  const isCategoryModalOpen = true; // context로 관리?
 
   const onCategoryItemClick = (itemId: number) => {
-    setSelectedCategory(itemId);
+    setSelectedCategoryId(itemId);
   };
 
-  const categoryModalHeader = (
-    <ModalHeader>
-      <ModalTitle>카테고리</ModalTitle>
-      <IconWrapper>
-        <img src={x} alt="close" />
-      </IconWrapper>
-    </ModalHeader>
-  );
+  const onCategoryModalClose = () => {
+    //모달 밖(backdrop)을 클릭시 닫기 위한 함수
+  };
 
-  const categoryModalBody = (
-    <ModalList>
-      {list.map((item) => (
-        <CategoryItem
-          {...{
-            key: item.id,
-            item,
-            onClick: onCategoryItemClick,
-            selectedCategory,
-          }}
-        />
-      ))}
-    </ModalList>
+  return (
+    <Modal isOpen={isCategoryModalOpen} onClose={onCategoryModalClose}>
+      <ModalHeader>
+        <ModalTitle>카테고리</ModalTitle>
+        <IconWrapper>
+          <img src={xIcon} alt="close" />
+        </IconWrapper>
+      </ModalHeader>
+      <ModalBody>
+        <ModalList>
+          {list.map((item) => (
+            <CategoryItem
+              {...{
+                key: item.id,
+                item,
+                onClick: onCategoryItemClick,
+                selectedCategoryId,
+              }}
+            />
+          ))}
+        </ModalList>
+      </ModalBody>
+    </Modal>
   );
-
-  return <Modal header={categoryModalHeader} body={categoryModalBody} />;
 }
 
 const list = [

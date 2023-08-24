@@ -14,11 +14,19 @@ export const ModalContainer = styled.div`
 
 export const ModalHeader = styled.div<{ $isAddMode?: boolean }>`
   width: 100%;
-  height: 100%;
+  height: 72px;
   padding: 8px 8px 16px ${(props) => (props.$isAddMode ? "12px" : "24px")};
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+export const ModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 628px;
 `;
 
 export const ModalTitle = styled.div`
@@ -28,16 +36,7 @@ export const ModalTitle = styled.div`
   height: 32px;
 `;
 
-export const IconWrapper = styled.button`
-  display: flex;
-  width: 48px;
-  height: 48px;
-  padding: 12px;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ModalList = styled.div`
+export const ModalList = styled.ul`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -54,7 +53,7 @@ export const ModalList = styled.div`
   }
 `;
 
-export const ModalListItem = styled.div<{ $isSelected?: boolean }>`
+export const ModalListItem = styled.li<{ $isSelected?: boolean }>`
   display: flex;
   padding: 16px 0px;
   flex-direction: column;
@@ -67,3 +66,14 @@ export const ModalListItem = styled.div<{ $isSelected?: boolean }>`
   border-bottom: 0.8px solid ${({ theme: { color } }) => color.neutral.border};
   cursor: pointer;
 `;
+
+// TODO 아이콘 컴포넌트 만든 후 분리-----------
+export const IconWrapper = styled.button`
+  display: flex;
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  justify-content: center;
+  align-items: center;
+`;
+// TODO ------------------------------

@@ -1,24 +1,21 @@
-import { ModalListItem } from "@styles/modal/ModalStyles";
+import { ModalListItem } from "@components/common/Modal/ModalStyles";
 
 type Props = {
   item: { id: number; title: string; imageUrl: string };
   onClick: (itemId: number) => void;
-  selectedCategory: number;
+  selectedCategoryId: number;
 };
 
 export default function CategoryItem({
   item,
   onClick,
-  selectedCategory,
+  selectedCategoryId,
 }: Props) {
-  
-  const isSelected = item.id === selectedCategory;
+  const isSelected = item.id === selectedCategoryId;
 
   return (
     <ModalListItem $isSelected={isSelected} onClick={() => onClick(item.id)}>
       {item.title}
-      {/* 이미지 확인용 */}
-      {/* <img width="40px" height="40px" src={item.imageUrl} alt={item.title} /> */}
     </ModalListItem>
   );
 }

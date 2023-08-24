@@ -1,14 +1,21 @@
 import { styled } from "styled-components";
 
 type Props = {
-  header: React.ReactNode;
-  body: React.ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
 };
-export default function Modal({ header, body }: Props) {
+export default function Modal({
+  isOpen,
+  onClose, // Modal 밖(backdrop)을 클릭스시 닫기 위함.
+  children,
+}: Props) {
+  if (!isOpen) return null;
+
   return (
-    <StyledModal>
-      <ModalHeader>{header}</ModalHeader>
-      <ModalBody>{body}</ModalBody>
+    <StyledModal onClick={onClose}>
+      {" "}
+      <div>{children}</div>
     </StyledModal>
   );
 }
@@ -24,17 +31,4 @@ const StyledModal = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: ${({ theme: { color } }) => color.neutral.background};
   overflow: hidden;
-`;
-
-const ModalHeader = styled.div`
-  width: 100%;
-  height: 72px;
-`;
-
-const ModalBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 100%;
 `;
