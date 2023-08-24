@@ -3,7 +3,7 @@ import {
   ModalHeader,
   ModalList,
   ModalTitle,
-} from "@styles/modal/modalStyles";
+} from "@styles/modal/ModalStyles";
 
 import Modal from "./Modal";
 import CategoryItem from "./CategoryItem";

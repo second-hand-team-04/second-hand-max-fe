@@ -1,4 +1,4 @@
-import { ModalListItem } from "@styles/modal/modalStyles";
+import { ModalListItem } from "@styles/modal/ModalStyles";
 
 type Props = {
   item: { id: number; title: string; imageUrl: string };

@@ -1,4 +1,4 @@
-import { ModalListItem } from "@styles/modal/modalStyles";
+import { ModalListItem } from "@styles/modal/ModalStyles";
 
 type RegionItem = {
   id: number;

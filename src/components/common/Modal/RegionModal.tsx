@@ -7,7 +7,7 @@ import {
   ModalHeader,
   ModalList,
   ModalTitle,
-} from "@styles/modal/modalStyles";
+} from "@styles/modal/ModalStyles";
 
 export default function RegionModal() {
   const [isAddMode, setIsAddMode] = useState(false);
