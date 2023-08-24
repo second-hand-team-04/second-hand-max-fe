@@ -62,7 +62,7 @@ export default {
   },
   filter: {
     neutralTextWeak:
-      "brightness(0) saturate(100%) invert(15%) sepia(2%) saturate(5010%) hue-rotate(202deg) brightness(93%) contrast(73%)",
+      "brightness(0) saturate(100%) invert(23%) sepia(10%) saturate(354%) hue-rotate(202deg) brightness(98%) contrast(99%) opacity(0.6)",
     accentText:
       "invert(100%) sepia(97%) saturate(15%) hue-rotate(110deg) brightness(103%) contrast(102%)",
   },

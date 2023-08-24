@@ -23,3 +23,9 @@
 - [second-hand-max-be-b](https://github.com/second-hand-team-04/second-hand-max-be-b)
 
 ## Dev Log
+
+### 범용 컴포넌트
+
+#### `SelectInput`
+
+[SelectInput 컴포넌트 #2](https://github.com/second-hand-team-04/second-hand-max-fe/issues/2)
