@@ -1,3 +1,7 @@
+import chevronLeft from "@assets/icon/chevron-left.svg";
+import x from "@assets/icon/x.svg";
+import circleXFilled from "@assets/icon/circle-x-filled.svg";
+import plus from "@assets/icon/plus.svg";
 import { styled } from "styled-components";
 import Modal from "./Modal";
 import { useState } from "react";
@@ -19,7 +23,6 @@ export default function RegionModal() {
     if (!canPerformAction) {
       console.log("동네는 최소 1개이상 선택해야해요.");
     }
-    console.log("삭제 버튼 클릭");
   };
 
   const onRegionAdd = () => {
@@ -43,13 +46,13 @@ export default function RegionModal() {
     <ModalHeader $isAddMode={isAddMode}>
       {isAddMode ? (
         <IconWrapper onClick={onRegionBack}>
-          <img src="src/assets/icon/chevron-left.svg" alt="back" />
+          <img src={chevronLeft} alt="back" />
         </IconWrapper>
       ) : (
         <ModalTitle>동네 설정</ModalTitle>
       )}
       <IconWrapper>
-        <img src="src/assets/icon/x.svg" alt="close" />
+        <img src={x} alt="close" />
       </IconWrapper>
     </ModalHeader>
   );
@@ -65,21 +68,13 @@ export default function RegionModal() {
         {list.map((item, index) => (
           <ContentRegionButton key={index}>
             <RegionButtonText>{item}</RegionButtonText>
-            <img
-              onClick={onRegionDelete}
-              src="src/assets/icon/circle-x-filled.svg"
-              alt="close"
-            />
+            <img onClick={onRegionDelete} src={circleXFilled} alt="close" />
           </ContentRegionButton>
         ))}
         {canPerformAction ? null : (
           <>
             <ContentAddButton onClick={onRegionAdd}>
-              <img
-                onClick={onRegionDelete}
-                src="src/assets/icon/plus.svg"
-                alt="plus"
-              />
+              <img onClick={onRegionDelete} src={plus} alt="plus" />
               <div>추가</div>
             </ContentAddButton>
           </>

@@ -1,10 +1,10 @@
+import x from "@assets/icon/x.svg";
 import {
   IconWrapper,
   ModalHeader,
   ModalList,
   ModalTitle,
 } from "@styles/modal/ModalStyles";
-
 import Modal from "./Modal";
 import CategoryItem from "./CategoryItem";
 import { useState } from "react";
@@ -20,7 +20,7 @@ export default function CategoryModal() {
     <ModalHeader>
       <ModalTitle>카테고리</ModalTitle>
       <IconWrapper>
-        <img src="src/assets/icon/x.svg" alt="close" />
+        <img src={x} alt="close" />
       </IconWrapper>
     </ModalHeader>
   );
