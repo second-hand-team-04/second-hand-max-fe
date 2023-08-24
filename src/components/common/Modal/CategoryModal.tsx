@@ -1,51 +1,46 @@
 import {
   IconWrapper,
-  ModalContainer,
   ModalHeader,
+  ModalList,
   ModalTitle,
-} from "./RegionModal";
-import { ModalList, ModalListItem } from "./RegionSelectModal";
+} from "@styles/modal/modalStyles";
 
-export function CategoryModal() {
+import Modal from "./Modal";
+import CategoryItem from "./CategoryItem";
+import { useState } from "react";
+
+export default function CategoryModal() {
+  const [selectedCategory, setSelectedCategory] = useState(1);
+
   const onCategoryItemClick = (itemId: number) => {
-    console.log("카테고리 선택", `카테고리 ${itemId}`);
+    setSelectedCategory(itemId);
   };
 
-  return (
-    <ModalContainer>
-      <ModalHeader>
-        <ModalTitle>카테고리</ModalTitle>
-        <IconWrapper>
-          <img src="src/assets/icon/x.svg" alt="close" />
-        </IconWrapper>
-      </ModalHeader>
-      <ModalList>
-        {list.map((item) => (
-          <CategoryItem
-            key={item.id}
-            item={item}
-            onClick={onCategoryItemClick}
-          />
-        ))}
-      </ModalList>
-    </ModalContainer>
+  const categoryModalHeader = (
+    <ModalHeader>
+      <ModalTitle>카테고리</ModalTitle>
+      <IconWrapper>
+        <img src="src/assets/icon/x.svg" alt="close" />
+      </IconWrapper>
+    </ModalHeader>
   );
-}
 
-function CategoryItem({
-  item,
-  onClick,
-}: {
-  item: { id: number; title: string; imageUrl: string };
-  onClick: (itemId: number) => void;
-}) {
-  return (
-    <ModalListItem onClick={() => onClick(item.id)}>
-      {item.title}
-      {/* 이미지 확인용 */}
-      {/* <img width="40px" height="40px" src={item.imageUrl} alt={item.title} /> */}
-    </ModalListItem>
+  const categoryModalBody = (
+    <ModalList>
+      {list.map((item) => (
+        <CategoryItem
+          {...{
+            key: item.id,
+            item,
+            onClick: onCategoryItemClick,
+            selectedCategory,
+          }}
+        />
+      ))}
+    </ModalList>
   );
+
+  return <Modal header={categoryModalHeader} body={categoryModalBody} />;
 }
 
 const list = [

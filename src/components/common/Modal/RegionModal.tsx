@@ -1,105 +1,132 @@
 import { styled } from "styled-components";
+import Modal from "./Modal";
+import { useState } from "react";
+import RegionItem from "./RegionItem";
+import {
+  IconWrapper,
+  ModalHeader,
+  ModalList,
+  ModalTitle,
+} from "@styles/modal/modalStyles";
 
-export function RegionModal() {
-  const onRegionDeleteButtonClick = () => {
+export default function RegionModal() {
+  const [isAddMode, setIsAddMode] = useState(false);
+  const [inputValue, setInputValue] = useState<string>("");
+
+  const canPerformAction = list.length !== 1;
+
+  const onRegionDelete = () => {
+    if (!canPerformAction) {
+      console.log("동네는 최소 1개이상 선택해야해요.");
+    }
     console.log("삭제 버튼 클릭");
   };
 
-  const onAddButtonClick = () => {
-    console.log("추가 버튼 클릭");
+  const onRegionAdd = () => {
+    setIsAddMode(true);
   };
 
-  return (
-    <ModalContainer>
-      <ModalHeader>
-        <ModalTitle>동네 설정</ModalTitle>
-        <IconWrapper>
-          {/* // TODO: 버튼 아이콘으로 리팩토링 필요 */}
-          <img src="src/assets/icon/x.svg" alt="close" />
+  const onRegionBack = () => {
+    setIsAddMode(false);
+  };
+
+  const onRegionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const onRegionItemClick = (itemId: number) => {
+    setInputValue("");
+    console.log("지역 선택", `지역 ID ${itemId}`);
+  };
+
+  const regionModalHeader = (
+    <ModalHeader $isAddMode={isAddMode}>
+      {isAddMode ? (
+        <IconWrapper onClick={onRegionBack}>
+          <img src="src/assets/icon/chevron-left.svg" alt="back" />
         </IconWrapper>
-      </ModalHeader>
-      <RegionModalContent>
-        <ContentNotice>
-          {"지역은 최소1개,"}
-          <br />
-          {"최대 2개까지 설정 가능해요."}
-        </ContentNotice>
-        <ButtonsContainer>
-          {list.map((item, index) => (
-            <ContentRegionButton key={index}>
-              <RegionButtonText>{item}</RegionButtonText>
-              {/* // TODO: 버튼 아이콘으로 리팩토링 및 필터 색깔 변경 필요*/}
-              <img
-                onClick={onRegionDeleteButtonClick}
-                src="src/assets/icon/circle-x-filled.svg"
-                alt="close"
-              />
-            </ContentRegionButton>
-          ))}
-          <ContentAddButton onClick={onAddButtonClick}>
-            {/* // TODO: 버튼 아이콘으로 리팩토링 필요*/}
+      ) : (
+        <ModalTitle>동네 설정</ModalTitle>
+      )}
+      <IconWrapper>
+        <img src="src/assets/icon/x.svg" alt="close" />
+      </IconWrapper>
+    </ModalHeader>
+  );
+
+  const regionModalBody = (
+    <RegionModalContent>
+      <ContentNotice>
+        {"지역은 최소1개,"}
+        <br />
+        {"최대 2개까지 설정 가능해요."}
+      </ContentNotice>
+      <ButtonsContainer>
+        {list.map((item, index) => (
+          <ContentRegionButton key={index}>
+            <RegionButtonText>{item}</RegionButtonText>
             <img
-              onClick={onRegionDeleteButtonClick}
-              src="src/assets/icon/plus.svg"
-              alt="plus"
+              onClick={onRegionDelete}
+              src="src/assets/icon/circle-x-filled.svg"
+              alt="close"
             />
-            <div>추가</div>
-          </ContentAddButton>
-        </ButtonsContainer>
-      </RegionModalContent>
-    </ModalContainer>
+          </ContentRegionButton>
+        ))}
+        {canPerformAction ? null : (
+          <>
+            <ContentAddButton onClick={onRegionAdd}>
+              <img
+                onClick={onRegionDelete}
+                src="src/assets/icon/plus.svg"
+                alt="plus"
+              />
+              <div>추가</div>
+            </ContentAddButton>
+          </>
+        )}
+      </ButtonsContainer>
+    </RegionModalContent>
+  );
+
+  const regionSelectBody = (
+    <>
+      <SearchBar
+        value={inputValue}
+        onChange={onRegionChange}
+        placeholder="동명(읍, 면)으로 검색(ex. 서초동)"
+      />
+      <ModalList>
+        {regionList.map((item) => (
+          <RegionItem key={item.id} item={item} onClick={onRegionItemClick} />
+        ))}
+      </ModalList>
+    </>
+  );
+
+  return (
+    <Modal
+      header={regionModalHeader}
+      body={isAddMode ? regionSelectBody : regionModalBody}
+    />
   );
 }
 
-// TODO: 버튼에 사용되는 공통된 속성
-const commonButtonStyles = `
+const SearchBar = styled.input`
   display: flex;
-  width: 100%;
-  height: 56px;
-  border-radius: 8px;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-`;
-
-// TODO: export 해놓은 스타일 컴포넌트들 공통 모달 스타일로 묶어줘야함
-export const ModalContainer = styled.div`
-  width: 320px;
-  height: 700px;
-  display: flex;
-  align-items: center;
+  width: 288px;
+  height: 40px;
+  padding: 8px;
   flex-direction: column;
-  background-color: ${({ theme: { color } }) => color.neutral.background};
-  border-radius: 16px;
+  align-items: flex-start;
+  text-align: start;
+  gap: 4px;
   box-sizing: border-box;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-`;
+  border-radius: 8px;
 
-export const ModalHeader = styled.div`
-  width: 100%;
-  height: 72px;
-  padding: 8px 8px 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  font: ${({ theme: { font } }) => font.availableDefault16};
+  color: ${({ theme: { color } }) => color.neutral.text};
+  background: ${({ theme: { color } }) => color.neutral.backgroundBold};
 `;
-
-export const ModalTitle = styled.div`
-  display: flex;
-  font: ${({ theme: { font } }) => font.displayStrong20};
-  width: 100%;
-  height: 32px;
-`;
-
-export const IconWrapper = styled.button`
-  display: flex;
-  width: 48px;
-  height: 48px;
-  padding: 12px;
-  justify-content: center;
-  align-items: center;
-`;
-// TODO ------------------------------
 
 const RegionModalContent = styled.div`
   display: flex;
@@ -118,6 +145,18 @@ const ContentNotice = styled.div`
   text-align: center;
   font: ${({ theme: { font } }) => font.displayDefault12};
   color: ${({ theme: { color } }) => color.neutral.text};
+`;
+
+// TODO 버튼 컴포넌트 분리 ------------------------------
+
+const commonButtonStyles = `
+  display: flex;
+  width: 100%;
+  height: 56px;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
 `;
 
 const ButtonsContainer = styled.div`
@@ -149,5 +188,25 @@ const ContentAddButton = styled.button`
   font: ${({ theme: { font } }) => font.availableStrong16};
   border: 0.8px solid ${({ theme: { color } }) => color.neutral.border};
 `;
+// TODO ------------------------------
 
-const list = ["역삼1동", "역삼2동"];
+// const list = ["역삼1동", "역삼2동"];
+const list = ["역삼1동"];
+
+const regionList = [
+  { id: 1, title: "서울 강남구 개포1동" },
+  { id: 2, title: "서울 강남구 개포2동" },
+  { id: 3, title: "서울 강남구 개포3동" },
+  { id: 4, title: "서울 강남구 개포1동" },
+  { id: 5, title: "서울 강남구 개포2동" },
+  { id: 6, title: "서울 강남구 개포3동" },
+  { id: 7, title: "서울 강남구 개포1동" },
+  { id: 8, title: "서울 강남구 개포2동" },
+  { id: 9, title: "서울 강남구 개포3동" },
+  { id: 10, title: "서울 강남구 개포1동" },
+  { id: 11, title: "서울 강남구 개포2동" },
+  { id: 12, title: "서울 강남구 개포3동" },
+  { id: 13, title: "서울 강남구 개포1동" },
+  { id: 14, title: "서울 강남구 개포2동" },
+  { id: 15, title: "서울 강남구 개포3동" },
+];
