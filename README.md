@@ -29,3 +29,14 @@
 #### `SelectInput`
 
 [SelectInput 컴포넌트 #2](https://github.com/second-hand-team-04/second-hand-max-fe/issues/2)
+
+#### `Dropdown`
+
+[Dropdown 컴포넌트 #6](https://github.com/second-hand-team-04/second-hand-max-fe/issues/6)
+
+### Hooks
+
+#### `useViewportIntersection`
+
+- Viewport을 고려하여 위치를 동적으로 변경해야할 수 있는 경우(Ex: `SelectInput`과 `Dropdown`)를 위해 viewport의 "left"/"right"과의 중첩 여부를 알려줌.
+- IntersectionObserver API를 사용.
