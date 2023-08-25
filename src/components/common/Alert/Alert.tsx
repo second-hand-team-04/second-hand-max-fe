@@ -27,21 +27,19 @@ const StyledAlert = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
-const alertBody = `
+const AlertBody = styled.div`
   display: flex;
   padding: 24px 32px;
   align-items: center;
   gap: 32px;
 `;
 
-const TextArea = styled.div`
-  ${alertBody}
+const TextArea = styled(AlertBody)`
   justify-content: flex-start;
   font: ${({ theme: { font } }) => font.displayStrong16};
   color: ${({ theme: { color } }) => color.neutral.textStrong};
 `;
 
-const ButtonContainer = styled.div`
-  ${alertBody}
+const ButtonContainer = styled(AlertBody)`
   justify-content: flex-end;
 `;
