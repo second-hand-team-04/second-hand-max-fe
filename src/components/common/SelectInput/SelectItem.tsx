@@ -3,14 +3,14 @@ import { styled } from "styled-components";
 import { Item } from "./selectInputProps";
 
 type Props = {
-  isSelected: boolean;
+  isSelected?: boolean;
   item: Item;
   onClick?: () => void;
   children: ReactNode;
 };
 
 export default function SelectItem({
-  isSelected,
+  isSelected = false,
   item,
   onClick,
   children,
