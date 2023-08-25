@@ -14,7 +14,6 @@ export default function Modal({
 
   return (
     <StyledModal onClick={onClose}>
-      {" "}
       <div>{children}</div>
     </StyledModal>
   );

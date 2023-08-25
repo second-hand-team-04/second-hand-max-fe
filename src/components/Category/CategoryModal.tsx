@@ -10,17 +10,17 @@ import CategoryItem from "./CategoryItem";
 import { useState } from "react";
 import Modal from "@components/common/Modal/Modal";
 
-export default function CategoryModal() {
+type Props = {
+  onCategoryModalClose: () => void;
+};
+
+export default function CategoryModal({ onCategoryModalClose }: Props) {
   const [selectedCategoryId, setSelectedCategoryId] = useState(1);
 
   const isCategoryModalOpen = true; // context로 관리?
 
   const onCategoryItemClick = (itemId: number) => {
     setSelectedCategoryId(itemId);
-  };
-
-  const onCategoryModalClose = () => {
-    //모달 밖(backdrop)을 클릭시 닫기 위한 함수
   };
 
   return (

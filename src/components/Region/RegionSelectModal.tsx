@@ -11,32 +11,33 @@ import { styled } from "styled-components";
 import { ButtonsContainer } from "./RegionModal";
 
 type Props = {
-  isAddMode: boolean;
+  isRegionAddModal: boolean;
   isRegionModalOpen: boolean;
   onRegionModalClose: () => void;
   onRegionAdd: () => void;
   selectedRegionList: string[];
 };
 
-export default function RegionModalMain({
-  isAddMode,
+export default function RegionSelectModal({
+  isRegionAddModal,
   isRegionModalOpen,
   onRegionModalClose,
   onRegionAdd,
   selectedRegionList,
 }: Props) {
-  const canPerformAction = selectedRegionList.length !== 1;
+  const selectedOneRegion = selectedRegionList.length === 1;
 
   const onRegionDelete = () => {
-    if (!canPerformAction) {
+    if (selectedOneRegion) {
       console.log("동네는 최소 1개이상 선택해야해요.");
+      return;
     }
     console.log("동네 삭제");
   };
 
   return (
     <Modal isOpen={isRegionModalOpen} onClose={onRegionModalClose}>
-      <ModalHeader $isAddMode={isAddMode}>
+      <ModalHeader $isRegionAddModal={isRegionAddModal}>
         <ModalTitle>동네 설정</ModalTitle>
         <IconWrapper>
           <img src={xIcon} alt="close" />

@@ -12,17 +12,17 @@ import { styled } from "styled-components";
 import RegionItem from "./RegionItem";
 
 type Props = {
-  isAddMode: boolean;
+  isRegionAddModal: boolean;
   isRegionModalOpen: boolean;
   onRegionModalClose: () => void;
-  onRegionBack: () => void;
+  switchToSelectModal: () => void;
 };
 
-export default function RegionModalAdd({
-  isAddMode,
+export default function RegionAddModal({
+  isRegionAddModal,
   isRegionModalOpen,
   onRegionModalClose,
-  onRegionBack,
+  switchToSelectModal,
 }: Props) {
   const [inputValue, setInputValue] = useState<string>("");
 
@@ -38,8 +38,8 @@ export default function RegionModalAdd({
 
   return (
     <Modal isOpen={isRegionModalOpen} onClose={onRegionModalClose}>
-      <ModalHeader $isAddMode={isAddMode}>
-        <IconWrapper onClick={onRegionBack}>
+      <ModalHeader $isRegionAddModal={isRegionAddModal}>
+        <IconWrapper onClick={switchToSelectModal}>
           <img src={chevronLeft} alt="back" />
         </IconWrapper>
         <IconWrapper>

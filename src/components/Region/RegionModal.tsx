@@ -1,10 +1,10 @@
 import { styled } from "styled-components";
 import { useState } from "react";
-import RegionModalMain from "./RegionModalMain";
-import RegionModalAdd from "./RegionModalAdd";
+import RegionModalMain from "./RegionSelectModal";
+import RegionModalAdd from "./RegionAddModal";
 
 export default function RegionModal() {
-  const [isAddMode, setIsAddMode] = useState(false);
+  const [isRegionAddModal, setIsRegionAddModal] = useState(false);
   const isRegionModalOpen = true; // context로 관리?
 
   const onRegionAdd = () => {
@@ -12,30 +12,30 @@ export default function RegionModal() {
       console.log("동네는 최대 2개까지 설정 가능해요.");
       return;
     }
-    setIsAddMode(true);
+    setIsRegionAddModal(true);
   };
 
-  const onRegionBack = () => {
-    setIsAddMode(false);
+  const switchToSelectModal = () => {
+    setIsRegionAddModal(false);
   };
 
   const onRegionModalClose = () => {
     //모달 밖(backdrop)을 클릭시 닫기 위한 함수
   };
 
-  return isAddMode ? (
+  return isRegionAddModal ? (
     <RegionModalAdd
       {...{
-        isAddMode,
+        isRegionAddModal,
         isRegionModalOpen,
         onRegionModalClose,
-        onRegionBack,
+        switchToSelectModal,
       }}
     />
   ) : (
     <RegionModalMain
       {...{
-        isAddMode,
+        isRegionAddModal,
         isRegionModalOpen,
         onRegionModalClose,
         onRegionAdd,

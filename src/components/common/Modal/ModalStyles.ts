@@ -12,10 +12,10 @@ export const ModalContainer = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
-export const ModalHeader = styled.div<{ $isAddMode?: boolean }>`
+export const ModalHeader = styled.div<{ $isRegionAddModal?: boolean }>`
   width: 100%;
   height: 72px;
-  padding: 8px 8px 16px ${(props) => (props.$isAddMode ? "12px" : "24px")};
+  padding: 8px 8px 16px ${(props) => (props.$isRegionAddModal ? "12px" : "24px")};
   display: flex;
   justify-content: space-between;
   align-items: center;
