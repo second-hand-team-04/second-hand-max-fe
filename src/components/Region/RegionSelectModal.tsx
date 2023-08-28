@@ -9,6 +9,7 @@ import {
 import Modal from "@components/common/Modal/Modal";
 import { styled } from "styled-components";
 import { ButtonsContainer } from "./RegionModal";
+import Button from "@components/common/Button/Button";
 
 type Props = {
   isRegionAddModal: boolean;
@@ -51,20 +52,38 @@ export default function RegionSelectModal({
         </ContentNotice>
         <ButtonsContainer>
           {selectedRegionList.map((item, index) => (
-            <ContentRegionButton key={index}>
+            <Button style={{ flexDirection: "row" }} key={index}>
               <RegionButtonText>{item}</RegionButtonText>
-              <img onClick={onRegionDelete} src={circleXFilled} alt="close" />
-            </ContentRegionButton>
+              <CircleXFilled
+                onClick={onRegionDelete}
+                src={circleXFilled}
+                alt="close"
+              />
+            </Button>
           ))}
-          <ContentAddButton onClick={onRegionAdd}>
+          <Button
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              height: "56px",
+            }}
+            variant="outlined"
+            size="L"
+            onClick={onRegionAdd}>
             <img src={plus} alt="plus" />
-            <div>추가</div>
-          </ContentAddButton>
+            <AddButtonText>추가</AddButtonText>
+          </Button>
         </ButtonsContainer>
       </RegionModalContent>
     </Modal>
   );
 }
+
+const CircleXFilled = styled.img`
+  width: 24px;
+  height: 24px;
+  filter: ${({ theme: { filter } }) => filter.accentText};
+`;
 
 export const RegionModalContent = styled.div`
   display: flex;
@@ -85,22 +104,6 @@ const ContentNotice = styled.div`
   color: ${({ theme: { color } }) => color.neutral.text};
 `;
 
-const commonButtonStyles = `
-  display: flex;
-  width: 100%;
-  height: 56px;
-  border-radius: 8px;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-`;
-
-const ContentRegionButton = styled.button`
-  ${commonButtonStyles}
-  padding: 16px;
-  background-color: ${({ theme: { color } }) => color.accent.backgroundPrimary};
-`;
-
 const RegionButtonText = styled.div`
   display: flex;
   width: 100%;
@@ -109,10 +112,8 @@ const RegionButtonText = styled.div`
   color: ${({ theme: { color } }) => color.accent.text};
 `;
 
-const ContentAddButton = styled.button`
-  ${commonButtonStyles}
-  background-color: ${({ theme: { color } }) => color.accent.text};
-  color: ${({ theme: { color } }) => color.accent.textWeak};
+const AddButtonText = styled.div`
+  height: 24px;
   font: ${({ theme: { font } }) => font.availableStrong16};
-  border: 0.8px solid ${({ theme: { color } }) => color.neutral.border};
+  color: ${({ theme: { color } }) => color.accent.textStrong};
 `;
