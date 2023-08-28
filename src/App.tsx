@@ -2,11 +2,13 @@ import { ThemeProvider } from "styled-components";
 import "./App.css";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
+import NavBar from "@components/common/NavBar/NavBar";
 
 function App() {
   return (
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
+      <NavBar />
     </ThemeProvider>
   );
 }

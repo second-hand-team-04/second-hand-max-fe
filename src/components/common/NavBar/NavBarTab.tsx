@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+import Button from "../Button/Button";
 
 type Props = {
   navBarTabItem: {
@@ -16,24 +17,23 @@ export default function NavBarTab({
   onTabClick,
 }: Props) {
   return (
-    <StyledNavBarTab onClick={() => onTabClick(navBarTabItem.title)}>
+    <Button
+      style={{
+        width: "48px",
+        height: "48xp",
+        padding: "4px 0",
+      }}
+      variant="plain"
+      onClick={() => onTabClick(navBarTabItem.title)}>
       <TabImage
         $isSelected={isSelected}
         src={navBarTabItem.imageUrl}
         alt={navBarTabItem.altText}
       />
       <TabTitle $isSelected={isSelected}>{navBarTabItem.title}</TabTitle>
-    </StyledNavBarTab>
+    </Button>
   );
 }
-
-const StyledNavBarTab = styled.button`
-  display: flex;
-  flex-direction: column;
-  width: 48px;
-  height: 48px;
-  padding: 4px 0;
-`;
 
 const TabImage = styled.img<{ $isSelected: boolean }>`
   margin: 0 auto;
@@ -49,6 +49,5 @@ const TabTitle = styled.span<{ $isSelected: boolean }>`
   height: 16px;
   color: ${({ theme: { color }, $isSelected }) =>
     $isSelected ? color.neutral.textStrong : color.neutral.textWeak};
-  font: ${({ theme: { font }, $isSelected }) =>
-    $isSelected ? font.availableStrong10 : font.availableStrong10};
+  font: ${({ theme: { font } }) => font.availableStrong10};
 `;
