@@ -68,7 +68,7 @@ export default {
     neutralTextStrong: "brightness(0%)",
   },
   backdropFilter: {
-    blur: "blur(8px)",
+    blur: "blur(4px)",
   },
   font,
 };
