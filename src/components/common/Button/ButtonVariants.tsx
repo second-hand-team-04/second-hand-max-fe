@@ -27,6 +27,9 @@ type OutlinedButtonProps = Pick<
 const ButtonBase = styled.button<ButtonBaseProps>`
   width: auto;
   height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font: ${({ theme: { font }, $size }) => {
     switch ($size) {
       case "S":
