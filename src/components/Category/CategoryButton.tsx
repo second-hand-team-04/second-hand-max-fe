@@ -1,3 +1,4 @@
+import Button from "@components/common/Button/Button";
 import { styled } from "styled-components";
 
 export default function CategoryButton({
@@ -12,27 +13,24 @@ export default function CategoryButton({
   onCategoryButtonClick: () => void;
 }) {
   return (
-    <StyledCategoryButton onClick={onCategoryButtonClick}>
+    <Button
+      variant="plain"
+      style={{
+        width: "80px",
+        height: "68px",
+        gap: "8px",
+        padding: "0",
+      }}
+      onClick={onCategoryButtonClick}>
       <CategoryImage>
         <img src={item.imageUrl} alt={item.title} />
       </CategoryImage>
       <CategoryTitle>{item.title}</CategoryTitle>
-    </StyledCategoryButton>
+    </Button>
   );
 }
 
-const StyledCategoryButton = styled.button`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80px;
-  height: 68px;
-  gap: 8px;
-  justify-content: space-between;
-`;
-
 const CategoryImage = styled.div`
-  display: flex;
   width: 44px;
   height: 44px;
   border-radius: 8px;
