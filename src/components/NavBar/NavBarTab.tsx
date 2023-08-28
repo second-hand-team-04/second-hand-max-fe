@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import Button from "../Button/Button";
+import Button from "../common/Button/Button";
 
 type Props = {
   navBarTabItem: {
@@ -20,7 +20,7 @@ export default function NavBarTab({
     <Button
       style={{
         width: "48px",
-        height: "48xp",
+        height: "48px",
         padding: "4px 0",
       }}
       variant="plain"

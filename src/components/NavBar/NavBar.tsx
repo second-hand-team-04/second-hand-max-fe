@@ -1,10 +1,10 @@
 import { styled } from "styled-components";
 import NavBarTab from "./NavBarTab";
-import home from "@assets/icon/home.svg";
-import news from "@assets/icon/news.svg";
-import heart from "@assets/icon/heart.svg";
-import message from "@assets/icon/message.svg";
-import userCircle from "@assets/icon/user-circle.svg";
+import homeIcon from "@assets/icon/home.svg";
+import newsIcon from "@assets/icon/news.svg";
+import heartIcon from "@assets/icon/heart.svg";
+import messageIcon from "@assets/icon/message.svg";
+import userCircleIcon from "@assets/icon/user-circle.svg";
 import { useState } from "react";
 
 export default function NavBar() {
@@ -39,27 +39,27 @@ const StyledNavBar = styled.div`
 const navBarList = [
   {
     title: "홈화면",
-    imageUrl: home,
+    imageUrl: homeIcon,
     altText: "home",
   },
   {
     title: "판매내역",
-    imageUrl: news,
+    imageUrl: newsIcon,
     altText: "news",
   },
   {
     title: "관심상품",
-    imageUrl: heart,
+    imageUrl: heartIcon,
     altText: "heart",
   },
   {
     title: "채팅",
-    imageUrl: message,
+    imageUrl: messageIcon,
     altText: "message",
   },
   {
     title: "내 계정",
-    imageUrl: userCircle,
+    imageUrl: userCircleIcon,
     altText: "userCircle",
   },
 ];
