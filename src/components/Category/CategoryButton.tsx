@@ -22,24 +22,17 @@ export default function CategoryButton({
         padding: "0",
       }}
       onClick={onCategoryButtonClick}>
-      <CategoryImage>
-        <img src={item.imageUrl} alt={item.title} />
-      </CategoryImage>
+      <CategoryImage src={item.imageUrl} alt={item.title} />
       <CategoryTitle>{item.title}</CategoryTitle>
     </Button>
   );
 }
 
-const CategoryImage = styled.div`
+const CategoryImage = styled.img`
   width: 44px;
   height: 44px;
   border-radius: 8px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  object-fit: cover;
 `;
 
 const CategoryTitle = styled.div`
