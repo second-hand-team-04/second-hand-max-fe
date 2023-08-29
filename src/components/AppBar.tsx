@@ -1,13 +1,6 @@
 import { ReactNode } from "react";
 import { styled } from "styled-components";
 
-type AppBarProps = {
-  $height: string;
-  $padding: string;
-  $justifyContent: string;
-  $isTop?: boolean;
-};
-
 type Props = {
   children: ReactNode;
   height?: string;
@@ -20,7 +13,6 @@ export default function AppBar({
   children,
   height = "56px",
   padding = "8px 0",
-  justifyContent = "space-between",
   isTop = true,
 }: Props) {
   return (
@@ -28,7 +20,6 @@ export default function AppBar({
       {...{
         $height: height,
         $padding: padding,
-        $justifyContent: justifyContent,
         $isTop: isTop,
       }}>
       {children}
@@ -36,14 +27,17 @@ export default function AppBar({
   );
 }
 
-const StyledAppBar = styled.header<AppBarProps>`
+const StyledAppBar = styled.header<{
+  $height: string;
+  $padding: string;
+  $isTop?: boolean;
+}>`
   width: inherit;
   height: ${({ $height }) => $height};
   padding: ${({ $padding }) => $padding};
   display: flex;
-  justify-content: ${({ $justifyContent }) => $justifyContent};
   align-items: center;
-  // position: fixed;
+  position: fixed;
   background: ${({ theme: { color } }) => color.neutral.backgroundBlur};
   border-bottom: ${({ theme: { color } }) =>
     `0.8px solid ${color.neutral.border}`};
