@@ -10,7 +10,7 @@ export default function CategoryButton({
     title: string;
     imageUrl: string;
   };
-  onCategoryButtonClick: () => void;
+  onCategoryButtonClick: (categoryTitle: string) => void;
 }) {
   return (
     <Button
@@ -21,7 +21,7 @@ export default function CategoryButton({
         gap: "8px",
         padding: "0",
       }}
-      onClick={onCategoryButtonClick}>
+      onClick={() => onCategoryButtonClick(item.title)}>
       <CategoryImage src={item.imageUrl} alt={item.title} />
       <CategoryTitle>{item.title}</CategoryTitle>
     </Button>

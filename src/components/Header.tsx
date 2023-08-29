@@ -11,6 +11,7 @@ export default function Header({ children }: Props) {
 
 const StyledHeader = styled.header`
   width: inherit;
+  height: 56px;
   padding: 8px 0;
   display: flex;
   justify-content: flex-start;
