@@ -1,11 +1,11 @@
 import { styled } from "styled-components";
 import { useState } from "react";
-import RegionModalMain from "./RegionSelectModal";
-import RegionModalAdd from "./RegionAddModal";
+import RegionSelectModal from "./RegionSelectModal";
+import RegionAddModal from "./RegionAddModal";
 
 export default function RegionModal() {
   const [isRegionAddModal, setIsRegionAddModal] = useState(false);
-  const isRegionModalOpen = true; // context로 관리?
+  const isRegionModalOpen = true;
 
   const onRegionAdd = () => {
     if (selectedRegionList.length === 2) {
@@ -24,7 +24,7 @@ export default function RegionModal() {
   };
 
   return isRegionAddModal ? (
-    <RegionModalAdd
+    <RegionAddModal
       {...{
         isRegionAddModal,
         isRegionModalOpen,
@@ -33,7 +33,7 @@ export default function RegionModal() {
       }}
     />
   ) : (
-    <RegionModalMain
+    <RegionSelectModal
       {...{
         isRegionAddModal,
         isRegionModalOpen,
@@ -44,7 +44,6 @@ export default function RegionModal() {
     />
   );
 }
-// TODO 버튼 컴포넌트 분리 ------------------------------
 
 export const ButtonsContainer = styled.div`
   display: flex;
@@ -53,8 +52,6 @@ export const ButtonsContainer = styled.div`
   justify-content: space-between;
   gap: 8px;
 `;
-
-// TODO ------------------------------
 
 // const selectedRegionList = ["역삼1동", "역삼2동"];
 const selectedRegionList = ["역삼1동"];
