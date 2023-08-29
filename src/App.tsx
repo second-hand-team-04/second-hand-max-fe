@@ -1,9 +1,9 @@
 import { ThemeProvider } from "styled-components";
-import "./App.css";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
-import { Tag } from "@components/common/Tag/Tag";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router-dom";
+import router from "router/router";
 
 const queryClient = new QueryClient();
 
@@ -12,7 +12,7 @@ function App() {
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
       <QueryClientProvider client={queryClient}>
-        <Tag title="Tag" isSelected={true} />
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </ThemeProvider>
   );
