@@ -1,4 +1,4 @@
-import Header from "@components/Header";
+import AppBar from "@components/AppBar";
 import { keyframes, styled } from "styled-components";
 import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import Button from "@components/common/Button/Button";
@@ -32,7 +32,7 @@ export default function CategoryPage({ isOpen, onCloseModal }: Props) {
       onTransitionEnd={hideModal}
       $isOpen={isOpen}
       $isTransitionEnd={isTransitionEnd}>
-      <Header>
+      <AppBar>
         <Button
           onClick={onBackButtonClick}
           style={{ flexDirection: "row", width: "86px" }}
@@ -41,7 +41,7 @@ export default function CategoryPage({ isOpen, onCloseModal }: Props) {
           <BackButtonText>뒤로</BackButtonText>
         </Button>
         <TitleArea>카테고리</TitleArea>
-      </Header>
+      </AppBar>
       <MainBody>
         {list.map((item) => (
           <CategoryButton
