@@ -5,17 +5,17 @@ type Props = {
   children: ReactNode;
 };
 
-export default function Header({ children }: Props) {
-  return <StyledHeader>{children}</StyledHeader>;
+export default function AppBar({ children }: Props) {
+  return <StyledAppBar>{children}</StyledAppBar>;
 }
 
-const StyledHeader = styled.header`
+const StyledAppBar = styled.header`
   width: inherit;
   height: 56px;
-  padding: 8px 0;
+  padding: 8px;
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   position: fixed;
   background: ${({ theme: { color } }) => color.neutral.backgroundBlur};
   border-bottom: ${({ theme: { color } }) =>

@@ -56,7 +56,7 @@ const SelectButton = styled.button`
 `;
 
 const SelectValue = styled.span`
-  padding-inline: 8px;
+  margin-right: 8px;
   font: ${({ theme: { font } }) => font.availableStrong16};
   color: ${({ theme: { color } }) => color.neutral.text};
 `;
