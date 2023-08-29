@@ -4,12 +4,11 @@ import {
   Route,
 } from "react-router-dom";
 import PublicOnlyRoute from "./PublicOnlyRoute";
-import Root from "@pages/Root";
 import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Root />}>
+    <Route path="/">
       {/* <Route index element={<HomePage />} /> */}
       {/* <Route path="category" element={<CategoryPage />} /> */}
 
