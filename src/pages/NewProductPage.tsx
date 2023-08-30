@@ -159,6 +159,7 @@ export default function NewProductPage() {
                   {categories.map(
                     (tag: { id: number; title: string; imageUrl: string }) => (
                       <Tag
+                        key={tag.id}
                         tag={tag}
                         isSelected={selectedTag === tag.title}
                         onClick={onSelectTag}>
