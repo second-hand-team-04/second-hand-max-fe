@@ -7,39 +7,43 @@ import {
   ModalTitle,
 } from "@components/common/Modal/ModalStyles";
 import CategoryItem from "./CategoryItem";
-import { useState } from "react";
+
 import Modal from "@components/common/Modal/Modal";
 
 type Props = {
+  isOpen: boolean;
+  currentSelectedCategory: string;
   onCategoryModalClose: () => void;
+  onCategoryItemSelect: (itemTitle: string) => void;
 };
 
-export default function CategoryModal({ onCategoryModalClose }: Props) {
-  const [selectedCategoryId, setSelectedCategoryId] = useState(1);
-
-  const isCategoryModalOpen = true; // context로 관리?
-
-  const onCategoryItemClick = (itemId: number) => {
-    setSelectedCategoryId(itemId);
+export default function CategoryModal({
+  isOpen,
+  currentSelectedCategory,
+  onCategoryModalClose,
+  onCategoryItemSelect,
+}: Props) {
+  const onCategoryItemClick = (itemTitle: string) => {
+    onCategoryItemSelect(itemTitle);
   };
 
   return (
-    <Modal isOpen={isCategoryModalOpen} onClose={onCategoryModalClose}>
+    <Modal isOpen={isOpen} onClose={onCategoryModalClose}>
       <ModalHeader>
         <ModalTitle>카테고리</ModalTitle>
-        <IconWrapper>
+        <IconWrapper onClick={onCategoryModalClose}>
           <img src={xIcon} alt="close" />
         </IconWrapper>
       </ModalHeader>
       <ModalBody>
         <ModalList>
-          {list.map((item) => (
+          {categoryList.map((item) => (
             <CategoryItem
               {...{
                 key: item.id,
                 item,
                 onClick: onCategoryItemClick,
-                selectedCategoryId,
+                currentSelectedCategory,
               }}
             />
           ))}
@@ -49,7 +53,7 @@ export default function CategoryModal({ onCategoryModalClose }: Props) {
   );
 }
 
-const list = [
+const categoryList = [
   { id: 1, title: "전체보기", imageUrl: "https://i.ibb.co/LSkHKbL/star.png" },
   {
     id: 2,
