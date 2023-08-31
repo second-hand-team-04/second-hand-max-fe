@@ -5,6 +5,7 @@ import Button from "@components/common/Button/Button";
 import CategoryButton from "@components/Category/CategoryButton";
 
 import { useNavigate } from "react-router-dom";
+
 import useCategories from "api/queries/useCategories";
 
 export default function CategoryPage() {
