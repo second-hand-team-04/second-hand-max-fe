@@ -2,7 +2,7 @@ import { decToHexOpacity } from "@utils/style";
 
 const colors = {
   white: "#FFFFFF",
-  grey50: "FAFAFA",
+  grey50: "#FAFAFA",
   grey100: `#F9F9F9${decToHexOpacity(0.8)}`,
   grey200: `#F5F5F5${decToHexOpacity(0.7)}`,
   grey300: `#B3B3B3${decToHexOpacity(0.12)}`,

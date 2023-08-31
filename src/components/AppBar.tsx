@@ -30,17 +30,20 @@ export default function AppBar({
 const StyledAppBar = styled.header<{
   $height: string;
   $padding: string;
-  $isTop?: boolean;
+  $isTop: boolean;
 }>`
   width: inherit;
   height: ${({ $height }) => $height};
   padding: ${({ $padding }) => $padding};
   display: flex;
   align-items: center;
-  position: fixed;
-  background: ${({ theme: { color } }) => color.neutral.backgroundBlur};
+  position: absolute;
+  background: ${({ theme: { color }, $isTop }) =>
+    $isTop ? color.neutral.backgroundBlur : color.neutral.backgroundWeak};
   border-bottom: ${({ theme: { color } }) =>
     `0.8px solid ${color.neutral.border}`};
   backdrop-filter: ${({ theme: { backdropFilter }, $isTop }) =>
     $isTop ? backdropFilter.blur : ""};
+  top: ${({ $isTop }) => ($isTop ? "0" : "auto")};
+  bottom: ${({ $isTop }) => ($isTop ? "auto" : "0")};
 `;

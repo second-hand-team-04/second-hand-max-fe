@@ -1,17 +1,13 @@
 import Button from "@components/common/Button/Button";
 import { styled } from "styled-components";
+import { CategoryType } from "../../utils/useCategory";
 
-export default function CategoryButton({
-  item,
-  onCategoryButtonClick,
-}: {
-  item: {
-    id: number;
-    title: string;
-    imageUrl: string;
-  };
+type Props = {
+  item: CategoryType;
   onCategoryButtonClick: (categoryTitle: string) => void;
-}) {
+};
+
+export default function CategoryButton({ item, onCategoryButtonClick }: Props) {
   return (
     <Button
       variant="plain"

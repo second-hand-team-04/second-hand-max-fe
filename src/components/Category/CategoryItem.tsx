@@ -1,20 +1,15 @@
 import { ModalListItem } from "@components/common/Modal/ModalStyles";
+import { CategoryType } from "../../utils/useCategory";
 
 type Props = {
-  item: { id: number; title: string; imageUrl: string };
-  onClick: (itemId: number) => void;
-  selectedCategoryId: number;
+  item: CategoryType;
+  onClick: (itemTitle: string) => void;
+  isSelected: boolean;
 };
 
-export default function CategoryItem({
-  item,
-  onClick,
-  selectedCategoryId,
-}: Props) {
-  const isSelected = item.id === selectedCategoryId;
-
+export default function CategoryItem({ item, onClick, isSelected }: Props) {
   return (
-    <ModalListItem $isSelected={isSelected} onClick={() => onClick(item.id)}>
+    <ModalListItem $isSelected={isSelected} onClick={() => onClick(item.title)}>
       {item.title}
     </ModalListItem>
   );
