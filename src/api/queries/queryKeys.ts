@@ -5,3 +5,7 @@ export const userKeys = {
 export const categoryKeys = {
   categories: ["categories"] as const,
 };
+
+export const regionKeys = {
+  regionList: ["regionList"] as const,
+};

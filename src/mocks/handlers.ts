@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { User } from "api/user/types";
-import { categoriesData } from "./data";
+import { categoriesData, regionListData } from "./data";
 
 export default [
   // TODO: remove this
@@ -18,5 +18,9 @@ export default [
 
   rest.get("/api/categories", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(categoriesData));
+  }),
+
+  rest.get("/api/regions", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(regionListData));
   }),
 ];
