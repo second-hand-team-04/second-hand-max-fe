@@ -6,12 +6,12 @@ import CategoryButton from "@components/Category/CategoryButton";
 
 import { useNavigate } from "react-router-dom";
 
-import useCategories from "api/queries/useCategories";
+import useCategoriesQuery from "api/queries/useCategoriesQuery";
 
 export default function CategoryPage() {
   const navigate = useNavigate();
 
-  const { data: categories, isFetched } = useCategories();
+  const { data: categories, isFetched } = useCategoriesQuery();
 
   const onBackButtonClick = () => {
     navigate("/");
@@ -22,6 +22,9 @@ export default function CategoryPage() {
   };
 
   if (!isFetched) return <div>로딩중...</div>;
+
+  console.log("categories:", categories);
+  console.log("categories.data:", categories?.data);
 
   return (
     <StyledCategoryPage>
@@ -37,7 +40,7 @@ export default function CategoryPage() {
       </AppBar>
       <MainBody>
         {categories &&
-          categories.map((item) => (
+          categories.data.map((item) => (
             <CategoryButton
               key={item.id}
               item={item}
@@ -90,4 +93,8 @@ const MainBody = styled.div`
   gap: 32px;
   padding: 40px;
   background: ${({ theme: { color } }) => color.neutral.background};
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
