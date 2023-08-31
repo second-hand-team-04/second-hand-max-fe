@@ -9,7 +9,7 @@ import useDraggable from "@hooks/useDraggable";
 import React, { useEffect, useState } from "react";
 import { Tag } from "@components/common/Tag/Tag";
 import CategoryModal from "@components/Category/CategoryModal";
-import useCategory from "@components/Category/useCategory";
+import useCategory from "@utils/useCategory";
 
 export default function NewProductPage() {
   const [titleInputValue, setTitleInputValue] = useState("");
@@ -17,6 +17,9 @@ export default function NewProductPage() {
   const [contentInputValue, setContentInputValue] = useState("");
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
+  const [pictureList, setPictureList] = useState<
+    { id: number; imageUrl: string }[]
+  >([]);
 
   const { categories, selectedCategory, setSelectedCategory } =
     useCategory(categoryList);
@@ -72,18 +75,41 @@ export default function NewProductPage() {
     setContentInputValue(e.target.value);
   };
 
-  const onAddPicture = () => {
-    console.log("Add Picture");
+  const onImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files![0]; // 첫 번째 파일만 사용
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newPicture = {
+          id: Date.now(), // 간단한 ID 생성. 실제 환경에서는 더 나은 방법을 사용해야 합니다.
+          imageUrl: reader.result as string,
+        };
+        setPictureList((prevList) => [...prevList, newPicture]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const onAddPicture = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (pictureList.length >= 10) return;
+    const inputFile = e.currentTarget.querySelector('input[type="file"]');
+    if (inputFile as HTMLInputElement) {
+      (inputFile as HTMLInputElement).click();
+    }
   };
 
   const onDeletePicture = (pictureId: number) => {
-    console.log("Delete Picture", pictureId);
+    setPictureList((prevList) =>
+      prevList.filter((picture) => picture.id !== pictureId)
+    );
   };
 
   const onPost = () => {
     console.log(
       "Post",
+      pictureList,
       titleInputValue,
+      selectedCategory,
       priceInputValue || null,
       contentInputValue,
       currentRegion
@@ -105,11 +131,11 @@ export default function NewProductPage() {
         onCategoryItemSelect={onCategoryItemSelect}
       />
       <AppBar>
-        <Button style={{ flexDirection: "row", width: "62px" }} variant="plain">
+        <Button style={{ width: "62px" }} variant="plain">
           <CloseButtonText>닫기</CloseButtonText>
         </Button>
         <TitleArea style={{ flexGrow: "1" }}>내 물건 팔기</TitleArea>
-        <Button style={{ flexDirection: "row", width: "62px" }} variant="plain">
+        <Button style={{ width: "62px" }} variant="plain">
           <CompleteButtonText onClick={onPost} $isValid={isValid}>
             완료
           </CompleteButtonText>
@@ -126,26 +152,39 @@ export default function NewProductPage() {
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
             <AddButton onClick={onAddPicture}>
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={(input) => {
+                  if (input)
+                    input.onclick = (e) => {
+                      (e.target as HTMLInputElement).value = ""; // 이전에 선택된 파일 클리어
+                    };
+                }}
+                onChange={onImageUpload}
+              />
               <img src={cameraIcon} alt="camera" />
               <PictureCount>{pictureList.length}/10</PictureCount>
             </AddButton>
-            {pictureList.map((picture: { id: number; imageUrl: string }) => (
-              <PictureWrapper key={picture.id}>
-                <Picture src={picture.imageUrl} alt="picture.id" />
-                <Button
-                  onClick={() => onDeletePicture(picture.id)}
-                  variant="plain"
-                  style={{
-                    zIndex: 10,
-                    padding: 0,
-                    right: -8,
-                    top: -8,
-                    position: "absolute",
-                  }}>
-                  <img src={circleXIcon} alt="delete" />
-                </Button>
-              </PictureWrapper>
-            ))}
+            {pictureList &&
+              pictureList.map((picture: { id: number; imageUrl: string }) => (
+                <PictureWrapper key={picture.id}>
+                  <Picture src={picture.imageUrl} alt="picture.id" />
+                  <Button
+                    onClick={() => onDeletePicture(picture.id)}
+                    variant="plain"
+                    style={{
+                      zIndex: 10,
+                      padding: 0,
+                      right: -8,
+                      top: -8,
+                      position: "absolute",
+                    }}>
+                    <img src={circleXIcon} alt="delete" />
+                  </Button>
+                </PictureWrapper>
+              ))}
           </PictureArea>
           <InputArea>
             <TitleInput
@@ -398,58 +437,58 @@ const Container = styled.div`
   // box-sizing: border-box;
 `;
 
-const pictureList = [
-  {
-    id: 1,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cf604e7b0e6900f9ac53a43965300eb9a",
-  },
-  {
-    id: 2,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c9f5287469802eca457586a25a096fd31",
-  },
-  {
-    id: 3,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c6fb33a4b4cf43b6605fc7a1e262f0845",
-  },
-  {
-    id: 4,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c960f4ab09fe6e38bae8c63030c9b37f9",
-  },
-  {
-    id: 5,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cce9463e040a07a9462a54df43e1d73f1",
-  },
-  {
-    id: 6,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cac8e738cb631e72fdb9a96b36413984e",
-  },
-  {
-    id: 7,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c7f9f127ae3ca5dc7f0f6349aebcdb3c4",
-  },
-  {
-    id: 8,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c26397d82c8691bdabf557d1536959d9c",
-  },
-  {
-    id: 9,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c66d8fd08427c1f00d04db607cc4cdc8e",
-  },
-  {
-    id: 10,
-    imageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cd0bbab1214a29e381afae56101ded106",
-  },
-];
+// const imgList = [
+//   {
+//     id: 1,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cf604e7b0e6900f9ac53a43965300eb9a",
+//   },
+//   {
+//     id: 2,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c9f5287469802eca457586a25a096fd31",
+//   },
+//   {
+//     id: 3,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c6fb33a4b4cf43b6605fc7a1e262f0845",
+//   },
+//   {
+//     id: 4,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c960f4ab09fe6e38bae8c63030c9b37f9",
+//   },
+//   {
+//     id: 5,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cce9463e040a07a9462a54df43e1d73f1",
+//   },
+//   {
+//     id: 6,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cac8e738cb631e72fdb9a96b36413984e",
+//   },
+//   {
+//     id: 7,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c7f9f127ae3ca5dc7f0f6349aebcdb3c4",
+//   },
+//   {
+//     id: 8,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c26397d82c8691bdabf557d1536959d9c",
+//   },
+//   {
+//     id: 9,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c66d8fd08427c1f00d04db607cc4cdc8e",
+//   },
+//   {
+//     id: 10,
+//     imageUrl:
+//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cd0bbab1214a29e381afae56101ded106",
+//   },
+// ];
 
 const currentRegion = "역삼1동";
 
