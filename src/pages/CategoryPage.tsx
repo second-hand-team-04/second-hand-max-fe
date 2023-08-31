@@ -1,37 +1,24 @@
 import AppBar from "@components/AppBar";
-import { keyframes, styled } from "styled-components";
+import { styled } from "styled-components";
 import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import Button from "@components/common/Button/Button";
 import CategoryButton from "@components/Category/CategoryButton";
-import { useState } from "react";
 
-type Props = {
-  isOpen: boolean;
-  onCloseModal: () => void;
-};
+import { useNavigate } from "react-router-dom";
 
-export default function CategoryPage({ isOpen, onCloseModal }: Props) {
-  const [isTransitionEnd, setIsTransitionEnd] = useState(false);
-
-  const hideModal = () => {
-    if (isOpen) return;
-    setIsTransitionEnd(true);
-  };
+export default function CategoryPage() {
+  const navigate = useNavigate();
 
   const onBackButtonClick = () => {
-    onCloseModal();
+    navigate("/");
   };
 
   const onCategoryButtonClick = (categoryTitle: string) => {
     console.log("카테고리", categoryTitle);
-    onCloseModal();
   };
 
   return (
-    <StyledCategoryPage
-      onTransitionEnd={hideModal}
-      $isOpen={isOpen}
-      $isTransitionEnd={isTransitionEnd}>
+    <StyledCategoryPage>
       <AppBar>
         <Button
           onClick={onBackButtonClick}
@@ -55,30 +42,13 @@ export default function CategoryPage({ isOpen, onCloseModal }: Props) {
   );
 }
 
-const slideInFromRight = keyframes`
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-`;
-
-const StyledCategoryPage = styled.div<{
-  $isOpen: boolean;
-  $isTransitionEnd: boolean;
-}>`
+const StyledCategoryPage = styled.div`
+  position: relative;
   width: 393px;
   height: 852px;
-  display: ${({ $isTransitionEnd }) => ($isTransitionEnd ? "none" : "flex")};
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  animation: ${slideInFromRight} 0.5s ease-out;
-
-  transform: ${({ $isOpen }) =>
-    $isOpen ? "translateX(0)" : "translateX(100%)"};
-  transition: transform 0.5s ease-out;
 `;
 
 const BackButtonText = styled.div`

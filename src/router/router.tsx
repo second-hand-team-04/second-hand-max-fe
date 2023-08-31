@@ -6,13 +6,14 @@ import {
 import PublicOnlyRoute from "./PublicOnlyRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import SignUpPage from "@pages/SignUpPage";
+import CategoryPage from "@pages/CategoryPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
       <Route index element={<div>Home</div>} />
       {/* <Route index element={<HomePage />} /> */}
-      {/* <Route path="category" element={<CategoryPage />} /> */}
+      <Route path="categories" element={<CategoryPage />} />
 
       <Route element={<PublicOnlyRoute />}>
         {/* <Route path="signin" element={<SignInPage />} /> */}
