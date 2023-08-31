@@ -8,7 +8,7 @@ interface ButtonTransientProps {
   $borderColor: BorderColor | "";
   $borderRadius: BorderRadius;
   $color: Color | "";
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 type ButtonBaseProps = Pick<ButtonTransientProps, "$size">;
