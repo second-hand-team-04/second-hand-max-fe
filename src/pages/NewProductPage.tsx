@@ -10,8 +10,11 @@ import React, { useEffect, useState } from "react";
 import { Tag } from "@components/common/Tag/Tag";
 import CategoryModal from "@components/Category/CategoryModal";
 import useCategory from "@utils/useCategory";
+import { useNavigate } from "react-router-dom";
 
 export default function NewProductPage() {
+  const navigate = useNavigate();
+
   const [titleInputValue, setTitleInputValue] = useState("");
   const [priceInputValue, setPriceInputValue] = useState("");
   const [contentInputValue, setContentInputValue] = useState("");
@@ -131,7 +134,10 @@ export default function NewProductPage() {
         onCategoryItemSelect={onCategoryItemSelect}
       />
       <AppBar>
-        <Button style={{ width: "62px" }} variant="plain">
+        <Button
+          style={{ width: "62px" }}
+          variant="plain"
+          onClick={() => navigate("/")}>
           <CloseButtonText>닫기</CloseButtonText>
         </Button>
         <TitleArea style={{ flexGrow: "1" }}>내 물건 팔기</TitleArea>

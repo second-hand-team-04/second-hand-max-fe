@@ -3,15 +3,13 @@ import { styled } from "styled-components";
 import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import Button from "@components/common/Button/Button";
 import CategoryButton from "@components/Category/CategoryButton";
-
 import { useNavigate } from "react-router-dom";
-
-import useCategories from "api/queries/useCategories";
+import useCategoriesQuery from "api/queries/useCategoriesQuery";
 
 export default function CategoryPage() {
   const navigate = useNavigate();
 
-  const { data: categories, isFetched } = useCategories();
+  const { data: categories, isFetched } = useCategoriesQuery();
 
   const onBackButtonClick = () => {
     navigate("/");
@@ -37,7 +35,7 @@ export default function CategoryPage() {
       </AppBar>
       <MainBody>
         {categories &&
-          categories.map((item) => (
+          categories.data.map((item) => (
             <CategoryButton
               key={item.id}
               item={item}
@@ -90,4 +88,8 @@ const MainBody = styled.div`
   gap: 32px;
   padding: 40px;
   background: ${({ theme: { color } }) => color.neutral.background};
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;

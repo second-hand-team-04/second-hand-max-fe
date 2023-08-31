@@ -7,6 +7,7 @@ import PublicOnlyRoute from "./PublicOnlyRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import SignUpPage from "@pages/SignUpPage";
 import CategoryPage from "@pages/CategoryPage";
+import NewProductPage from "@pages/NewProductPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,8 +17,10 @@ const router = createBrowserRouter(
       <Route path="categories" element={<CategoryPage />} />
 
       <Route element={<PublicOnlyRoute />}>
-        {/* <Route path="signin" element={<SignInPage />} /> */}
         <Route path="signup" element={<SignUpPage />} />
+        {/* <Route path="signin" element={<SignInPage />} /> */}
+        {/* <Route path="product/:id" element={<ProductPage />} /> */}
+        <Route path="product/new" element={<NewProductPage />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>

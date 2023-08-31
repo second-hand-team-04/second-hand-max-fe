@@ -79,13 +79,21 @@ export default function SignUpPage() {
   return (
     <Form ref={formRef} onSubmit={onSignUp}>
       <AppBar padding="8px">
-        <Button type="button" variant="plain" onClick={() => navigate("/")}>
+        <Button
+          type="button"
+          variant="plain"
+          size="L"
+          onClick={() => navigate("/")}>
           닫기
         </Button>
         <AppBarTitle style={{ flexGrow: 1, textAlign: "center" }}>
           회원가입
         </AppBarTitle>
-        <Button type="submit" variant="plain" disabled={!isAllFieldsFilled}>
+        <Button
+          type="submit"
+          variant="plain"
+          size="L"
+          disabled={!isAllFieldsFilled}>
           완료
         </Button>
       </AppBar>
