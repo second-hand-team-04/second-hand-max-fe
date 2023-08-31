@@ -5,7 +5,6 @@ type Props = {
   children: ReactNode;
   height?: string;
   padding?: string;
-  justifyContent?: string;
   isTop?: boolean;
 };
 

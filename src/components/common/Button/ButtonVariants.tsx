@@ -8,12 +8,13 @@ interface ButtonTransientProps {
   $borderColor: BorderColor | "";
   $borderRadius: BorderRadius;
   $color: Color | "";
+  disabled: boolean;
 }
 
 type ButtonBaseProps = Pick<ButtonTransientProps, "$size">;
 type PlainButtonProps = Pick<
   ButtonTransientProps,
-  "$size" | "$backgroundColor" | "$color"
+  "$size" | "$backgroundColor" | "$color" | "disabled"
 >;
 type ContainedButtonProps = Pick<
   ButtonTransientProps,
@@ -61,8 +62,8 @@ export const PlainButton = styled(ButtonBase)<PlainButtonProps>`
   background-color: ${({ $backgroundColor }) =>
     $backgroundColor ? $backgroundColor : "transparent"};
   border: none;
-  color: ${({ theme: { color }, $color }) =>
-    $color ? $color : color.neutral.text};
+  color: ${({ theme: { color }, disabled }) =>
+    disabled ? color.neutral.textWeak : color.neutral.text};
 `;
 
 export const ContainedButton = styled(ButtonBase)<ContainedButtonProps>`

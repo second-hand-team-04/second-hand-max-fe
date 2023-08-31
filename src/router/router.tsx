@@ -5,16 +5,18 @@ import {
 } from "react-router-dom";
 import PublicOnlyRoute from "./PublicOnlyRoute";
 import ProtectedRoute from "./ProtectedRoute";
+import SignUpPage from "@pages/SignUpPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
+      <Route index element={<div>Home</div>} />
       {/* <Route index element={<HomePage />} /> */}
       {/* <Route path="category" element={<CategoryPage />} /> */}
 
       <Route element={<PublicOnlyRoute />}>
         {/* <Route path="signin" element={<SignInPage />} /> */}
-        {/* <Route path="signup" element={<SignUpPage />} /> */}
+        <Route path="signup" element={<SignUpPage />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>
