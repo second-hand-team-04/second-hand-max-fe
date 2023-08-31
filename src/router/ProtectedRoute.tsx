@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 export default function ProtectedRoute() {
+  // TODO: replace with auth context.
   const { data: user, isFetched } = useUser();
   const navigate = useNavigate();
 
