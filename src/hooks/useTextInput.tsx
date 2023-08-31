@@ -33,6 +33,7 @@ export default function useTextInput({ initialValue = "", validators }: Props) {
   return {
     value,
     error,
+    isError: error !== "",
     onChange,
   };
 }
