@@ -1,10 +1,7 @@
+import { CategoryType } from "api/user/types";
 import { useEffect, useState } from "react";
 
-export type CategoryType = {
-  id: number;
-  title: string;
-  imageUrl: string;
-};
+
 
 export default function useCategory(categoryList: CategoryType[]) {
   const initialCategories = getRandomSubarray(categoryList, 3);
