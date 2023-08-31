@@ -43,7 +43,7 @@ export default function CategoryModal({
                 key: item.id,
                 item,
                 onClick: onCategoryItemClick,
-                currentSelectedCategory,
+                isSelected: item.title === currentSelectedCategory,
               }}
             />
           ))}
