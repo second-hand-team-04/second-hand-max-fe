@@ -67,13 +67,13 @@ export default function SignUpPage() {
   const isPasswordMatch = password === passwordConfirm;
 
   const isAllFieldsFilled =
-    nickname &&
+    !!nickname &&
     !isNicknameError &&
-    email &&
+    !!email &&
     !isEmailError &&
-    password &&
+    !!password &&
     !isPasswordError &&
-    passwordConfirm &&
+    !!passwordConfirm &&
     isPasswordMatch;
 
   return (
@@ -172,6 +172,7 @@ export default function SignUpPage() {
 const Form = styled.form`
   width: inherit;
   height: 100%;
+  position: relative;
   background-color: ${({ theme: { color } }) => color.neutral.background};
 `;
 
