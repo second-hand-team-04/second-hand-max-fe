@@ -1,5 +1,5 @@
 import { ModalListItem } from "@components/common/Modal/ModalStyles";
-import { CategoryType } from "../../utils/useCategory";
+import { CategoryType } from "api/user/types";
 
 type Props = {
   item: CategoryType;
