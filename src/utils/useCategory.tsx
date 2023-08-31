@@ -1,18 +1,24 @@
-import { CategoryType } from "api/user/types";
+import { CategoryType } from "api/category/types";
 import { useEffect, useState } from "react";
 
+export default function useCategory(categoryList: CategoryType[] | null) {
+  // const initialCategories = getRandomSubarray(categoryList, 3);
+  // const initialSelection = initialCategories[0].title;
 
-
-export default function useCategory(categoryList: CategoryType[]) {
-  const initialCategories = getRandomSubarray(categoryList, 3);
-  const initialSelection = initialCategories[0].title;
-
-  const [categories, setCategories] = useState(initialCategories);
-  const [selectedCategory, setSelectedCategory] = useState(initialSelection);
+  // const [tagCategories, setTagCategories] = useState(initialCategories);
+  const [tagCategories, setTagCategories] = useState<CategoryType[]>([]);
+  // const [selectedCategory, setSelectedCategory] = useState(initialSelection);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
-    if (!selectedCategory) return;
+    if (!categoryList) return;
 
+    if (!selectedCategory) {
+      const finalThreeCategories = getRandomSubarray(categoryList, 3);
+      setTagCategories(finalThreeCategories);
+      setSelectedCategory(finalThreeCategories[0].title);
+      return;
+    }
     const filteredList = categoryList.filter(
       (category) => category.title !== selectedCategory
     );
@@ -28,10 +34,10 @@ export default function useCategory(categoryList: CategoryType[]) {
       ...twoRandomCategories,
     ];
 
-    setCategories(finalThreeCategories);
+    setTagCategories(finalThreeCategories);
   }, [selectedCategory, categoryList]);
 
-  return { selectedCategory, categories, setSelectedCategory };
+  return { tagCategories, selectedCategory, setSelectedCategory };
 }
 
 function getRandomSubarray(
