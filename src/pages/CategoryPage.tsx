@@ -3,9 +3,7 @@ import { styled } from "styled-components";
 import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import Button from "@components/common/Button/Button";
 import CategoryButton from "@components/Category/CategoryButton";
-
 import { useNavigate } from "react-router-dom";
-
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 
 export default function CategoryPage() {
@@ -22,9 +20,6 @@ export default function CategoryPage() {
   };
 
   if (!isFetched) return <div>로딩중...</div>;
-
-  console.log("categories:", categories);
-  console.log("categories.data:", categories?.data);
 
   return (
     <StyledCategoryPage>
