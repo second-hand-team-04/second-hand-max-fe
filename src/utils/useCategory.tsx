@@ -1,12 +1,12 @@
 import { CategoryType } from "api/category/index";
 import { useEffect, useState } from "react";
 
-export default function useCategory(categoryList: CategoryType[] | null) {
+export default function useCategory(categoryList: CategoryType[] | []) {
   const [tagCategories, setTagCategories] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
-    if (!categoryList) return;
+    if (categoryList.length === 0) return;
 
     if (!selectedCategory) {
       const finalThreeCategories = getRandomSubarray(categoryList, 3);

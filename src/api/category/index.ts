@@ -1,5 +1,4 @@
 import { fetcher } from "api/fetcher";
-// import { CategoryType } from "./types";
 import { Response } from "api/types";
 
 export type CategoryType = {

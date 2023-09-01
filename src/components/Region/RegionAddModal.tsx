@@ -29,7 +29,6 @@ export default function RegionAddModal({
 
   const { data: regionList } = useRegionListQuery();
 
-  console.log(regionList);
   const onRegionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("검색중인 지역", e.target.value);
     setInputValue(e.target.value);

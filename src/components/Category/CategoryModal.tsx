@@ -13,7 +13,7 @@ import { CategoryType } from "api/category/index";
 
 type Props = {
   isOpen: boolean;
-  categoryList: CategoryType[] | [];
+  categoryList: CategoryType[];
   currentSelectedCategory: string;
   onCategoryModalClose: () => void;
   onCategoryItemSelect: (itemTitle: string) => void;

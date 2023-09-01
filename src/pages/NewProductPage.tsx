@@ -25,10 +25,10 @@ export default function NewProductPage() {
   const [pictureList, setPictureList] = useState<
     { id: number; imageUrl: string }[]
   >([]);
-
+  console.log(pictureList);
   const { data: categories } = useCategoriesQuery();
   const { tagCategories, selectedCategory, setSelectedCategory } = useCategory(
-    categories?.data || null
+    categories?.data ?? []
   );
   const [selectedTag, setSelectedTag] = useState(selectedCategory);
 
@@ -51,6 +51,7 @@ export default function NewProductPage() {
         const newPicture = {
           id: Date.now(),
           imageUrl: reader.result as string,
+          file: productPictureImage,
         };
         setPictureList((prevList) => [...prevList, newPicture]);
       };
@@ -63,7 +64,7 @@ export default function NewProductPage() {
   };
 
   //TODO 이름 어떻게하면 좋을지 고민
-  const onMouseLeave = () => {
+  const onDragSlideEnd = () => {
     onDragEnd();
     setIsPictureHover(false);
   };
@@ -164,7 +165,7 @@ export default function NewProductPage() {
             onMouseDown={onDragStart}
             onMouseMove={onDragMove}
             onMouseUp={onDragEnd}
-            onMouseLeave={onMouseLeave}
+            onMouseLeave={onDragSlideEnd}
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
             <AddButton onClick={onAddPicture}>
@@ -175,10 +176,9 @@ export default function NewProductPage() {
                 ref={(input) => {
                   if (input)
                     input.onclick = (e) => {
-                      (e.target as HTMLInputElement).value = ""; // 이전에 선택된 파일 클리어
+                      (e.target as HTMLInputElement).value = "";
                     };
                 }}
-                // onChange={onImageUpload}
                 onChange={onProductPictureChange}
               />
               <img src={cameraIcon} alt="camera" />
