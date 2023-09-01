@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { User } from "api/user/types";
+import { User } from "api/user/index";
 import { categoriesData, regionListData } from "./data";
 
 export default [

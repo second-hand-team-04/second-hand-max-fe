@@ -1,13 +1,8 @@
-import { CategoryType } from "api/category/types";
+import { CategoryType } from "api/category/index";
 import { useEffect, useState } from "react";
 
 export default function useCategory(categoryList: CategoryType[] | null) {
-  // const initialCategories = getRandomSubarray(categoryList, 3);
-  // const initialSelection = initialCategories[0].title;
-
-  // const [tagCategories, setTagCategories] = useState(initialCategories);
   const [tagCategories, setTagCategories] = useState<CategoryType[]>([]);
-  // const [selectedCategory, setSelectedCategory] = useState(initialSelection);
   const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {

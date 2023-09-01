@@ -9,7 +9,7 @@ import {
 import CategoryItem from "./CategoryItem";
 
 import Modal from "@components/common/Modal/Modal";
-import { CategoryType } from "api/category/types";
+import { CategoryType } from "api/category/index";
 
 type Props = {
   isOpen: boolean;
