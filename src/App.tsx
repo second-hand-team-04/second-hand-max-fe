@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { RouterProvider } from "react-router-dom";
 import router from "router/router";
-// import RegionModal from "@components/Region/RegionModal";
 
 const queryClient = new QueryClient();
 
@@ -15,7 +14,6 @@ function App() {
       <GlobalStyles />
       <QueryClientProvider client={queryClient}>
         <StyledApp>
-          {/* <RegionModal /> */}
           <RouterProvider router={router} />
         </StyledApp>
       </QueryClientProvider>
