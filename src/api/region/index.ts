@@ -1,8 +1,8 @@
 import { fetcher } from "api/fetcher";
-import { AxiosResponse } from "axios";
 import { RegionType } from "./types";
+import { Response } from "api/types";
 
-export const getRegionList = async () => {
-  const res = await fetcher.get<AxiosResponse<RegionType[]>>("/regions");
+export const getRegionList = async (): Promise<Response<RegionType[]>> => {
+  const res = await fetcher.get("/regions");
   return res.data;
 };
