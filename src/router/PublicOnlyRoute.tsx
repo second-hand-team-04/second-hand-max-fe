@@ -1,15 +1,15 @@
-import useUser from "api/queries/useUser";
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+// import useUser from "api/queries/useUser";
+// import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 
 export default function PublicOnlyRoute() {
   // TODO: replace with auth context.
-  const { data: user, isFetched } = useUser();
-  const navigate = useNavigate();
+  // const { data: user, isFetched } = useUser();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isFetched && user) navigate("/");
-  }, [isFetched, user, navigate]);
+  // useEffect(() => {
+  //   if (isFetched && user) navigate("/");
+  // }, [isFetched, user, navigate]);
 
   return <Outlet />;
 }

@@ -1,18 +1,19 @@
-import { CategoryType } from "api/user/types";
+import { CategoryType } from "api/category/index";
 import { useEffect, useState } from "react";
 
-
-
-export default function useCategory(categoryList: CategoryType[]) {
-  const initialCategories = getRandomSubarray(categoryList, 3);
-  const initialSelection = initialCategories[0].title;
-
-  const [categories, setCategories] = useState(initialCategories);
-  const [selectedCategory, setSelectedCategory] = useState(initialSelection);
+export default function useCategory(categoryList: CategoryType[] | []) {
+  const [tagCategories, setTagCategories] = useState<CategoryType[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
-    if (!selectedCategory) return;
+    if (categoryList.length === 0) return;
 
+    if (!selectedCategory) {
+      const finalThreeCategories = getRandomSubarray(categoryList, 3);
+      setTagCategories(finalThreeCategories);
+      setSelectedCategory(finalThreeCategories[0].title);
+      return;
+    }
     const filteredList = categoryList.filter(
       (category) => category.title !== selectedCategory
     );
@@ -28,10 +29,10 @@ export default function useCategory(categoryList: CategoryType[]) {
       ...twoRandomCategories,
     ];
 
-    setCategories(finalThreeCategories);
+    setTagCategories(finalThreeCategories);
   }, [selectedCategory, categoryList]);
 
-  return { selectedCategory, categories, setSelectedCategory };
+  return { tagCategories, selectedCategory, setSelectedCategory };
 }
 
 function getRandomSubarray(

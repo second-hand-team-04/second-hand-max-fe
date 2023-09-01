@@ -1,5 +1,5 @@
 import Button from "@components/common/Button/Button";
-import { CategoryType } from "api/user/types";
+import { CategoryType } from "api/category/index";
 import { styled } from "styled-components";
 
 type Props = {

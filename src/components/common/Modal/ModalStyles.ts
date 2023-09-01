@@ -15,7 +15,8 @@ export const ModalContainer = styled.div`
 export const ModalHeader = styled.div<{ $isRegionAddModal?: boolean }>`
   width: 100%;
   height: 72px;
-  padding: 8px 8px 16px ${(props) => (props.$isRegionAddModal ? "12px" : "24px")};
+  padding: 8px 8px 16px
+    ${(props) => (props.$isRegionAddModal ? "12px" : "24px")};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -65,6 +66,10 @@ export const ModalListItem = styled.li<{ $isSelected?: boolean }>`
     $isSelected ? font.enabledStrong16 : font.availableDefault16};
   border-bottom: 0.8px solid ${({ theme: { color } }) => color.neutral.border};
   cursor: pointer;
+
+  &:hover {
+    background: ${({ theme: { color } }) => color.neutral.backgroundBlur};
+  }
 `;
 
 // TODO 아이콘 컴포넌트 만든 후 분리-----------

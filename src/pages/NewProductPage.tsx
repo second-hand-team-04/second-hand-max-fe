@@ -11,6 +11,8 @@ import { Tag } from "@components/common/Tag/Tag";
 import CategoryModal from "@components/Category/CategoryModal";
 import useCategory from "@utils/useCategory";
 import { useNavigate } from "react-router-dom";
+import useImageInput from "@hooks/useImageInput";
+import useCategoriesQuery from "api/queries/useCategoriesQuery";
 
 export default function NewProductPage() {
   const navigate = useNavigate();
@@ -23,24 +25,46 @@ export default function NewProductPage() {
   const [pictureList, setPictureList] = useState<
     { id: number; imageUrl: string }[]
   >([]);
-
-  const { categories, selectedCategory, setSelectedCategory } =
-    useCategory(categoryList);
+  console.log(pictureList);
+  const { data: categories } = useCategoriesQuery();
+  const { tagCategories, selectedCategory, setSelectedCategory } = useCategory(
+    categories?.data ?? []
+  );
   const [selectedTag, setSelectedTag] = useState(selectedCategory);
 
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
     useDraggable();
 
+  const {
+    imageFile: productPictureImage,
+    error: imageFileError,
+    onChange: onProductPictureChange,
+  } = useImageInput({ sizeLimit: 2000000 });
   useEffect(() => {
     setSelectedTag(selectedCategory);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    if (productPictureImage) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newPicture = {
+          id: Date.now(),
+          imageUrl: reader.result as string,
+          file: productPictureImage,
+        };
+        setPictureList((prevList) => [...prevList, newPicture]);
+      };
+      reader.readAsDataURL(productPictureImage);
+    }
+  }, [productPictureImage]);
 
   const onShowScrollBar = () => {
     setIsPictureHover(true);
   };
 
   //TODO 이름 어떻게하면 좋을지 고민
-  const onMouseLeave = () => {
+  const onDragSlideEnd = () => {
     onDragEnd();
     setIsPictureHover(false);
   };
@@ -76,21 +100,6 @@ export default function NewProductPage() {
 
   const onContentInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContentInputValue(e.target.value);
-  };
-
-  const onImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files![0]; // 첫 번째 파일만 사용
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newPicture = {
-          id: Date.now(), // 간단한 ID 생성. 실제 환경에서는 더 나은 방법을 사용해야 합니다.
-          imageUrl: reader.result as string,
-        };
-        setPictureList((prevList) => [...prevList, newPicture]);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const onAddPicture = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -129,6 +138,7 @@ export default function NewProductPage() {
     <StyledNewProductPage>
       <CategoryModal
         isOpen={isCategoryOpen}
+        categoryList={categories?.data ?? []}
         currentSelectedCategory={selectedCategory}
         onCategoryModalClose={onCategoryClose}
         onCategoryItemSelect={onCategoryItemSelect}
@@ -149,12 +159,13 @@ export default function NewProductPage() {
       </AppBar>
       <Main>
         <Container>
+          <ImageInputError>{imageFileError}</ImageInputError>
           <PictureArea
             ref={scrollContainerRef}
             onMouseDown={onDragStart}
             onMouseMove={onDragMove}
             onMouseUp={onDragEnd}
-            onMouseLeave={onMouseLeave}
+            onMouseLeave={onDragSlideEnd}
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
             <AddButton onClick={onAddPicture}>
@@ -165,10 +176,10 @@ export default function NewProductPage() {
                 ref={(input) => {
                   if (input)
                     input.onclick = (e) => {
-                      (e.target as HTMLInputElement).value = ""; // 이전에 선택된 파일 클리어
+                      (e.target as HTMLInputElement).value = "";
                     };
                 }}
-                onChange={onImageUpload}
+                onChange={onProductPictureChange}
               />
               <img src={cameraIcon} alt="camera" />
               <PictureCount>{pictureList.length}/10</PictureCount>
@@ -201,7 +212,7 @@ export default function NewProductPage() {
             {titleInputValue.length > 0 && (
               <CategoryArea>
                 <TagArea>
-                  {categories.map(
+                  {tagCategories.map(
                     (tag: { id: number; title: string; imageUrl: string }) => (
                       <Tag
                         key={tag.id}
@@ -331,6 +342,16 @@ const ContentArea = styled.textarea`
   }
 `;
 
+const ImageInputError = styled.p`
+  top: 60px;
+  height: 18px;
+  position: absolute;
+  margin-bottom: 2px;
+  font: ${({ theme: { font } }) => font.availableDefault12};
+  font-size: 10px;
+  color: ${({ theme: { color } }) => color.system.warning};
+`;
+
 const PriceInput = styled.input`
   height: 24px;
   font: ${({ theme: { font } }) => font.availableDefault16};
@@ -443,140 +464,4 @@ const Container = styled.div`
   // box-sizing: border-box;
 `;
 
-// const imgList = [
-//   {
-//     id: 1,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cf604e7b0e6900f9ac53a43965300eb9a",
-//   },
-//   {
-//     id: 2,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c9f5287469802eca457586a25a096fd31",
-//   },
-//   {
-//     id: 3,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c6fb33a4b4cf43b6605fc7a1e262f0845",
-//   },
-//   {
-//     id: 4,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c960f4ab09fe6e38bae8c63030c9b37f9",
-//   },
-//   {
-//     id: 5,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cce9463e040a07a9462a54df43e1d73f1",
-//   },
-//   {
-//     id: 6,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cac8e738cb631e72fdb9a96b36413984e",
-//   },
-//   {
-//     id: 7,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c7f9f127ae3ca5dc7f0f6349aebcdb3c4",
-//   },
-//   {
-//     id: 8,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c26397d82c8691bdabf557d1536959d9c",
-//   },
-//   {
-//     id: 9,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c66d8fd08427c1f00d04db607cc4cdc8e",
-//   },
-//   {
-//     id: 10,
-//     imageUrl:
-//       "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192cd0bbab1214a29e381afae56101ded106",
-//   },
-// ];
-
 const currentRegion = "역삼1동";
-
-const categoryList = [
-  { id: 1, title: "전체보기", imageUrl: "https://i.ibb.co/LSkHKbL/star.png" },
-  {
-    id: 2,
-    title: "부동산",
-    imageUrl: "https://i.ibb.co/41ScRXr/real-estate.png",
-  },
-  { id: 3, title: "중고차", imageUrl: "https://i.ibb.co/bLW8sd7/car.png" },
-  {
-    id: 4,
-    title: "디지털기기",
-    imageUrl: "https://i.ibb.co/cxS7Fhc/digital.png",
-  },
-  {
-    id: 5,
-    title: "생활가전",
-    imageUrl: "https://i.ibb.co/F5z7vV9/domestic.png",
-  },
-  {
-    id: 6,
-    title: "가구/인테리어",
-    imageUrl: "https://i.ibb.co/cyYH5V8/furniture.png",
-  },
-  { id: 7, title: "유아동", imageUrl: "https://i.ibb.co/VNKYZTK/baby.png" },
-  {
-    id: 8,
-    title: "유아도서",
-    imageUrl: "https://i.ibb.co/LrwjRdf/baby-book.png",
-  },
-  {
-    id: 9,
-    title: "스포츠/레저",
-    imageUrl: "https://i.ibb.co/hXVgTyd/sports.png",
-  },
-  {
-    id: 10,
-    title: "여성잡화",
-    imageUrl: "https://i.ibb.co/yPwkyg3/woman-accessories.png",
-  },
-  {
-    id: 11,
-    title: "여성의류",
-    imageUrl: "https://i.ibb.co/4fvj6SC/woman-apparel.png",
-  },
-  {
-    id: 12,
-    title: "남성패션/잡화",
-    imageUrl: "https://i.ibb.co/wwfyjyB/man-apparel.png",
-  },
-  { id: 13, title: "게임/취미", imageUrl: "https://i.ibb.co/cwJ74M4/game.png" },
-  {
-    id: 14,
-    title: "뷰티/미용",
-    imageUrl: "https://i.ibb.co/cXrrK0m/beauty.png",
-  },
-  {
-    id: 15,
-    title: "반려동물용품",
-    imageUrl: "https://i.ibb.co/CbwHdNr/pet.png",
-  },
-  { id: 16, title: "도서/음반", imageUrl: "https://i.ibb.co/7WjKkdt/book.png" },
-  {
-    id: 17,
-    title: "티켓,교환권",
-    imageUrl: "https://i.ibb.co/kBhhs2p/ticket.png",
-  },
-  { id: 18, title: "생활", imageUrl: "https://i.ibb.co/T0mnp8m/kitchen.png" },
-  {
-    id: 19,
-    title: "가공식품",
-    imageUrl: "https://i.ibb.co/S0rSyxr/processed-foods.png",
-  },
-  { id: 20, title: "식물", imageUrl: "https://i.ibb.co/rwZhRqh/plant.png" },
-  {
-    id: 21,
-    title: "기타 중고물품",
-    imageUrl: "https://i.ibb.co/tCyMPf5/etc.png",
-  },
-  { id: 22, title: "삽니다", imageUrl: "https://i.ibb.co/g7Gc1w0/buy.png" },
-];
-
-// const tagList = getRandomSubarray(categoryList, 3);
