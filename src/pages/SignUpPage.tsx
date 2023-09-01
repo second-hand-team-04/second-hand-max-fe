@@ -12,6 +12,7 @@ import {
 import { FormEvent, useRef } from "react";
 import { postSignUp } from "api/user";
 import useImageInput from "@hooks/useImageInput";
+import TextInput from "@components/common/TextInput/TextInput";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -245,20 +246,6 @@ const TextInputLabel = styled.label`
   display: block;
   font: ${({ theme: { font } }) => font.displayStrong16};
   color: ${({ theme: { color } }) => color.neutral.textStrong};
-`;
-
-const TextInput = styled.input`
-  width: 100%;
-  padding: 4px 12px;
-  border: ${({ theme: { color } }) => `1px solid ${color.neutral.border}`};
-  border-radius: 8px;
-  font: ${({ theme: { font } }) => font.availableDefault16};
-  color: ${({ theme: { color } }) => color.neutral.textStrong};
-  box-sizing: border-box;
-
-  &::placeholder {
-    color: ${({ theme: { color } }) => color.neutral.textWeak};
-  }
 `;
 
 const TextInputError = styled.p`
