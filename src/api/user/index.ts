@@ -1,6 +1,11 @@
 import { Response } from "api/types";
 import { fetcher } from "../fetcher";
 
+type SignInCredentials = {
+  email: string;
+  password: string;
+};
+
 type SignInData = {
   accessToken: string;
   refreshToken: string;
@@ -15,7 +20,7 @@ export const postSignUp = async (body: FormData) => {
   return res.data;
 };
 
-export const postSignIn = async (body: { email: string; password: string }) => {
+export const postSignIn = async (body: SignInCredentials) => {
   const res = await fetcher.post<Response<SignInData>>("/api/auth", body);
   return res.data;
 };

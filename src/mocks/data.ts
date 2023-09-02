@@ -1,4 +1,25 @@
-// Mock Data
+export const successfulSignInData = {
+  code: 200,
+  status: "OK",
+  data: {
+    accessToken: "accessToken",
+    refreshToken: "refreshToken",
+    user: {
+      nickname: "Kakamotobi",
+      profilePicture: "blah",
+    },
+  },
+  message: "로그인을 성공했습니다",
+};
+
+export const unsuccessfulSignInData = {
+  code: 400,
+  status: "OK",
+  data: null,
+  message: "로그인을 실패했습니다",
+};
+
+// TODO: `<Response>`형태로 변경
 export const categoriesData = {
   data: [
     { id: 1, title: "전체보기", imageUrl: "https://i.ibb.co/LSkHKbL/star.png" },
@@ -78,6 +99,7 @@ export const categoriesData = {
   ],
 };
 
+// TODO: `<Response>`형태로 변경
 export const regionListData = {
   data: [
     { id: 1, title: "서울 강남구 개포1동" },
