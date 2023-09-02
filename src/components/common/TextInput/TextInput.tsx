@@ -2,22 +2,15 @@ import { ChangeEvent, InputHTMLAttributes } from "react";
 import { styled } from "styled-components";
 
 type Props = {
-  placeholder: string;
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-export default function TextInput({
-  placeholder,
-  value,
-  onChange,
-  ...props
-}: Props) {
+export default function TextInput({ value, onChange, ...props }: Props) {
   return (
     <StyledTextInput
       {...{
         type: "text",
-        placeholder,
         value,
         onChange,
         ...props,
