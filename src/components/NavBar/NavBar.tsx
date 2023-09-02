@@ -5,61 +5,53 @@ import newsIcon from "@assets/icon/news.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import messageIcon from "@assets/icon/message.svg";
 import userCircleIcon from "@assets/icon/user-circle.svg";
-import { useState } from "react";
 
 export default function NavBar() {
-  const [selectedTab, setSelectedTab] = useState<string>("홈화면");
-
-  const onTabClick = (tabTitle: string) => {
-    setSelectedTab(tabTitle);
-  };
-
   return (
     <StyledNavBar>
       {navBarList.map((navBarTabItem) => (
-        <NavBarTab
-          {...{
-            navBarTabItem,
-            isSelected: selectedTab === navBarTabItem.title,
-            onTabClick,
-          }}
-        />
+        <NavBarTab key={navBarTabItem.path} {...navBarTabItem} />
       ))}
     </StyledNavBar>
   );
 }
 
-const StyledNavBar = styled.div`
-  display: flex;
+const StyledNavBar = styled.nav`
   width: 393px;
   padding: 8px 16px;
+  display: flex;
   justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+  background-color: ${({ theme: { color } }) => color.neutral.background};
+  border-top: ${({ theme: { color } }) =>
+    `0.8px solid ${color.neutral.border}`};
 `;
 
 const navBarList = [
   {
     title: "홈화면",
-    imageUrl: homeIcon,
-    altText: "home",
+    imgSrc: homeIcon,
+    path: "/",
   },
   {
     title: "판매내역",
-    imageUrl: newsIcon,
-    altText: "news",
+    imgSrc: newsIcon,
+    path: "/transactions",
   },
   {
     title: "관심상품",
-    imageUrl: heartIcon,
-    altText: "heart",
+    imgSrc: heartIcon,
+    path: "/wishlist",
   },
   {
     title: "채팅",
-    imageUrl: messageIcon,
-    altText: "message",
+    imgSrc: messageIcon,
+    path: "/chat",
   },
   {
     title: "내 계정",
-    imageUrl: userCircleIcon,
-    altText: "userCircle",
+    imgSrc: userCircleIcon,
+    path: "/profile",
   },
 ];

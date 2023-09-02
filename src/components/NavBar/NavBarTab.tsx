@@ -1,53 +1,49 @@
 import { styled } from "styled-components";
-import Button from "../common/Button/Button";
+import { NavLink } from "react-router-dom";
 
 type Props = {
-  navBarTabItem: {
-    title: string;
-    imageUrl: string;
-    altText: string;
-  };
-  isSelected: boolean;
-  onTabClick: (tabTitle: string) => void;
+  title: string;
+  imgSrc: string;
+  path: string;
 };
 
-export default function NavBarTab({
-  navBarTabItem,
-  isSelected,
-  onTabClick,
-}: Props) {
+export default function NavBarTab({ title, imgSrc, path }: Props) {
   return (
-    <Button
-      style={{
-        width: "48px",
-        height: "48px",
-        padding: "4px 0",
-      }}
-      variant="plain"
-      onClick={() => onTabClick(navBarTabItem.title)}>
-      <TabImage
-        $isSelected={isSelected}
-        src={navBarTabItem.imageUrl}
-        alt={navBarTabItem.altText}
-      />
-      <TabTitle $isSelected={isSelected}>{navBarTabItem.title}</TabTitle>
-    </Button>
+    <StyledNavBarTab to={path}>
+      <TabImage src={imgSrc} alt={title} />
+      <TabTitle>{title}</TabTitle>
+    </StyledNavBarTab>
   );
 }
 
-const TabImage = styled.img<{ $isSelected: boolean }>`
+const StyledNavBarTab = styled(NavLink)`
+  width: 48px;
+  height: 48px;
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &.active > img {
+    filter: ${({ theme: { filter } }) => filter.neutralTextStrong};
+  }
+
+  &.active > span {
+    color: ${({ theme: { color } }) => color.neutral.textStrong};
+  }
+`;
+
+const TabImage = styled.img`
   margin: 0 auto;
   width: 24px;
   height: 24px;
-  filter: ${({ theme: { filter }, $isSelected }) =>
-    $isSelected ? filter.neutralTextStrong : filter.neutralTextWeak};
+  filter: ${({ theme: { filter } }) => filter.neutralTextWeak};
 `;
 
-const TabTitle = styled.span<{ $isSelected: boolean }>`
+const TabTitle = styled.span`
   display: flex;
   margin: 0 auto;
   height: 16px;
-  color: ${({ theme: { color }, $isSelected }) =>
-    $isSelected ? color.neutral.textStrong : color.neutral.textWeak};
   font: ${({ theme: { font } }) => font.availableStrong10};
+  color: ${({ theme: { color } }) => color.neutral.textWeak};
 `;
