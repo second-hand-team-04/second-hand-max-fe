@@ -19,6 +19,20 @@ export const unsuccessfulSignInData = {
   message: "로그인을 실패했습니다",
 };
 
+export const successfulSignUpData = {
+  code: 201,
+  stauts: "OK",
+  data: null,
+  message: "회원가입을 성공했습니다",
+};
+
+export const unSuccessfulSignUpData = {
+  code: 400,
+  stauts: "OK",
+  data: null,
+  message: "회원가입을 실패했습니다",
+};
+
 // TODO: `<Response>`형태로 변경
 export const categoriesData = {
   data: [
