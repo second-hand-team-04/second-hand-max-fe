@@ -23,15 +23,10 @@ export default function NewProductPage() {
   const [isPictureHover, setIsPictureHover] = useState(false);
   const [pictureList, setPictureList] = useState<File[]>([]);
 
-  const { value: titleInputValue, onChange: onTitleInputChange } = useText({
-    initialValue: "",
-  });
-  const { value: contentInputValue, onChange: onContentInputChange } = useText({
-    initialValue: "",
-  });
-  const { value: priceInputValue, onChange: onChangeForPrice } = useText({
-    initialValue: "",
-  });
+  const { value: titleInputValue, onChange: onTitleInputChange } = useText();
+  const { value: contentInputValue, onChange: onContentInputChange } =
+    useText();
+  const { value: priceInputValue, onChange: onChangeForPrice } = useText();
 
   const { data: categories, isLoading } = useCategoriesQuery();
   const { tagCategories, selectedCategory, setSelectedCategory } = useCategory(

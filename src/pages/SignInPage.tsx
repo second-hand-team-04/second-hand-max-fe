@@ -1,7 +1,7 @@
 import AppBar from "@components/AppBar";
 import TextInput from "@components/common/TextInput/TextInput";
 import { styled } from "styled-components";
-import useTextInput from "@hooks/useTextInput";
+import useText from "@hooks/useText";
 import NavBar from "@components/NavBar/NavBar";
 import { validateEmail } from "@utils/textValidators";
 import Button from "@components/common/Button/Button";
@@ -18,8 +18,8 @@ export default function SignInPage() {
     value: email,
     error: emailError,
     onChange: onEmailChange,
-  } = useTextInput({ validators: [validateEmail] });
-  const { value: password, onChange: onPasswordChange } = useTextInput({});
+  } = useText({ validators: [validateEmail] });
+  const { value: password, onChange: onPasswordChange } = useText();
 
   const onSignIn = async (e: FormEvent) => {
     e.preventDefault();

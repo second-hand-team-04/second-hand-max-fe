@@ -51,7 +51,7 @@ export default function SignUpPage() {
   } = useText({ validators: [validatePassword] });
 
   const { value: passwordConfirm, onChange: onPasswordConfirmChange } =
-    useText({});
+    useText();
 
   const onSignUp = async (e: FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { postSignIn } from "api/user";
-import { userKeys } from "./queryKeys";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
@@ -9,14 +8,12 @@ export default function useSignInMutation() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationKey: userKeys.signIn(),
     mutationFn: postSignIn,
     onSuccess: ({ data }) => {
-      const { accessToken, refreshToken, user } = data;
+      const { accessToken, refreshToken } = data;
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/");
     },

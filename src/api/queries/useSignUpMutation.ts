@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { postSignUp } from "api/user";
-import { userKeys } from "./queryKeys";
+import queryKeys from "./queryKeys";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
@@ -9,7 +9,7 @@ export default function useSignUpMutation() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationKey: userKeys.signUp(),
+    mutationKey: queryKeys.user.signUp().queryKey,
     mutationFn: postSignUp,
     onSuccess: () => {
       navigate("/signin");

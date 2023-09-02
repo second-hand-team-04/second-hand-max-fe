@@ -5,7 +5,9 @@ type Props = {
   validators?: Array<(value: string) => void>;
 };
 
-export default function useTextInput({ initialValue = "", validators }: Props) {
+export default function useTextInput(options?: Props) {
+  const { initialValue = "", validators } = options || {};
+
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState("");
 
