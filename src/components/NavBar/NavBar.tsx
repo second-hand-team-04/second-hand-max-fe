@@ -5,12 +5,30 @@ import newsIcon from "@assets/icon/news.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import messageIcon from "@assets/icon/message.svg";
 import userCircleIcon from "@assets/icon/user-circle.svg";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function NavBar() {
+  const location = useLocation();
+  const [activePath, setActivePath] = useState("");
+
+  useEffect(() => {
+    // "내 계정"("/profile") 탭은 SignInPage("/signin")와 MyProfilePage("/profile")가 공유.
+    if (location.pathname === "/signin") {
+      setActivePath("/profile");
+    } else {
+      setActivePath(location.pathname);
+    }
+  }, [location.pathname]);
+
   return (
     <StyledNavBar>
       {navBarList.map((navBarTabItem) => (
-        <NavBarTab key={navBarTabItem.path} {...navBarTabItem} />
+        <NavBarTab
+          key={navBarTabItem.path}
+          {...navBarTabItem}
+          isActive={activePath === navBarTabItem.path}
+        />
       ))}
     </StyledNavBar>
   );

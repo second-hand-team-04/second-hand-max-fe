@@ -5,11 +5,12 @@ type Props = {
   title: string;
   imgSrc: string;
   path: string;
+  isActive: boolean;
 };
 
-export default function NavBarTab({ title, imgSrc, path }: Props) {
+export default function NavBarTab({ title, imgSrc, path, isActive }: Props) {
   return (
-    <StyledNavBarTab to={path}>
+    <StyledNavBarTab to={path} className={isActive ? "active" : ""}>
       <TabImage src={imgSrc} alt={title} />
       <TabTitle>{title}</TabTitle>
     </StyledNavBarTab>
