@@ -9,7 +9,7 @@ export default function useSignInMutation() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationKey: userKeys.user,
+    mutationKey: userKeys.signIn(),
     mutationFn: postSignIn,
     onSuccess: ({ data }) => {
       const { accessToken, refreshToken, user } = data;
