@@ -86,6 +86,11 @@ export const ContainedButton = styled(ButtonBase)<ContainedButtonProps>`
     $borderRadius ? $borderRadius : "8px"};
   color: ${({ theme: { color }, $color }) =>
     $color ? $color : color.accent.text};
+
+  &:disabled {
+    background-color: ${({ theme: { color } }) =>
+      color.neutral.backgroundDisabled};
+  }
 `;
 
 export const OutlinedButton = styled(ButtonBase)<OutlinedButtonProps>`
