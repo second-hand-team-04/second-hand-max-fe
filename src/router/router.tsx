@@ -8,6 +8,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import SignUpPage from "@pages/SignUpPage";
 import CategoryPage from "@pages/CategoryPage";
 import NewProductPage from "@pages/NewProductPage";
+import SignInPage from "@pages/SignInPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,12 +19,12 @@ const router = createBrowserRouter(
 
       <Route element={<PublicOnlyRoute />}>
         <Route path="signup" element={<SignUpPage />} />
-        {/* <Route path="signin" element={<SignInPage />} /> */}
+        <Route path="signin" element={<SignInPage />} />
         {/* <Route path="product/:id" element={<ProductPage />} /> */}
-        <Route path="product/new" element={<NewProductPage />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>
+        <Route path="product/new" element={<NewProductPage />} />
         {/* <Route path="wishlist" element={<WishlistPage />} /> */}
         {/* <Route path="transactions" element={<MyTransactionsPage />} /> */}
         {/* <Route path="wishlist" element={<MyWishlistPage />} /> */}
