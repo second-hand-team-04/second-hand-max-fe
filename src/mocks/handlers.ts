@@ -12,7 +12,7 @@ export default [
   }),
 
   rest.post("/api/auth", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(unsuccessfulSignInData));
+    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
     return res(ctx.status(200), ctx.json(successfulSignInData));
   }),
 

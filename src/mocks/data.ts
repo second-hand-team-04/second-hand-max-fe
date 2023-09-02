@@ -6,14 +6,14 @@ export const successfulSignInData = {
     refreshToken: "refreshToken",
     user: {
       nickname: "Kakamotobi",
-      profilePicture: "blah",
+      profileImageUrl: "blah",
     },
   },
   message: "로그인을 성공했습니다",
 };
 
 export const unsuccessfulSignInData = {
-  code: 400,
+  code: 401,
   status: "OK",
   data: null,
   message: "로그인을 실패했습니다",

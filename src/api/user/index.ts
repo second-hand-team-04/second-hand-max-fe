@@ -11,7 +11,7 @@ type SignInData = {
   refreshToken: string;
   user: {
     nickname: string;
-    profilePicture: string;
+    profileImageUrl: string;
   };
 };
 
@@ -21,6 +21,6 @@ export const postSignUp = async (body: FormData) => {
 };
 
 export const postSignIn = async (body: SignInCredentials) => {
-  const res = await fetcher.post<Response<SignInData>>("/api/auth", body);
+  const res = await fetcher.post<Response<SignInData>>("/auth", body);
   return res.data;
 };
