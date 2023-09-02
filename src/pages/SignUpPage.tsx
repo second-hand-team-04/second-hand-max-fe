@@ -10,12 +10,14 @@ import {
   validatePassword,
 } from "@utils/textValidators";
 import { FormEvent, useRef } from "react";
-import { postSignUp } from "api/user";
 import useImageInput from "@hooks/useImageInput";
 import TextInput from "@components/common/TextInput/TextInput";
+import useSignUpMutation from "api/queries/useSignUpMutation";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+
+  const { mutate: signUpMutate } = useSignUpMutation();
 
   const formRef = useRef(null);
 
@@ -53,16 +55,8 @@ export default function SignUpPage() {
 
   const onSignUp = async (e: FormEvent) => {
     e.preventDefault();
-
     const formData = new FormData(formRef.current!);
-
-    const res = await postSignUp(formData);
-
-    if (res.status === 201) {
-      navigate("/signin");
-    }
-
-    // TODO: 회원가입 실패시 400
+    signUpMutate(formData);
   };
 
   const isPasswordMatch = password === passwordConfirm;
