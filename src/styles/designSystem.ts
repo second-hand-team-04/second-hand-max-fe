@@ -57,6 +57,7 @@ export default {
     },
     system: {
       warning: colors.red,
+      success: colors.mint,
       background: colors.white,
       backgroundWeak: colors.grey200,
     },
