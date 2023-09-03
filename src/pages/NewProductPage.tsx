@@ -22,13 +22,11 @@ export default function NewProductPage() {
   const [contentInputValue, setContentInputValue] = useState("");
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
-  const [pictureList, setPictureList] = useState<
-    { id: number; imageUrl: string }[]
-  >([]);
-  console.log(pictureList);
-  const { data: categories } = useCategoriesQuery();
+  const [pictureList, setPictureList] = useState<File[]>([]);
+
+  const { data: categories, isLoading } = useCategoriesQuery();
   const { tagCategories, selectedCategory, setSelectedCategory } = useCategory(
-    categories?.data ?? []
+    categories ?? []
   );
   const [selectedTag, setSelectedTag] = useState(selectedCategory);
 
@@ -40,22 +38,14 @@ export default function NewProductPage() {
     error: imageFileError,
     onChange: onProductPictureChange,
   } = useImageInput({ sizeLimit: 2000000 });
+
   useEffect(() => {
     setSelectedTag(selectedCategory);
   }, [selectedCategory]);
 
   useEffect(() => {
     if (productPictureImage) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newPicture = {
-          id: Date.now(),
-          imageUrl: reader.result as string,
-          file: productPictureImage,
-        };
-        setPictureList((prevList) => [...prevList, newPicture]);
-      };
-      reader.readAsDataURL(productPictureImage);
+      setPictureList((prevList) => [...prevList, productPictureImage]);
     }
   }, [productPictureImage]);
 
@@ -63,7 +53,6 @@ export default function NewProductPage() {
     setIsPictureHover(true);
   };
 
-  //TODO 이름 어떻게하면 좋을지 고민
   const onDragSlideEnd = () => {
     onDragEnd();
     setIsPictureHover(false);
@@ -112,7 +101,7 @@ export default function NewProductPage() {
 
   const onDeletePicture = (pictureId: number) => {
     setPictureList((prevList) =>
-      prevList.filter((picture) => picture.id !== pictureId)
+      prevList.filter((picture) => picture.lastModified !== pictureId)
     );
   };
 
@@ -134,11 +123,13 @@ export default function NewProductPage() {
     pictureList.length > 0 &&
     pictureList.length <= 10;
 
+  if (isLoading) return <div>로딩중</div>;
+
   return (
     <StyledNewProductPage>
       <CategoryModal
         isOpen={isCategoryOpen}
-        categoryList={categories?.data ?? []}
+        categoryList={categories ?? []}
         currentSelectedCategory={selectedCategory}
         onCategoryModalClose={onCategoryClose}
         onCategoryItemSelect={onCategoryItemSelect}
@@ -185,23 +176,26 @@ export default function NewProductPage() {
               <PictureCount>{pictureList.length}/10</PictureCount>
             </AddButton>
             {pictureList &&
-              pictureList.map((picture: { id: number; imageUrl: string }) => (
-                <PictureWrapper key={picture.id}>
-                  <Picture src={picture.imageUrl} alt="picture.id" />
-                  <Button
-                    onClick={() => onDeletePicture(picture.id)}
-                    variant="plain"
-                    style={{
-                      zIndex: 10,
-                      padding: 0,
-                      right: -8,
-                      top: -8,
-                      position: "absolute",
-                    }}>
-                    <img src={circleXIcon} alt="delete" />
-                  </Button>
-                </PictureWrapper>
-              ))}
+              pictureList.map((picture: File) => {
+                const imageUrl = URL.createObjectURL(picture);
+                return (
+                  <PictureWrapper key={picture.lastModified}>
+                    <Picture src={imageUrl} alt={picture.name} />
+                    <Button
+                      onClick={() => onDeletePicture(picture.lastModified)}
+                      variant="plain"
+                      style={{
+                        zIndex: 10,
+                        padding: 0,
+                        right: -8,
+                        top: -8,
+                        position: "absolute",
+                      }}>
+                      <img src={circleXIcon} alt="delete" />
+                    </Button>
+                  </PictureWrapper>
+                );
+              })}
           </PictureArea>
           <InputArea>
             <TitleInput

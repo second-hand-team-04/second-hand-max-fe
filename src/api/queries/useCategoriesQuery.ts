@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "api/category";
-import { categoryKeys } from "./queryKeys";
+import { queryKeys } from "./queryKeys";
 
 export default function useCategoriesQuery() {
   return useQuery({
-    queryKey: [categoryKeys.categories],
+    // queryKey: [categoryKeys.categories],
+    queryKey: [queryKeys.categories],
     queryFn: getCategories,
     staleTime: Infinity,
+    select: (res) => res.data,
   });
 }

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { regionKeys } from "./queryKeys";
+import { queryKeys } from "./queryKeys";
 import { getRegionList } from "api/region";
 
 export default function useRegionListQuery() {
   return useQuery({
-    queryKey: [regionKeys.regionList],
+    queryKey: [queryKeys.regionList],
     queryFn: getRegionList,
     staleTime: Infinity,
   });

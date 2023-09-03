@@ -40,17 +40,16 @@ export default function CategoryModal({
       </ModalHeader>
       <ModalBody>
         <ModalList>
-          {categoryList &&
-            categoryList.slice(1).map((item) => (
-              <CategoryItem
-                {...{
-                  key: item.id,
-                  item,
-                  onClick: onCategoryItemClick,
-                  isSelected: item.title === currentSelectedCategory,
-                }}
-              />
-            ))}
+          {categoryList.slice(1).map((item) => (
+            <CategoryItem
+              {...{
+                key: item.id,
+                item,
+                onClick: onCategoryItemClick,
+                isSelected: item.title === currentSelectedCategory,
+              }}
+            />
+          ))}
         </ModalList>
       </ModalBody>
     </Modal>
