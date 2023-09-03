@@ -2,7 +2,7 @@ import { decToHexOpacity } from "@utils/style";
 
 const colors = {
   white: "#FFFFFF",
-  grey50: "FAFAFA",
+  grey50: "#FAFAFA",
   grey100: `#F9F9F9${decToHexOpacity(0.8)}`,
   grey200: `#F5F5F5${decToHexOpacity(0.7)}`,
   grey300: `#B3B3B3${decToHexOpacity(0.12)}`,
@@ -65,9 +65,10 @@ export default {
       "brightness(0) saturate(100%) invert(23%) sepia(10%) saturate(354%) hue-rotate(202deg) brightness(98%) contrast(99%) opacity(0.6)",
     accentText:
       "invert(100%) sepia(97%) saturate(15%) hue-rotate(110deg) brightness(103%) contrast(102%)",
+    neutralTextStrong: "brightness(0%)",
   },
   backdropFilter: {
-    blur: "blur(8px)",
+    blur: "blur(4px)",
   },
   font,
 };

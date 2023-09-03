@@ -1,16 +1,29 @@
-import { ThemeProvider } from "styled-components";
-import "./App.css";
+import { ThemeProvider, styled } from "styled-components";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
-import { Tag } from "@components/common/Tag/Tag";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { RouterProvider } from "react-router-dom";
+import router from "router/router";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
-      <Tag title="Tag" isSelected={true} />
+      <QueryClientProvider client={queryClient}>
+        <StyledApp>
+          <RouterProvider router={router} />
+        </StyledApp>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }
 
 export default App;
+
+const StyledApp = styled.div`
+  width: 393px;
+  height: 852px;
+`;

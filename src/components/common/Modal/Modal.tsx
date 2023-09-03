@@ -1,21 +1,20 @@
 import { styled } from "styled-components";
+import React from "react";
+import ReactDOM from "react-dom";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
 };
-export default function Modal({
-  isOpen,
-  onClose, // Modal 밖(backdrop)을 클릭스시 닫기 위함.
-  children,
-}: Props) {
+export default function Modal({ isOpen, onClose, children }: Props) {
   if (!isOpen) return null;
 
-  return (
-    <StyledModal onClick={onClose}>
-      <div>{children}</div>
-    </StyledModal>
+  const modalRoot = document.getElementById("modal-root");
+
+  return ReactDOM.createPortal(
+    <StyledModal onClick={onClose}>{children}</StyledModal>,
+    modalRoot!
   );
 }
 
@@ -30,4 +29,10 @@ const StyledModal = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: ${({ theme: { color } }) => color.neutral.background};
   overflow: hidden;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
 `;

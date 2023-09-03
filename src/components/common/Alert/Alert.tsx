@@ -1,5 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
+import ReactDOM from "react-dom";
 
 type Props = {
   isOpen: boolean;
@@ -9,7 +10,12 @@ type Props = {
 export default function Alert({ isOpen, children }: Props) {
   if (!isOpen) return null;
 
-  return <StyledAlert>{children}</StyledAlert>;
+  const alertRoot = document.getElementById("alert-root");
+
+  return ReactDOM.createPortal(
+    <StyledAlert>{children}</StyledAlert>,
+    alertRoot!
+  );
 }
 
 const StyledAlert = styled.div`
