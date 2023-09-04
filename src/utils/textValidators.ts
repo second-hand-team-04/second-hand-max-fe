@@ -18,7 +18,7 @@ export function validateEmail(email: string) {
 
 export function validatePassword(password: string) {
   const passwordRegex = new RegExp(
-    /^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\\d!@#$%^&*()-_+=]{8,16}$/
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,16}$/
   );
   if (!passwordRegex.test(password)) {
     throw Error("영문, 숫자, 특수문자 최소 1개 (8~16자)");
