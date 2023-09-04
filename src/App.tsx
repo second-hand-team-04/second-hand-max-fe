@@ -1,12 +1,28 @@
 import { ThemeProvider, styled } from "styled-components";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import CustomToaster from "@components/CustomToaster";
+import { toast } from "react-hot-toast";
+import { AxiosError } from "axios";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    },
+  }),
+});
 
 function App() {
   return (
