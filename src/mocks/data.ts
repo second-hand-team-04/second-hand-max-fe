@@ -1,6 +1,7 @@
 export const successfulSignInData = {
   code: 200,
   status: "OK",
+  message: "로그인을 성공했습니다",
   data: {
     accessToken: "accessToken",
     refreshToken: "refreshToken",
@@ -9,51 +10,67 @@ export const successfulSignInData = {
       profileImageUrl: "blah",
     },
   },
-  message: "로그인을 성공했습니다",
 };
 
 export const unsuccessfulSignInData = {
   code: 401,
   status: "UNAUTHENTICATED",
-  data: null,
   message: "이메일 또는 비밀번호가 일치하지 않습니다",
+  data: null,
 };
 
 export const successfulSignUpData = {
   code: 201,
-  status: "BAD REQUEST",
-  data: null,
+  status: "Bad Request",
   message: "회원가입을 성공했습니다",
+  data: null,
 };
 
 export const unSuccessfulSignUpData = {
   code: 400,
-  status: "BAD REQUEST",
-  data: null,
+  status: "Bad Request",
   message: "회원가입을 실패했습니다",
+  data: null,
+};
+
+export const successfulRefreshAccessToken = {
+  code: 200,
+  status: "OK",
+  message: "Access Token 발급을 성공했습니다",
+  data: {
+    accessToken: "accessToken",
+  },
+};
+
+export const unSuccessfulRefreshAccessToken = {
+  code: 401,
+  status: "Bad Request",
+  message: "Access Token 발급을 실패했습니다",
+  data: null,
 };
 
 export const successfulUserInfoData = {
   code: 200,
   status: "OK",
+  message: "사용자 정보 조회를 성공하였습니다",
   data: {
     nickname: "Kakamotobi",
     profileImageUrl:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/800px-African_Bush_Elephant.jpg",
   },
-  message: "사용자 정보 조회를 성공하였습니다",
 };
 
 export const unsuccessfulUserInfoData = {
   code: 400,
-  status: "BAD REQUEST",
-  data: null,
+  status: "Bad Request",
   message: "사용자 정보 조회를 실패했습니다",
+  data: null,
 };
 
 export const categoriesData = {
   code: 200,
   status: "OK",
+  message: "카테고리 목록 조회를 성공하였습니다",
   data: [
     { id: 1, title: "전체보기", imageUrl: "https://i.ibb.co/LSkHKbL/star.png" },
     {
@@ -130,12 +147,12 @@ export const categoriesData = {
     },
     { id: 18, title: "생활", imageUrl: "https://i.ibb.co/T0mnp8m/kitchen.png" },
   ],
-  message: "카테고리 목록 조회를 성공하였습니다",
 };
 
 export const regionListData = {
   code: 200,
   status: "OK",
+  message: "동네 목록 조회를 성공하였습니다",
   data: [
     { id: 1, title: "서울 강남구 개포1동" },
     { id: 2, title: "서울 강남구 개포2동" },
@@ -153,5 +170,4 @@ export const regionListData = {
     { id: 14, title: "서울 강남구 개포2동" },
     { id: 15, title: "서울 강남구 개포3동" },
   ],
-  message: "동네 목록 조회를 성공하였습니다",
 };

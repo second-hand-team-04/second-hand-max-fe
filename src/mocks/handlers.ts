@@ -8,6 +8,8 @@ import {
   unsuccessfulSignInData,
   successfulUserInfoData,
   unsuccessfulUserInfoData,
+  successfulRefreshAccessToken,
+  unSuccessfulRefreshAccessToken,
 } from "./data";
 
 export default [
@@ -19,6 +21,11 @@ export default [
   rest.post("/api/auth", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(successfulSignInData));
     return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+  }),
+
+  rest.get("/api/auth/refresh", async (_, res, ctx) => {
+    return res(ctx.status(401), ctx.json(unSuccessfulRefreshAccessToken));
+    return res(ctx.status(200), ctx.json(successfulRefreshAccessToken));
   }),
 
   rest.get("/api/users/info", async (_, res, ctx) => {
