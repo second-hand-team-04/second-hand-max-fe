@@ -2,6 +2,7 @@ import AppBar from "@components/AppBar";
 import Button from "@components/common/Button/Button";
 import {
   SelectInput,
+  SelectItem,
   // SelectItem,
   useSelectInput,
 } from "@components/common/SelectInput";
@@ -9,20 +10,25 @@ import layoutGridIcon from "@assets/icon/layout-grid.svg";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 import NavBar from "@components/NavBar/NavBar";
-import Item from "@components/Home/Item";
 import useItemQuery from "api/queries/useItemQuery";
+
+// import { RegionType } from "api/region";
+// import { Item } from "@components/common/SelectInput/selectInputProps";
+import ProductItem from "@components/Home/ProductItem";
+import { RegionType } from "api/region";
+import { useUserRegionListQuery } from "api/queries/useRegionsQuery";
 
 export default function HomePage() {
   // TODO: user의 동네로 초기화
   const [selectedRegion, onChangeSelectedRegion] = useSelectInput({
     id: 1,
-    value: "역삼1동",
+    title: "역삼1동",
   });
   // TODO: 동네 및 카테고리에 따른 상품 목록 fetch
+  const { data: productItemList, isLoading: isLoadingItem } = useItemQuery();
+  const { data: regionList } = useUserRegionListQuery();
 
-  const { data: ItemListData, isLoading } = useItemQuery();
-
-  if (isLoading) return <div>로딩중...</div>;
+  if (isLoadingItem) return <div>로딩중...</div>;
 
   return (
     <StyledHomePage>
@@ -30,9 +36,15 @@ export default function HomePage() {
         <div style={{ flexGrow: 1 }}>
           <SelectInput
             name="선택된 동네"
-            value={selectedRegion.value}
+            value={selectedRegion.title}
             onChange={onChangeSelectedRegion}>
             {
+              regionList &&
+                regionList.map((region: RegionType) => (
+                  <SelectItem key={region.id} item={region}>
+                    {region.title}
+                  </SelectItem>
+                ))
               // TODO: SelectItem
             }
           </SelectInput>
@@ -43,13 +55,14 @@ export default function HomePage() {
           </Button>
         </Link>
       </AppBar>
-      <ItemArea>
-        {/* <FakeAppBar /> */}
-        <ItemList>
-          {ItemListData &&
-            ItemListData.map((item) => <Item key={item.id} item={item} />)}
-        </ItemList>
-      </ItemArea>
+      <ProductItemArea>
+        <ProductItemList>
+          {productItemList &&
+            productItemList.map((product) => (
+              <ProductItem key={product.id} item={product} />
+            ))}
+        </ProductItemList>
+      </ProductItemArea>
       <NavBar />
     </StyledHomePage>
   );
@@ -65,7 +78,7 @@ const StyledHomePage = styled.div`
   justify-content: space-between;
 `;
 
-const ItemArea = styled.div`
+const ProductItemArea = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -79,7 +92,7 @@ const ItemArea = styled.div`
   }
 `;
 
-const ItemList = styled.ul`
+const ProductItemList = styled.ul`
   width: 100%;
   height: 100%;
   display: flex;

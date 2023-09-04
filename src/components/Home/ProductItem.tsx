@@ -7,7 +7,7 @@ type Props = {
   item: ItemType;
 };
 
-export default function Item({ item }: Props) {
+export default function ProductItem({ item }: Props) {
   return (
     <StyledItem>
       <ItemImage

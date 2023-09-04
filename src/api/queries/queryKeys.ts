@@ -15,6 +15,9 @@ export const userKeys = createQueryKeys("user", {
     queryKey: ["userInfo"],
     queryFn: getUserInfo,
   }),
+  regions: () => ({
+    queryKey: ["userRegions"],
+  }),
 });
 
 export const categoryKeys = createQueryKeys("categories");

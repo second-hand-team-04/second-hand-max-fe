@@ -21,14 +21,14 @@ export const unsuccessfulSignInData = {
 
 export const successfulSignUpData = {
   code: 201,
-  stauts: "OK",
+  status: "OK",
   data: null,
   message: "회원가입을 성공했습니다",
 };
 
 export const unSuccessfulSignUpData = {
   code: 400,
-  stauts: "OK",
+  status: "OK",
   data: null,
   message: "회원가입을 실패했습니다",
 };
@@ -224,5 +224,12 @@ export const ItemListData = {
       numChat: 0,
       numLikes: 1,
     },
+  ],
+};
+
+export const MyRegionListData = {
+  data: [
+    { id: 1, title: "역삼1동" },
+    { id: 2, title: "역삼2동" },
   ],
 };
