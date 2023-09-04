@@ -35,6 +35,7 @@ export default function NavBar() {
 }
 
 const StyledNavBar = styled.nav`
+  position: absolute;
   width: 393px;
   padding: 8px 16px;
   display: flex;

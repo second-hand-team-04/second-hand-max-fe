@@ -1,5 +1,6 @@
 import { rest } from "msw";
 import {
+  ItemListData,
   categoriesData,
   regionListData,
   successfulSignInData,
@@ -25,5 +26,9 @@ export default [
 
   rest.get("/api/regions", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(regionListData));
+  }),
+
+  rest.get("/api/items?region=1&category=1", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(ItemListData));
   }),
 ];
