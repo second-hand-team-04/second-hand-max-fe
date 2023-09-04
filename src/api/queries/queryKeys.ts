@@ -1,11 +1,14 @@
-export const userKeys = {
-  user: ["user"] as const,
-};
+import {
+  createQueryKeys,
+  mergeQueryKeys,
+} from "@lukemorales/query-key-factory";
 
-export const categoryKeys = {
-  categories: ["categories"] as const,
-};
+const userKeys = createQueryKeys("user");
 
-export const regionKeys = {
-  regionList: ["regionList"] as const,
-};
+const categoryKeys = createQueryKeys("categories");
+
+const regionKeys = createQueryKeys("regionList");
+
+const queryKeys = mergeQueryKeys(categoryKeys, regionKeys, userKeys);
+
+export default queryKeys;

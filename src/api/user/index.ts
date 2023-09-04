@@ -1,3 +1,4 @@
+import { Response } from "api/types";
 import { fetcher } from "../fetcher";
 
 export type User = {
@@ -6,5 +7,5 @@ export type User = {
 };
 
 export const postSignUp = async (body: FormData) => {
-  return await fetcher.post<null>("/users/signup", body);
+  return await fetcher.post<Response<null>>("/users/signup", body);
 };
