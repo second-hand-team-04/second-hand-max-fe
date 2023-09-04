@@ -1,5 +1,7 @@
 export function validateNickname(nickname: string) {
-  const nicknameRegex = new RegExp(/^(?=.*[a-zA-Z가-힣])[a-zA-Z가-힣0-9]*$/);
+  const nicknameRegex = new RegExp(
+    /^(?=.*[a-zA-Z가-힣])[a-zA-Z가-힣0-9]{2,10}$/
+  );
   if (!nicknameRegex.test(nickname)) {
     throw Error("영문/한글/숫자 (2~10자)");
   }
