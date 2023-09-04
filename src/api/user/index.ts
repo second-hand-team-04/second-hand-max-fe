@@ -9,10 +9,11 @@ export type SignInCredentials = {
 type SignInData = {
   accessToken: string;
   refreshToken: string;
-  user: {
-    nickname: string;
-    profileImageUrl: string;
-  };
+};
+
+type User = {
+  nickname: string;
+  profileImgUrl: string;
 };
 
 type User = {
