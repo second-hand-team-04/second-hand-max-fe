@@ -3,7 +3,7 @@ import Button from "@components/common/Button/Button";
 import cameraIcon from "@assets/icon/camera.svg";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
-import useTextInput from "@hooks/useTextInput";
+import useText from "@hooks/useText";
 import {
   validateEmail,
   validateNickname,
@@ -29,7 +29,7 @@ export default function SignUpPage() {
     error: nicknameError,
     isError: isNicknameError,
     onChange: onNicknameChange,
-  } = useTextInput({
+  } = useText({
     validators: [validateNickname],
   });
 
@@ -38,17 +38,17 @@ export default function SignUpPage() {
     error: emailError,
     isError: isEmailError,
     onChange: onEmailChange,
-  } = useTextInput({ validators: [validateEmail] });
+  } = useText({ validators: [validateEmail] });
 
   const {
     value: password,
     error: passwordError,
     isError: isPasswordError,
     onChange: onPasswordChange,
-  } = useTextInput({ validators: [validatePassword] });
+  } = useText({ validators: [validatePassword] });
 
   const { value: passwordConfirm, onChange: onPasswordConfirmChange } =
-    useTextInput({});
+    useText({});
 
   const onSignUp = async (e: FormEvent) => {
     e.preventDefault();

@@ -9,7 +9,7 @@ export default function useTextInput({ initialValue = "", validators }: Props) {
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState("");
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newVal = e.target.value.trim();
 
     if (!validators) {

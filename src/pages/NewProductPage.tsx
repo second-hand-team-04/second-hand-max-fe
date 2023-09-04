@@ -13,16 +13,25 @@ import useCategory from "@utils/useCategory";
 import { useNavigate } from "react-router-dom";
 import useImageInput from "@hooks/useImageInput";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import useText from "@hooks/useText";
+import { formatAsPrice } from "@utils/priceFormatter";
 
 export default function NewProductPage() {
   const navigate = useNavigate();
 
-  const [titleInputValue, setTitleInputValue] = useState("");
-  const [priceInputValue, setPriceInputValue] = useState("");
-  const [contentInputValue, setContentInputValue] = useState("");
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
   const [pictureList, setPictureList] = useState<File[]>([]);
+
+  const { value: titleInputValue, onChange: onTitleInputChange } = useText({
+    initialValue: "",
+  });
+  const { value: contentInputValue, onChange: onContentInputChange } = useText({
+    initialValue: "",
+  });
+  const { value: priceInputValue, onChange: onChangeForPrice } = useText({
+    initialValue: "",
+  });
 
   const { data: categories, isLoading } = useCategoriesQuery();
   const { tagCategories, selectedCategory, setSelectedCategory } = useCategory(
@@ -32,7 +41,6 @@ export default function NewProductPage() {
 
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
     useDraggable();
-
   const {
     imageFile: productPictureImage,
     error: imageFileError,
@@ -74,21 +82,10 @@ export default function NewProductPage() {
     setSelectedTag(tagTitle);
   };
 
-  const onTitleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleInputValue(e.target.value);
-  };
-
   const onPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+    if (e.target.value.length > 12) return;
 
-    const formattedValue =
-      onlyNumbers === "" ? "" : parseInt(onlyNumbers).toLocaleString("en-US");
-
-    setPriceInputValue(formattedValue);
-  };
-
-  const onContentInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContentInputValue(e.target.value);
+    onChangeForPrice(e);
   };
 
   const onAddPicture = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -230,7 +227,7 @@ export default function NewProductPage() {
           <InputArea>
             <WonSymbol>₩</WonSymbol>
             <PriceInput
-              value={priceInputValue || ""}
+              value={formatAsPrice(priceInputValue) || ""}
               onChange={onPriceInputChange}
               type="text"
               placeholder="가격(선택사항)"
