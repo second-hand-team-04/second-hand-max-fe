@@ -16,6 +16,10 @@ type User = {
   profileImageUrl: string;
 };
 
+type AccessTokenData = {
+  accessToken: string;
+};
+
 export const postSignUp = async (body: FormData) => {
   const res = await fetcher.post<Response<null>>("/users/signup", body);
   return res.data;
@@ -28,5 +32,14 @@ export const postSignIn = async (body: SignInCredentials) => {
 
 export const getUserInfo = async () => {
   const res = await fetcher.get<Response<User>>("/users/info");
+  return res.data;
+};
+
+export const refreshAccessToken = async () => {
+  const res = await fetcher.get<Response<AccessTokenData>>("/auth/refresh", {
+    headers: {
+      Authorization: localStorage.getItem("refreshToken"),
+    },
+  });
   return res.data;
 };
