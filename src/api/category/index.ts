@@ -7,7 +7,7 @@ export type CategoryType = {
   imageUrl: string;
 };
 
-export const getCategories = async (): Promise<Response<CategoryType[]>> => {
-  const res = await fetcher.get("/categories");
+export const getCategories = async () => {
+  const res = await fetcher.get<Response<CategoryType[]>>("/categories");
   return res.data;
 };

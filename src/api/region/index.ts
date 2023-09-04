@@ -1,5 +1,4 @@
 import { fetcher } from "api/fetcher";
-
 import { Response } from "api/types";
 
 export type RegionType = {
@@ -7,7 +6,7 @@ export type RegionType = {
   title: string;
 };
 
-export const getRegionList = async (): Promise<Response<RegionType[]>> => {
-  const res = await fetcher.get("/regions");
+export const getRegionList = async () => {
+  const res = await fetcher.get<Response<RegionType[]>>("/regions");
   return res.data;
 };
