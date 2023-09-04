@@ -13,7 +13,7 @@ import useCategory from "@utils/useCategory";
 import { useNavigate } from "react-router-dom";
 import useImageInput from "@hooks/useImageInput";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
-import useTextInput from "@hooks/useTextInput";
+import useText from "@hooks/useText";
 import { formatAsPrice } from "@utils/priceFormatter";
 
 export default function NewProductPage() {
@@ -23,12 +23,13 @@ export default function NewProductPage() {
   const [isPictureHover, setIsPictureHover] = useState(false);
   const [pictureList, setPictureList] = useState<File[]>([]);
 
-  const { value: titleInputValue, onChange: onTitleInputChange } = useTextInput(
-    { initialValue: "" }
-  );
-  const { value: contentInputValue, onChange: onContentInputChange } =
-    useTextInput({ initialValue: "" });
-  const { value: priceInputValue, onChange: onChangeForPrice } = useTextInput({
+  const { value: titleInputValue, onChange: onTitleInputChange } = useText({
+    initialValue: "",
+  });
+  const { value: contentInputValue, onChange: onContentInputChange } = useText({
+    initialValue: "",
+  });
+  const { value: priceInputValue, onChange: onChangeForPrice } = useText({
     initialValue: "",
   });
 
