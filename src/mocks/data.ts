@@ -14,27 +14,46 @@ export const successfulSignInData = {
 
 export const unsuccessfulSignInData = {
   code: 401,
-  status: "OK",
+  status: "UNAUTHENTICATED",
   data: null,
   message: "로그인을 실패했습니다",
 };
 
 export const successfulSignUpData = {
   code: 201,
-  stauts: "OK",
+  status: "BAD REQUEST",
   data: null,
   message: "회원가입을 성공했습니다",
 };
 
 export const unSuccessfulSignUpData = {
   code: 400,
-  stauts: "OK",
+  status: "BAD REQUEST",
   data: null,
   message: "회원가입을 실패했습니다",
 };
 
-// TODO: `<Response>`형태로 변경
+export const successfulUserInfoData = {
+  code: 200,
+  status: "OK",
+  data: {
+    nickname: "Kakamotobi",
+    profileImageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/800px-African_Bush_Elephant.jpg",
+  },
+  message: "이메일 또는 비밀번호가 일치하지 않습니다",
+};
+
+export const unsuccessfulUserInfoData = {
+  code: 400,
+  status: "BAD REQUEST",
+  data: null,
+  message: "이메일 또는 비밀번호가 일치하지 않습니다",
+};
+
 export const categoriesData = {
+  code: 200,
+  status: "OK",
   data: [
     { id: 1, title: "전체보기", imageUrl: "https://i.ibb.co/LSkHKbL/star.png" },
     {
@@ -111,10 +130,12 @@ export const categoriesData = {
     },
     { id: 18, title: "생활", imageUrl: "https://i.ibb.co/T0mnp8m/kitchen.png" },
   ],
+  message: "카테고리 목록 조회를 성공하였습니다",
 };
 
-// TODO: `<Response>`형태로 변경
 export const regionListData = {
+  code: 200,
+  status: "OK",
   data: [
     { id: 1, title: "서울 강남구 개포1동" },
     { id: 2, title: "서울 강남구 개포2동" },
@@ -132,4 +153,5 @@ export const regionListData = {
     { id: 14, title: "서울 강남구 개포2동" },
     { id: 15, title: "서울 강남구 개포3동" },
   ],
+  message: "동네 목록 조회를 성공하였습니다",
 };

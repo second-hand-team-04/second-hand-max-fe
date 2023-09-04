@@ -6,6 +6,8 @@ import {
   successfulSignUpData,
   unSuccessfulSignUpData,
   unsuccessfulSignInData,
+  successfulUserInfoData,
+  unsuccessfulUserInfoData,
 } from "./data";
 
 export default [
@@ -15,8 +17,13 @@ export default [
   }),
 
   rest.post("/api/auth", async (_, res, ctx) => {
-    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
     return res(ctx.status(200), ctx.json(successfulSignInData));
+    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+  }),
+
+  rest.get("/api/users/info", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulUserInfoData));
+    return res(ctx.status(400), ctx.json(unsuccessfulUserInfoData));
   }),
 
   rest.get("/api/categories", async (_, res, ctx) => {
