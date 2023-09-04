@@ -8,6 +8,7 @@ export default function CustomToaster() {
     <Toaster
       position="top-center"
       containerStyle={{
+        position: "absolute",
         top: "150px",
         font: font.displayDefault16,
         color: color.neutral.text,
