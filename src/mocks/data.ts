@@ -16,7 +16,7 @@ export const unsuccessfulSignInData = {
   code: 401,
   status: "UNAUTHENTICATED",
   data: null,
-  message: "로그인을 실패했습니다",
+  message: "이메일 또는 비밀번호가 일치하지 않습니다",
 };
 
 export const successfulSignUpData = {
@@ -41,14 +41,14 @@ export const successfulUserInfoData = {
     profileImageUrl:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/800px-African_Bush_Elephant.jpg",
   },
-  message: "이메일 또는 비밀번호가 일치하지 않습니다",
+  message: "사용자 정보 조회를 성공하였습니다",
 };
 
 export const unsuccessfulUserInfoData = {
   code: 400,
   status: "BAD REQUEST",
   data: null,
-  message: "이메일 또는 비밀번호가 일치하지 않습니다",
+  message: "사용자 정보 조회를 실패했습니다",
 };
 
 export const categoriesData = {
