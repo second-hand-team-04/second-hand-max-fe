@@ -10,13 +10,7 @@ export const fetcher = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// TODO: auth 전략 결정 후 수정 필요
-export const fetcherProtected = axios.create({
-  baseURL: `${BASE_API_URL}/api`,
-  headers: { "Content-Type": "application/json" },
-});
-
-fetcherProtected.interceptors.request.use(
+fetcher.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {

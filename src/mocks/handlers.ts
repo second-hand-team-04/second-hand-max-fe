@@ -1,19 +1,22 @@
 import { rest } from "msw";
-import { User } from "api/user/index";
-import { categoriesData, regionListData } from "./data";
+import {
+  categoriesData,
+  regionListData,
+  successfulSignInData,
+  successfulSignUpData,
+  unSuccessfulSignUpData,
+  unsuccessfulSignInData,
+} from "./data";
 
 export default [
-  // TODO: remove this
-  rest.get("/api/user", async (_, res, ctx) => {
-    return res(ctx.status(400));
-    return res(
-      ctx.status(200),
-      ctx.json<User>({ nickname: "kakamotobi", profileUrl: "" })
-    );
+  rest.post("/api/users/signup", async (_, res, ctx) => {
+    return res(ctx.status(400), ctx.json(unSuccessfulSignUpData));
+    return res(ctx.status(201), ctx.json(successfulSignUpData));
   }),
 
-  rest.post("/api/users/signin", async (_, res, ctx) => {
-    return res(ctx.status(201), ctx.json(null));
+  rest.post("/api/auth", async (_, res, ctx) => {
+    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+    return res(ctx.status(200), ctx.json(successfulSignInData));
   }),
 
   rest.get("/api/categories", async (_, res, ctx) => {

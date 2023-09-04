@@ -44,6 +44,7 @@ export default {
       backgroundWeak: colors.grey50,
       backgroundBold: colors.grey400,
       backgroundBlur: colors.grey100, // needs backdrop-filter: blur(8px);
+      backgroundDisabled: colors.grey700,
       border: colors.grey500,
       borderStrong: colors.grey700,
       overlay: colors.grey600,
@@ -56,6 +57,7 @@ export default {
     },
     system: {
       warning: colors.red,
+      success: colors.mint,
       background: colors.white,
       backgroundWeak: colors.grey200,
     },
