@@ -8,11 +8,13 @@ import Button from "@components/common/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { FormEvent } from "react";
 import useSignInMutation from "api/queries/useSignInMutation";
+import useUserQuery from "api/queries/useUserQuery";
 
 export default function SignInPage() {
   const navigate = useNavigate();
 
   const { mutate: signInMutate } = useSignInMutation();
+  const { refetch: fetchUserInfo } = useUserQuery();
 
   const {
     value: email,
@@ -24,6 +26,7 @@ export default function SignInPage() {
   const onSignIn = async (e: FormEvent) => {
     e.preventDefault();
     signInMutate({ email, password });
+    fetchUserInfo();
   };
 
   const isAllFieldsFilled = !!email && !emailError && !!password;

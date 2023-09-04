@@ -13,11 +13,6 @@ type SignInData = {
 
 type User = {
   nickname: string;
-  profileImgUrl: string;
-};
-
-type User = {
-  nickname: string;
   profileImageUrl: string;
 };
 
