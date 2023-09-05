@@ -11,7 +11,7 @@ type SignInData = {
   refreshToken: string;
 };
 
-type User = {
+export type User = {
   nickname: string;
   profileImageUrl: string;
 };

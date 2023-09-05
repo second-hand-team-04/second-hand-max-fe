@@ -1,39 +1,21 @@
 import { ThemeProvider, styled } from "styled-components";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
 import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import CustomToaster from "@components/CustomToaster";
-import { toast } from "react-hot-toast";
-import { AxiosError } from "axios";
-
-const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
-    },
-  }),
-});
+import useUserQuery from "api/queries/useUserQuery";
 
 function App() {
+  const { data: user } = useUserQuery();
+
   return (
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
-      <QueryClientProvider client={queryClient}>
-        <StyledApp>
-          <RouterProvider router={router} />
-          <CustomToaster />
-        </StyledApp>
-      </QueryClientProvider>
+      <StyledApp>
+        <RouterProvider router={router(user?.data)} />
+        <CustomToaster />
+      </StyledApp>
     </ThemeProvider>
   );
 }
