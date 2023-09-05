@@ -49,7 +49,7 @@ export default function HomePage() {
             }
           </SelectInput>
         </div>
-        <Link to="/categories">
+        <Link to="/categories" style={{ padding: "0 8px" }}>
           <Button variant="plain" size="M">
             <img src={layoutGridIcon} alt="카테고리 보기" />
           </Button>
