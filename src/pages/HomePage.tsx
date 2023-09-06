@@ -3,50 +3,90 @@ import Button from "@components/common/Button/Button";
 import {
   SelectInput,
   SelectItem,
-  // SelectItem,
   useSelectInput,
 } from "@components/common/SelectInput";
 import layoutGridIcon from "@assets/icon/layout-grid.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import NavBar from "@components/NavBar/NavBar";
 import useItemQuery from "api/queries/useItemQuery";
-
-// import { RegionType } from "api/region";
-// import { Item } from "@components/common/SelectInput/selectInputProps";
 import ProductItem from "@components/Home/ProductItem";
 import { RegionType } from "api/region";
 import { useUserRegionListQuery } from "api/queries/useRegionsQuery";
+import RegionModal from "@components/Region/RegionModal";
+import { useEffect, useRef, useState } from "react";
+import { FabButton } from "@components/Home/FabButton";
+import { keepLastNeighborhood } from "@utils/stringFormatters";
 
 export default function HomePage() {
-  // TODO: user의 동네로 초기화
+  const navigate = useNavigate();
+
+  const [isRegionModalOpen, setIsRegionModalOpen] = useState(false);
   const [selectedRegion, onChangeSelectedRegion] = useSelectInput({
     id: 1,
     title: "역삼1동",
   });
-  // TODO: 동네 및 카테고리에 따른 상품 목록 fetch
+
   const { data: productItemList, isLoading: isLoadingItem } = useItemQuery();
   const { data: regionList } = useUserRegionListQuery();
+
+  const previousRegionListLength = useRef<number>(0);
+
+  useEffect(() => {
+    if (!regionList || regionList.length === 0) return;
+
+    if (regionList.length !== previousRegionListLength.current) {
+      onChangeSelectedRegion(regionList[0]);
+    }
+    previousRegionListLength.current = regionList.length;
+  }, [regionList, onChangeSelectedRegion, selectedRegion.title]);
+
+  const onSelectMyRegionButtonClick = () => {
+    setIsRegionModalOpen(true);
+  };
+
+  const selectMyRegion = (region: RegionType) => {
+    onChangeSelectedRegion(region);
+  };
+
+  const closeRegionModal = () => {
+    setIsRegionModalOpen(false);
+  };
+
+  const postNewProduct = () => {
+    navigate("/product/new");
+  };
 
   if (isLoadingItem) return <div>로딩중...</div>;
 
   return (
     <StyledHomePage>
+      {isRegionModalOpen && regionList ? (
+        <RegionModal
+          selectedRegion={selectedRegion}
+          selectMyRegion={selectMyRegion}
+          selectedRegionList={regionList}
+          onClose={closeRegionModal}
+        />
+      ) : null}
       <AppBar isTop={true}>
         <div style={{ flexGrow: 1 }}>
           <SelectInput
             name="선택된 동네"
-            value={selectedRegion.title}
+            value={keepLastNeighborhood(selectedRegion.title)}
             onChange={onChangeSelectedRegion}>
-            {
-              regionList &&
-                regionList.map((region: RegionType) => (
-                  <SelectItem key={region.id} item={region}>
-                    {region.title}
-                  </SelectItem>
-                ))
-              // TODO: SelectItem
-            }
+            {regionList &&
+              regionList.length > 0 &&
+              regionList.map((region: RegionType) => (
+                <SelectItem key={region.id} item={region}>
+                  {keepLastNeighborhood(region.title)}
+                </SelectItem>
+              ))}
+            <SelectItem
+              onClick={onSelectMyRegionButtonClick}
+              item={{ id: 0, title: "내 동네 설정하기" }}>
+              내 동네 설정하기
+            </SelectItem>
           </SelectInput>
         </div>
         <Link to="/categories" style={{ padding: "0 8px" }}>
@@ -58,12 +98,14 @@ export default function HomePage() {
       <ProductItemArea>
         <ProductItemList>
           {productItemList &&
+            productItemList.length > 0 &&
             productItemList.map((product) => (
               <ProductItem key={product.id} item={product} />
             ))}
         </ProductItemList>
       </ProductItemArea>
       <NavBar />
+      <FabButton onClick={postNewProduct} />
     </StyledHomePage>
   );
 }
