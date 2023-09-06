@@ -23,6 +23,11 @@ export default [
     return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
   }),
 
+  rest.post("/api/auth/oauth/kakao?code=blah", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulSignInData));
+    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+  }),
+
   rest.get("/api/auth/refresh", async (_, res, ctx) => {
     return res(ctx.status(401), ctx.json(unSuccessfulRefreshAccessToken));
     return res(ctx.status(200), ctx.json(successfulRefreshAccessToken));

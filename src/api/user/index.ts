@@ -13,8 +13,10 @@ type SignInData = {
 
 export type User = {
   nickname: string;
-  profileImageUrl: string;
+  imageUrl: string;
 };
+
+export type OAuthProvider = "kakao";
 
 type AccessTokenData = {
   accessToken: string;
@@ -27,6 +29,16 @@ export const postSignUp = async (body: FormData) => {
 
 export const postSignIn = async (body: SignInCredentials) => {
   const res = await fetcher.post<Response<SignInData>>("/auth", body);
+  return res.data;
+};
+
+export const postOAuthSignIn = async (
+  provider: OAuthProvider,
+  authCode: string
+) => {
+  const res = await fetcher.post<Response<SignInData>>(
+    `/auth/oauth/${provider}?code=${authCode}`
+  );
   return res.data;
 };
 
