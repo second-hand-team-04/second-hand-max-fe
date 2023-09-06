@@ -3,7 +3,7 @@ import { refreshAccessToken } from "api/user";
 
 const BASE_API_URL =
   process.env.NODE_ENV === "production"
-    ? import.meta.env.VITE_APP_API_URL_PROD
+    ? import.meta.env.VITE_API_URL_PROD
     : import.meta.env.VITE_API_URL_DEV;
 
 export const fetcher = axios.create({

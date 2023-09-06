@@ -5,6 +5,11 @@ import openPopUpWindow from "@utils/openPopUpWindow";
 import { useContext } from "react";
 import { WindowContext } from "@context/WindowContext";
 
+const CLIENT_URL =
+  process.env.NODE_ENV === "production"
+    ? import.meta.env.VITE_CLIENT_URL_PROD
+    : import.meta.env.VITE_CLIENT_URL_DEV;
+
 export default function KakaoSignInButton() {
   const { onOpenPopUpWindow } = useContext(WindowContext);
 
@@ -12,11 +17,11 @@ export default function KakaoSignInButton() {
     const oAuthPopUpWindow = openPopUpWindow(
       `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${
         import.meta.env.VITE_AUTH_KAKAO_CLIENT_ID
-      }&redirect_uri=${import.meta.env.VITE_CLIENT_URL}/signin`,
+      }&redirect_uri=${CLIENT_URL}/signin`,
       "kakaoOAuth",
       500,
       600
-    )!;
+    )!; // TODO: handle case where popup doesn't show (Ex: user blocked pop ups)
 
     onOpenPopUpWindow(oAuthPopUpWindow);
   };
