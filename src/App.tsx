@@ -5,9 +5,14 @@ import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import CustomToaster from "@components/CustomToaster";
 import useUserQuery from "api/queries/useUserQuery";
+import { useEffect } from "react";
 
 function App() {
-  const { data: user } = useUserQuery();
+  const { data: user, refetch: fetchUserInfo } = useUserQuery();
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [user, fetchUserInfo]);
 
   return (
     <ThemeProvider theme={designSystem}>
