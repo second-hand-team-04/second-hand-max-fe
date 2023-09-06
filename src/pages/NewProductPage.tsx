@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import useImageInput from "@hooks/useImageInput";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import useText from "@hooks/useText";
-import { formatAsPrice } from "@utils/priceFormatter";
+import { formatAsPrice } from "@utils/stringFormatters";
 
 export default function NewProductPage() {
   const navigate = useNavigate();
@@ -102,7 +102,7 @@ export default function NewProductPage() {
       "Post",
       pictureList,
       titleInputValue,
-      selectedCategory,
+      selectedTag,
       priceInputValue || null,
       contentInputValue,
       currentRegion
@@ -119,13 +119,14 @@ export default function NewProductPage() {
 
   return (
     <StyledNewProductPage>
-      <CategoryModal
-        isOpen={isCategoryOpen}
-        categoryList={categories ?? []}
-        currentSelectedCategory={selectedCategory}
-        onCategoryModalClose={onCategoryClose}
-        onCategoryItemSelect={onCategoryItemSelect}
-      />
+      {isCategoryOpen ? (
+        <CategoryModal
+          categoryList={categories ?? []}
+          currentSelectedCategory={selectedCategory}
+          onCategoryModalClose={onCategoryClose}
+          onCategoryItemSelect={onCategoryItemSelect}
+        />
+      ) : null}
       <AppBar>
         <Button
           style={{ width: "62px" }}
