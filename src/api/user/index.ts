@@ -42,6 +42,11 @@ export const postOAuthSignIn = async (
   return res.data;
 };
 
+export const deleteSignOut = async () => {
+  const res = await fetcher.delete<Response<null>>("/auth");
+  return res.data;
+};
+
 export const getUserInfo = async () => {
   const res = await fetcher.get<Response<User>>("/users/info");
   return res.data;

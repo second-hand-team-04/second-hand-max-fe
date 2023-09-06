@@ -10,6 +10,7 @@ import {
   unsuccessfulUserInfoData,
   successfulRefreshAccessToken,
   unSuccessfulRefreshAccessToken,
+  successfulSignOutData,
 } from "./data";
 
 export default [
@@ -26,6 +27,10 @@ export default [
   rest.post("/api/auth/oauth/kakao?code=blah", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(successfulSignInData));
     return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+  }),
+
+  rest.delete("/api/auth", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulSignOutData));
   }),
 
   rest.get("/api/auth/refresh", async (_, res, ctx) => {

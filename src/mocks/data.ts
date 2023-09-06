@@ -33,6 +33,13 @@ export const unSuccessfulSignUpData = {
   data: null,
 };
 
+export const successfulSignOutData = {
+  code: 200,
+  status: "OK",
+  message: "로그아웃을 성공했습니다",
+  data: null,
+};
+
 export const successfulRefreshAccessToken = {
   code: 200,
   status: "OK",
