@@ -10,21 +10,28 @@ import {
 import { useState } from "react";
 import { styled } from "styled-components";
 import RegionItem from "./RegionItem";
-import useRegionListQuery from "api/queries/useRegionsQuery";
+import { useRegionListQuery } from "api/queries/useRegionsQuery";
+import { addUserRegion } from "api/region";
+import { useQueryClient } from "@tanstack/react-query";
+import queryKeys from "api/queries/queryKeys";
+import { AxiosError } from "axios";
+import { toast } from "react-hot-toast";
 
 type Props = {
   isRegionAddModal: boolean;
-  isRegionModalOpen: boolean;
+
   onRegionModalClose: () => void;
   switchToSelectModal: () => void;
 };
 
 export default function RegionAddModal({
   isRegionAddModal,
-  isRegionModalOpen,
+
   onRegionModalClose,
   switchToSelectModal,
 }: Props) {
+  const queryClient = useQueryClient();
+
   const [inputValue, setInputValue] = useState<string>("");
 
   const { data: regionList } = useRegionListQuery();
@@ -34,18 +41,37 @@ export default function RegionAddModal({
     setInputValue(e.target.value);
   };
 
-  const onRegionItemClick = (itemId: number) => {
+  const onRegionItemClick = async (itemId: number) => {
     setInputValue("");
     console.log("지역 선택", `지역 ID ${itemId}`);
+
+    try {
+      const res = await addUserRegion(itemId);
+      console.log(res);
+      if (res.code === 201) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.region.userRegions.queryKey,
+        });
+        toast.success("나의 동네로 설정되었어요.");
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    }
+
+    switchToSelectModal();
   };
 
   return (
-    <Modal isOpen={isRegionModalOpen} onClose={onRegionModalClose}>
+    <Modal onClose={() => {}}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
         <IconWrapper onClick={switchToSelectModal}>
           <img src={chevronLeft} alt="back" />
         </IconWrapper>
-        <IconWrapper>
+        <IconWrapper onClick={onRegionModalClose}>
           <img src={xIcon} alt="close" />
         </IconWrapper>
       </ModalHeader>
@@ -57,7 +83,8 @@ export default function RegionAddModal({
         />
         <ModalList>
           {regionList &&
-            regionList.data.map((item) => (
+            regionList.regions.length > 0 &&
+            regionList.regions.map((item) => (
               <RegionItem
                 key={item.id}
                 item={item}

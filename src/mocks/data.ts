@@ -34,7 +34,11 @@ export const unSuccessfulSignUpData = {
 };
 
 // TODO: `<Response>`형태로 변경
-export const categoriesData = {
+
+export const successfulCategoriesData = {
+  code: 200,
+  status: "OK",
+  message: "카테고리 목록 조회를 성공하였습니다",
   data: [
     { id: 1, title: "전체보기", imageUrl: "https://i.ibb.co/LSkHKbL/star.png" },
     {
@@ -227,9 +231,12 @@ export const ItemListData = {
   ],
 };
 
-export const MyRegionListData = {
+export const successfulMyRegionListData = {
+  code: 200,
+  status: "OK",
+  message: "나의 동네 목록 조회를 성공하였습니다",
   data: [
-    { id: 1, title: "역삼1동" },
-    { id: 2, title: "역삼2동" },
+    { id: 1, title: "개포1동" },
+    { id: 2, title: "개포2동" },
   ],
 };

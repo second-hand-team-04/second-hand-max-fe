@@ -1,9 +1,9 @@
 import { rest } from "msw";
 import {
   ItemListData,
-  MyRegionListData,
-  categoriesData,
   regionListData,
+  successfulCategoriesData,
+  successfulMyRegionListData,
   successfulSignInData,
   successfulSignUpData,
   unSuccessfulSignUpData,
@@ -22,7 +22,7 @@ export default [
   }),
 
   rest.get("/api/categories", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(categoriesData));
+    return res(ctx.status(200), ctx.json(successfulCategoriesData));
   }),
 
   rest.get("/api/regions", async (_, res, ctx) => {
@@ -34,6 +34,17 @@ export default [
   }),
 
   rest.get("/api/users/regions", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(MyRegionListData));
+    return res(ctx.status(200), ctx.json(successfulMyRegionListData));
+  }),
+
+  rest.delete("/api/users/regions/:id", (req, res, ctx) => {
+    const currentRegionListData = successfulMyRegionListData.data;
+
+    const id = Number(req.params.id);
+
+    const updatedRegions = currentRegionListData.filter(
+      (region) => region.id !== id
+    );
+    return res(ctx.status(200), ctx.json(updatedRegions));
   }),
 ];
