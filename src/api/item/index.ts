@@ -14,10 +14,8 @@ export type ItemType = {
   numLikes: number;
 };
 
-// export const getItem = async (regionNum: number, categoryNum: number) => {
 export const getItem = async () => {
   const res = await fetcher.get<Response<ItemType[]>>(
-    // `/items?region=${regionNum}&category=${categoryNum}`
     `/items?region=${regionNum}&category=${categoryNum}`
   );
   return res.data;

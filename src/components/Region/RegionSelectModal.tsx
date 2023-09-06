@@ -51,9 +51,8 @@ export default function RegionSelectModal({
         queryKey: queryKeys.region.userRegions.queryKey,
       });
 
-      if (res.code === 204) {
-        console.log(res.data);
-        console.log(queryKeys.region.userRegions);
+      if (res.code === 200) {
+        toast.success("선택한 동네가 삭제되었어요.");
       }
     } catch (error) {
       if (error instanceof AxiosError) {

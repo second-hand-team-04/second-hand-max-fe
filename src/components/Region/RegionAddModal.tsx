@@ -37,17 +37,15 @@ export default function RegionAddModal({
   const { data: regionList } = useRegionListQuery();
 
   const onRegionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("검색중인 지역", e.target.value);
     setInputValue(e.target.value);
   };
 
   const onRegionItemClick = async (itemId: number) => {
     setInputValue("");
-    console.log("지역 선택", `지역 ID ${itemId}`);
 
     try {
       const res = await addUserRegion(itemId);
-      console.log(res);
+
       if (res.code === 201) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.region.userRegions.queryKey,

@@ -117,7 +117,7 @@ export const successfulCategoriesData = {
   ],
 };
 
-// TODO: `<Response>`형태로 변경
+// TODO: `<Response>`형태로 변경 서버 API 우선 사용 중이라 추후 변경 예정
 export const regionListData = {
   data: [
     { id: 1, title: "서울 강남구 개포1동" },
