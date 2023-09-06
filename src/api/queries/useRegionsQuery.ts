@@ -1,21 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import queryKeys from "./queryKeys";
-import { getRegionList } from "api/region";
-import { getUserRegions } from "api/user";
+import { getRegionList, getUserRegions } from "api/region";
 
 export function useRegionListQuery() {
   return useQuery({
-    queryKey: [queryKeys.regionList],
+    queryKey: queryKeys.region.all.queryKey,
     queryFn: getRegionList,
     staleTime: Infinity,
     select: (res) => res.data,
   });
 }
 
-// ? userRegion 전체적인 관리를 어떤 폴더에서 해야할지 ?
 export function useUserRegionListQuery() {
   return useQuery({
-    queryKey: [queryKeys.user.regions],
+    queryKey: queryKeys.region.userRegions.queryKey,
     queryFn: getUserRegions,
     staleTime: Infinity,
     select: (res) => res.data,

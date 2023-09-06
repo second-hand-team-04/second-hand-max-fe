@@ -15,14 +15,14 @@ export const userKeys = createQueryKeys("user", {
     queryKey: ["userInfo"],
     queryFn: getUserInfo,
   }),
-  regions: () => ({
-    queryKey: ["userRegions"],
-  }),
 });
 
 export const categoryKeys = createQueryKeys("categories");
 
-export const regionKeys = createQueryKeys("regionList");
+export const regionKeys = createQueryKeys("region", {
+  all: ["all"],
+  userRegions: ["userRegions"],
+});
 
 export const ItemKeys = createQueryKeys("items");
 

@@ -1,6 +1,5 @@
 import { Response } from "api/types";
 import { fetcher } from "../fetcher";
-import { RegionType } from "api/region";
 
 export type SignInCredentials = {
   email: string;
@@ -29,10 +28,5 @@ export const postSignIn = async (body: SignInCredentials) => {
 
 export const getUserInfo = async () => {
   const res = await fetcher.get<Response<User>>("/users/info");
-  return res.data;
-};
-
-export const getUserRegions = async () => {
-  const res = await fetcher.get<Response<RegionType[]>>("/users/regions");
   return res.data;
 };
