@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { WindowProvider } from "context/WindowContext.tsx";
 
 if (process.env.NODE_ENV === "development") {
   browserServiceWorker.start({
@@ -31,8 +32,10 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
+    <WindowProvider>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </WindowProvider>
   </React.StrictMode>
 );
