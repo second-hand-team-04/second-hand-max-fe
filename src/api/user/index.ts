@@ -47,16 +47,16 @@ export const deleteSignOut = async () => {
   return res.data;
 };
 
-export const getUserInfo = async () => {
-  const res = await fetcher.get<Response<User>>("/users/info");
-  return res.data;
-};
-
 export const refreshAccessToken = async () => {
   const res = await fetcher.get<Response<AccessTokenData>>("/auth/refresh", {
     headers: {
       Authorization: localStorage.getItem("refreshToken"),
     },
   });
+  return res.data;
+};
+
+export const getUserInfo = async () => {
+  const res = await fetcher.get<Response<User>>("/users/info");
   return res.data;
 };
