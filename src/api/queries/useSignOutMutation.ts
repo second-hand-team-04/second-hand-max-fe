@@ -10,11 +10,10 @@ export default function useSignOutMutation() {
   return useMutation({
     mutationFn: deleteSignOut,
     onSuccess: () => {
-      console.log("logged out!!!");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 
-      navigate("/");
+      navigate("/signin");
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

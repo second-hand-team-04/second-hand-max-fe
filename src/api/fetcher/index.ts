@@ -44,7 +44,7 @@ fetcher.interceptors.response.use(
         localStorage.removeItem("refreshToken");
 
         // TODO: navigate the user to `/signin` while displaying the toast
-        // window.location.href = "/signin";
+        window.location.href = "/signin";
         return Promise.reject(refreshError);
       }
     }
