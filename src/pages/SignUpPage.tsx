@@ -57,7 +57,9 @@ export default function SignUpPage() {
     const formData = new FormData();
     formData.append(
       "request",
-      new Blob([JSON.stringify({ email, password, nickname })])
+      new Blob([JSON.stringify({ email, password, nickname })], {
+        type: "application/json",
+      })
     );
     if (profileImage) {
       formData.append("image", profileImage);
