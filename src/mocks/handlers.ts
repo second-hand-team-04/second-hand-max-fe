@@ -4,6 +4,7 @@ import {
   regionListData,
   successfulSignInData,
   successfulSignUpData,
+  successfulUserInfoData,
   unSuccessfulSignUpData,
   unsuccessfulSignInData,
 } from "./data";
@@ -25,5 +26,9 @@ export default [
 
   rest.get("/api/regions", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(regionListData));
+  }),
+
+  rest.get("/api/users/info", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulUserInfoData));
   }),
 ];

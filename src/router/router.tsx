@@ -9,6 +9,7 @@ import SignUpPage from "@pages/SignUpPage";
 import CategoryPage from "@pages/CategoryPage";
 import NewProductPage from "@pages/NewProductPage";
 import SignInPage from "@pages/SignInPage";
+import MyProfilePage from "@pages/MyProfilePage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,7 +29,7 @@ const router = createBrowserRouter(
         {/* <Route path="wishlist" element={<WishlistPage />} /> */}
         {/* <Route path="transactions" element={<MyTransactionsPage />} /> */}
         {/* <Route path="wishlist" element={<MyWishlistPage />} /> */}
-        {/* <Route path="profile" element={<MyProfilePage />} /> */}
+        <Route path="profile" element={<MyProfilePage />} />
         {/* <Route path="chats" element={<MyChatsPage />} /> */}
         {/* <Route path="chats/:chatId" element={<ChatPage />} /> */}
       </Route>
