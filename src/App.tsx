@@ -12,7 +12,6 @@ function App() {
 
   useEffect(() => {
     fetchUserInfo();
-    console.log("App.tsx: ", user);
   }, [user, fetchUserInfo]);
 
   return (

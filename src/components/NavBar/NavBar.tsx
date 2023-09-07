@@ -15,8 +15,6 @@ export default function NavBar() {
 
   useEffect(() => {
     // "내 계정"("/profile") 탭은 SignInPage("/signin")와 MyProfilePage("/profile")가 공유.
-    console.log("location.pathname:", location.pathname);
-
     if (location.pathname === "/signin") {
       setActivePath("/profile");
     } else {
