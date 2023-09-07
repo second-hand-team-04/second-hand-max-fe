@@ -41,15 +41,11 @@ export default function SignInPage() {
 
   // Receive auth code in the popup window from the OAuth provider and send it to the original window.
   useEffect(() => {
-    console.log("Sign In Page!!!!!!!!!");
-
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get("code");
     if (authCode) {
       // Send auth code to original window.
-      console.log("popup window CLIENT_URL:", CLIENT_URL);
-
-      window.opener.postMessage({ authCode }, "*");
+      window.opener.postMessage({ authCode }, CLIENT_URL);
     }
   }, []);
 
@@ -58,10 +54,6 @@ export default function SignInPage() {
     if (!popUpWindow) return;
 
     const closeWindowMessageHandler = (e: MessageEvent) => {
-      console.log("In original window");
-      console.log("e.origin:", e.origin);
-      console.log("e.data:", e.data);
-      console.log("CLIENT_URL:", CLIENT_URL);
       if (e.origin === CLIENT_URL) {
         const { authCode } = e.data;
         if (authCode) {

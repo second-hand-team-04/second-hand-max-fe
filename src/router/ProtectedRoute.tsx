@@ -7,7 +7,7 @@ export default function ProtectedRoute({ user }: { user: User | undefined }) {
 
   useEffect(() => {
     if (!user) {
-      navigate("/");
+      navigate("/signin");
     }
   }, [user, navigate]);
 
