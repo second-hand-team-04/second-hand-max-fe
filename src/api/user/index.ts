@@ -23,7 +23,7 @@ type AccessTokenData = {
 };
 
 export const postSignUp = async (body: FormData) => {
-  const res = await fetcher.post<Response<null>>("/users/signup", body);
+  const res = await fetcher.post<Response<null>>("/users", body);
   return res.data;
 };
 
