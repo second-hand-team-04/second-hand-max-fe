@@ -54,8 +54,6 @@ export default function SignInPage() {
     if (!popUpWindow) return;
 
     const closeWindowMessageHandler = (e: MessageEvent) => {
-      console.log("e.origin:", e.origin);
-      console.log("CLIENT_URL:", CLIENT_URL);
       if (e.origin === CLIENT_URL) {
         const { authCode } = e.data;
         if (authCode) {

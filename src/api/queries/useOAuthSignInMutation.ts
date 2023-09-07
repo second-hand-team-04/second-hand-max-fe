@@ -17,7 +17,6 @@ export default function useOAuthSignInMutation() {
     }) => getOAuthSignIn(provider, authCode),
     onSuccess: ({ data }) => {
       const { accessToken, refreshToken } = data;
-      console.log("OAuth Signin Success Data:", data);
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
