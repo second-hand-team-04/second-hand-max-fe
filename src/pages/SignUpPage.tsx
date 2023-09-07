@@ -3,23 +3,24 @@ import Button from "@components/common/Button/Button";
 import cameraIcon from "@assets/icon/camera.svg";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
-import useTextInput from "@hooks/useTextInput";
+import useText from "@hooks/useText";
 import {
   validateEmail,
   validateNickname,
   validatePassword,
 } from "@utils/textValidators";
-import { FormEvent, useRef } from "react";
-import { postSignUp } from "api/user";
+import { FormEvent } from "react";
 import useImageInput from "@hooks/useImageInput";
+import TextInput from "@components/common/TextInput/TextInput";
+import useSignUpMutation from "api/queries/useSignUpMutation";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
 
-  const formRef = useRef(null);
+  const { mutate: signUpMutate } = useSignUpMutation();
 
   const {
-    imageFile: profilePictureImage,
+    imageFile: profileImage,
     error: imageFileError,
     onChange: onProfilePictureChange,
   } = useImageInput({ sizeLimit: 2000000 });
@@ -29,7 +30,7 @@ export default function SignUpPage() {
     error: nicknameError,
     isError: isNicknameError,
     onChange: onNicknameChange,
-  } = useTextInput({
+  } = useText({
     validators: [validateNickname],
   });
 
@@ -38,30 +39,31 @@ export default function SignUpPage() {
     error: emailError,
     isError: isEmailError,
     onChange: onEmailChange,
-  } = useTextInput({ validators: [validateEmail] });
+  } = useText({ validators: [validateEmail] });
 
   const {
     value: password,
     error: passwordError,
     isError: isPasswordError,
     onChange: onPasswordChange,
-  } = useTextInput({ validators: [validatePassword] });
+  } = useText({ validators: [validatePassword] });
 
   const { value: passwordConfirm, onChange: onPasswordConfirmChange } =
-    useTextInput({});
+    useText();
 
   const onSignUp = async (e: FormEvent) => {
     e.preventDefault();
 
-    const formData = new FormData(formRef.current!);
-
-    const res = await postSignUp(formData);
-
-    if (res.status === 201) {
-      navigate("/signin");
+    const formData = new FormData();
+    formData.append(
+      "request",
+      new Blob([JSON.stringify({ email, password, nickname })])
+    );
+    if (profileImage) {
+      formData.append("image", profileImage);
     }
 
-    // TODO: 회원가입 실패시 400
+    signUpMutate(formData);
   };
 
   const isPasswordMatch = password === passwordConfirm;
@@ -77,7 +79,7 @@ export default function SignUpPage() {
     isPasswordMatch;
 
   return (
-    <Form ref={formRef} onSubmit={onSignUp}>
+    <Form onSubmit={onSignUp}>
       <AppBar padding="8px">
         <Button
           type="button"
@@ -101,9 +103,7 @@ export default function SignUpPage() {
       <FormInnerContainer>
         <ProfilePictureLabel
           htmlFor="profilePictureInput"
-          $pictureURL={
-            profilePictureImage ? URL.createObjectURL(profilePictureImage) : ""
-          }>
+          $pictureURL={profileImage ? URL.createObjectURL(profileImage) : ""}>
           <ProfilePictureInput
             type="file"
             accept=".jpg, .jpeg, .png"
@@ -245,20 +245,6 @@ const TextInputLabel = styled.label`
   display: block;
   font: ${({ theme: { font } }) => font.displayStrong16};
   color: ${({ theme: { color } }) => color.neutral.textStrong};
-`;
-
-const TextInput = styled.input`
-  width: 100%;
-  padding: 4px 12px;
-  border: ${({ theme: { color } }) => `1px solid ${color.neutral.border}`};
-  border-radius: 8px;
-  font: ${({ theme: { font } }) => font.availableDefault16};
-  color: ${({ theme: { color } }) => color.neutral.textStrong};
-  box-sizing: border-box;
-
-  &::placeholder {
-    color: ${({ theme: { color } }) => color.neutral.textWeak};
-  }
 `;
 
 const TextInputError = styled.p`

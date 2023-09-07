@@ -9,17 +9,17 @@ import useCategoriesQuery from "api/queries/useCategoriesQuery";
 export default function CategoryPage() {
   const navigate = useNavigate();
 
-  const { data: categories, isFetched } = useCategoriesQuery();
+  const { data: categories, isLoading } = useCategoriesQuery();
 
   const onBackButtonClick = () => {
     navigate("/");
   };
 
   const onCategoryButtonClick = (categoryTitle: string) => {
-    console.log("카테고리", categoryTitle);
+    console.log("navigate", categoryTitle);
   };
 
-  if (!isFetched) return <div>로딩중...</div>;
+  if (isLoading) return <LoadingIndicator>로딩중...</LoadingIndicator>;
 
   return (
     <StyledCategoryPage>
@@ -92,4 +92,11 @@ const MainBody = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const LoadingIndicator = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;

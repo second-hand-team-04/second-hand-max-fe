@@ -2,7 +2,6 @@ import xIcon from "@assets/icon/x.svg";
 import chevronLeft from "@assets/icon/chevron-left.svg";
 import Modal from "@components/common/Modal/Modal";
 import {
-  IconWrapper,
   ModalBody,
   ModalHeader,
   ModalList,
@@ -10,52 +9,90 @@ import {
 import { useState } from "react";
 import { styled } from "styled-components";
 import RegionItem from "./RegionItem";
+import { useRegionListQuery } from "api/queries/useRegionsQuery";
+import { postUserRegion } from "api/region";
+import { useQueryClient } from "@tanstack/react-query";
+import queryKeys from "api/queries/queryKeys";
+import { AxiosError } from "axios";
+import { toast } from "react-hot-toast";
+import Button from "@components/common/Button/Button";
 
 type Props = {
   isRegionAddModal: boolean;
-  isRegionModalOpen: boolean;
   onRegionModalClose: () => void;
   switchToSelectModal: () => void;
 };
 
 export default function RegionAddModal({
   isRegionAddModal,
-  isRegionModalOpen,
   onRegionModalClose,
   switchToSelectModal,
 }: Props) {
-  const [inputValue, setInputValue] = useState<string>("");
+  const queryClient = useQueryClient();
 
-  const onRegionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("검색중인 지역", e.target.value);
-    setInputValue(e.target.value);
+  const [regionInputValue, setRegionInputValue] = useState<string>("");
+
+  const { data: regionList } = useRegionListQuery();
+
+  console.log(regionList);
+  const onRegionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRegionInputValue(e.target.value);
   };
 
-  const onRegionItemClick = (itemId: number) => {
-    setInputValue("");
-    console.log("지역 선택", `지역 ID ${itemId}`);
+  const onRegionItemClick = async (itemId: number) => {
+    try {
+      const res = await postUserRegion(itemId);
+
+      if (res.code === 201) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.region.userRegions.queryKey,
+        });
+        setRegionInputValue("");
+        toast.success("나의 동네로 설정되었어요.");
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    }
+
+    switchToSelectModal();
   };
 
   return (
-    <Modal isOpen={isRegionModalOpen} onClose={onRegionModalClose}>
+    <Modal onClose={() => {}}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
-        <IconWrapper onClick={switchToSelectModal}>
+        <Button
+          style={{ padding: "12px", width: "48px", height: "48px" }}
+          variant="plain"
+          onClick={switchToSelectModal}>
           <img src={chevronLeft} alt="back" />
-        </IconWrapper>
-        <IconWrapper>
+        </Button>
+        <Button
+          style={{ padding: "12px", width: "48px", height: "48px" }}
+          variant="plain"
+          onClick={onRegionModalClose}>
           <img src={xIcon} alt="close" />
-        </IconWrapper>
+        </Button>
       </ModalHeader>
       <ModalBody>
         <SearchBar
-          value={inputValue}
-          onChange={onRegionChange}
+          value={regionInputValue}
+          onChange={onRegionInputChange}
           placeholder="동명(읍, 면)으로 검색(ex. 서초동)"
         />
         <ModalList>
-          {regionList.map((item) => (
-            <RegionItem key={item.id} item={item} onClick={onRegionItemClick} />
-          ))}
+          {regionList &&
+            regionList.regions.length > 0 &&
+            regionList.regions.map((item) => (
+              <RegionItem
+                key={item.id}
+                item={item}
+                onClick={onRegionItemClick}
+              />
+            ))}
         </ModalList>
       </ModalBody>
     </Modal>
@@ -78,21 +115,3 @@ const SearchBar = styled.input`
   color: ${({ theme: { color } }) => color.neutral.text};
   background: ${({ theme: { color } }) => color.neutral.backgroundBold};
 `;
-
-const regionList = [
-  { id: 1, title: "서울 강남구 개포1동" },
-  { id: 2, title: "서울 강남구 개포2동" },
-  { id: 3, title: "서울 강남구 개포3동" },
-  { id: 4, title: "서울 강남구 개포1동" },
-  { id: 5, title: "서울 강남구 개포2동" },
-  { id: 6, title: "서울 강남구 개포3동" },
-  { id: 7, title: "서울 강남구 개포1동" },
-  { id: 8, title: "서울 강남구 개포2동" },
-  { id: 9, title: "서울 강남구 개포3동" },
-  { id: 10, title: "서울 강남구 개포1동" },
-  { id: 11, title: "서울 강남구 개포2동" },
-  { id: 12, title: "서울 강남구 개포3동" },
-  { id: 13, title: "서울 강남구 개포1동" },
-  { id: 14, title: "서울 강남구 개포2동" },
-  { id: 15, title: "서울 강남구 개포3동" },
-];
