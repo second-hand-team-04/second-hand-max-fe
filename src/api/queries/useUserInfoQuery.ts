@@ -7,6 +7,7 @@ export default function useUserInfoQuery() {
     queryKey: queryKeys.user.info().queryKey,
     queryFn: getUserInfo,
     enabled: false,
+    retry: false,
     staleTime: Infinity,
     select: (res) => res.data,
   });
