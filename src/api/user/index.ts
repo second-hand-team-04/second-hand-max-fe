@@ -16,11 +16,6 @@ type User = {
   profileImgUrl: string;
 };
 
-type User = {
-  nickname: string;
-  profileImageUrl: string;
-};
-
 export const postSignUp = async (body: FormData) => {
   const res = await fetcher.post<Response<null>>("/users/signup", body);
   return res.data;

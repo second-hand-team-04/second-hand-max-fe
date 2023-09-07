@@ -33,8 +33,19 @@ const StyledSelectItem = styled.li<{ $isSelected: boolean }>`
     $isSelected ? font.enabledStrong16 : font.availableDefault16};
   text-align: left;
   cursor: pointer;
+  background: ${({ theme: { color } }) => color.neutral.background};
 
   &:not(:last-child) {
     border-bottom: 0.8px solid var(--neutral-border, rgba(179, 179, 179, 0.39));
+  }
+
+  &:first-child {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
   }
 `;

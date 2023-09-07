@@ -19,8 +19,18 @@ export const userKeys = createQueryKeys("user", {
 
 export const categoryKeys = createQueryKeys("categories");
 
-export const regionKeys = createQueryKeys("regionList");
+export const regionKeys = createQueryKeys("region", {
+  all: ["all"],
+  userRegions: ["userRegions"],
+});
 
-export const queryKeys = mergeQueryKeys(categoryKeys, regionKeys, userKeys);
+export const ItemKeys = createQueryKeys("items");
+
+export const queryKeys = mergeQueryKeys(
+  categoryKeys,
+  regionKeys,
+  userKeys,
+  ItemKeys
+);
 
 export default queryKeys;

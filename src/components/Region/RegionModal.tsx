@@ -2,14 +2,27 @@ import { styled } from "styled-components";
 import { useState } from "react";
 import RegionSelectModal from "./RegionSelectModal";
 import RegionAddModal from "./RegionAddModal";
+import { RegionType } from "api/region";
+import { toast } from "react-hot-toast";
 
-export default function RegionModal() {
+type Props = {
+  onRegionModalClose: () => void;
+  selectedRegionList: RegionType[];
+  selectMyRegion: (region: RegionType) => void;
+  selectedRegion: RegionType;
+};
+
+export default function RegionModal({
+  onRegionModalClose,
+  selectedRegionList,
+  selectMyRegion,
+  selectedRegion,
+}: Props) {
   const [isRegionAddModal, setIsRegionAddModal] = useState(false);
-  const isRegionModalOpen = true;
 
-  const onRegionAdd = () => {
+  const onOpenRegionSelectModal = () => {
     if (selectedRegionList.length === 2) {
-      console.log("동네는 최대 2개까지 설정 가능해요.");
+      toast.error("동네는 최대 2개까지 설정 가능해요.");
       return;
     }
     setIsRegionAddModal(true);
@@ -19,15 +32,10 @@ export default function RegionModal() {
     setIsRegionAddModal(false);
   };
 
-  const onRegionModalClose = () => {
-    //모달 밖(backdrop)을 클릭시 닫기 위한 함수
-  };
-
   return isRegionAddModal ? (
     <RegionAddModal
       {...{
         isRegionAddModal,
-        isRegionModalOpen,
         onRegionModalClose,
         switchToSelectModal,
       }}
@@ -36,10 +44,11 @@ export default function RegionModal() {
     <RegionSelectModal
       {...{
         isRegionAddModal,
-        isRegionModalOpen,
+        selectMyRegion,
         onRegionModalClose,
-        onRegionAdd,
+        onOpenRegionSelectModal,
         selectedRegionList,
+        selectedRegion,
       }}
     />
   );
@@ -52,6 +61,3 @@ export const ButtonsContainer = styled.div`
   justify-content: space-between;
   gap: 8px;
 `;
-
-// const selectedRegionList = ["역삼1동", "역삼2동"];
-const selectedRegionList = ["역삼1동"];
