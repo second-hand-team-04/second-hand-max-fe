@@ -23,8 +23,8 @@ const router = (user: User | undefined) =>
 
         <Route element={<PublicOnlyRoute user={user} />}>
           <Route path="signup" element={<SignUpPage />} />
-          <Route path="signin" element={<SignInPage />} />
         </Route>
+        <Route path="signin" element={<SignInPage />} />
 
         <Route element={<ProtectedRoute user={user} />}>
           <Route path="product/new" element={<NewProductPage />} />
