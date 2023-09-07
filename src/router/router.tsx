@@ -16,7 +16,6 @@ const router = (user: User | undefined) =>
   createBrowserRouter(
     createRoutesFromElements(
       <Route path="/">
-        <Route index element={<div>Home</div>} />
         <Route index element={<HomePage />} />
         <Route path="categories" element={<CategoryPage />} />
         {/* <Route path="product/:id" element={<ProductPage />} /> */}
