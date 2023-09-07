@@ -8,7 +8,7 @@ import Button from "@components/common/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { FormEvent, useContext, useEffect } from "react";
 import useSignInMutation from "api/queries/useSignInMutation";
-import useUserQuery from "api/queries/useUserQuery";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import KakaoSignInButton from "@components/KakaoSignInButton";
 import useOAuthSignInMutation from "api/queries/useOAuthSignInMutation";
 import { WindowContext } from "context/WindowContext";
@@ -24,7 +24,7 @@ export default function SignInPage() {
 
   const { mutate: signInMutate } = useSignInMutation();
   const { mutate: oAuthSignInMutate } = useOAuthSignInMutation();
-  const { refetch: fetchUserInfo } = useUserQuery();
+  const { refetch: fetchUserInfo } = useUserInfoQuery();
 
   const {
     value: email,

@@ -11,9 +11,12 @@ import { useEffect, useState } from "react";
 export default function NavBar() {
   const location = useLocation();
   const [activePath, setActivePath] = useState("");
+  // const { data: userInfo } = useUserInfoQuery();
 
   useEffect(() => {
     // "내 계정"("/profile") 탭은 SignInPage("/signin")와 MyProfilePage("/profile")가 공유.
+    console.log("location.pathname:", location.pathname);
+
     if (location.pathname === "/signin") {
       setActivePath("/profile");
     } else {

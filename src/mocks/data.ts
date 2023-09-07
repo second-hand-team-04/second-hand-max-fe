@@ -61,8 +61,9 @@ export const successfulUserInfoData = {
   status: "OK",
   message: "사용자 정보 조회를 성공하였습니다",
   data: {
+    id: 1,
     nickname: "Kakamotobi",
-    profileImageUrl:
+    imageUrl:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/800px-African_Bush_Elephant.jpg",
   },
 };
