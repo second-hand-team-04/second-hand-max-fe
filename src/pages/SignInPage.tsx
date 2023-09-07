@@ -45,7 +45,7 @@ export default function SignInPage() {
     const authCode = urlParams.get("code");
     if (authCode) {
       // Send auth code to original window.
-      window.opener.postMessage({ authCode }, window.location.origin);
+      window.opener.postMessage({ authCode }, CLIENT_URL);
     }
   }, []);
 
