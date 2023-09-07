@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { OAuthProvider, postOAuthSignIn } from "api/user";
+import { OAuthProvider, getOAuthSignIn } from "api/user";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
@@ -14,7 +14,7 @@ export default function useOAuthSignInMutation() {
     }: {
       provider: OAuthProvider;
       authCode: string;
-    }) => postOAuthSignIn(provider, authCode),
+    }) => getOAuthSignIn(provider, authCode),
     onSuccess: ({ data }) => {
       const { accessToken, refreshToken } = data;
 
