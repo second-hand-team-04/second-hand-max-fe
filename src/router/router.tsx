@@ -11,6 +11,7 @@ import NewProductPage from "@pages/NewProductPage";
 import SignInPage from "@pages/SignInPage";
 import { User } from "api/user";
 import HomePage from "@pages/HomePage";
+import MyProfilePage from "@pages/MyProfilePage";
 
 const router = (user: User | undefined) =>
   createBrowserRouter(
@@ -30,7 +31,7 @@ const router = (user: User | undefined) =>
           {/* <Route path="wishlist" element={<WishlistPage />} /> */}
           {/* <Route path="transactions" element={<MyTransactionsPage />} /> */}
           {/* <Route path="wishlist" element={<MyWishlistPage />} /> */}
-          {/* <Route path="profile" element={<MyProfilePage />} /> */}
+          <Route path="profile" element={<MyProfilePage />} />
           {/* <Route path="chats" element={<MyChatsPage />} /> */}
           {/* <Route path="chats/:chatId" element={<ChatPage />} /> */}
         </Route>

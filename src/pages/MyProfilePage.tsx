@@ -6,10 +6,17 @@ import cameraIcon from "@assets/icon/camera.svg";
 import useImageInput from "@hooks/useImageInput";
 import { useEffect, useState } from "react";
 import Button from "@components/common/Button/Button";
+import useSignOutMutation from "api/queries/useSignOutMutation";
+import { useQueryClient } from "@tanstack/react-query";
+import queryKeys from "api/queries/queryKeys";
 
 export default function MyProfilePage() {
+  const queryClient = useQueryClient();
+
   const { data: userInfo } = useUserInfoQuery();
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
+
+  const { mutate: signOutMutate } = useSignOutMutation();
 
   const {
     imageFile: profilePictureImage,
@@ -19,18 +26,17 @@ export default function MyProfilePage() {
 
   useEffect(() => {
     if (!profilePictureImage && userInfo) {
-      setProfileImageUrl(userInfo.profileImageUrl);
+      setProfileImageUrl(userInfo.imageUrl);
     }
     if (profilePictureImage) {
       setProfileImageUrl(URL.createObjectURL(profilePictureImage));
     }
   }, [profilePictureImage, userInfo]);
 
-  const logout = () => {
-    console.log("로그아웃");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    window.location.reload();
+  const onSignOutClick = () => {
+    signOutMutate();
+    console.log("queryKey:", queryKeys.user.info().queryKey);
+    queryClient.setQueryData(queryKeys.user.info().queryKey, () => null);
   };
 
   return (
@@ -38,7 +44,6 @@ export default function MyProfilePage() {
       <AppBar>
         <AppBarTitle>내 계정</AppBarTitle>
       </AppBar>
-
       <ImageInputError>{imageFileError}</ImageInputError>
       <ContentArea>
         <ProfilePictureLabel
@@ -55,7 +60,7 @@ export default function MyProfilePage() {
         </ProfilePictureLabel>
         <UserNameLabel>{userInfo?.nickname}</UserNameLabel>
         <Button
-          onClick={logout}
+          onClick={onSignOutClick}
           style={{ marginTop: "40px", width: "329px" }}
           variant="contained">
           로그아웃
@@ -135,5 +140,4 @@ const ContentArea = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  // height: 100%;
 `;

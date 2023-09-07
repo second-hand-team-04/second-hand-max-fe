@@ -61,8 +61,9 @@ export const successfulUserInfoData = {
   status: "OK",
   message: "사용자 정보 조회를 성공하였습니다",
   data: {
+    id: 1,
     nickname: "Kakamotobi",
-    profileImageUrl:
+    imageUrl:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/800px-African_Bush_Elephant.jpg",
   },
 };
@@ -286,23 +287,4 @@ export const successfulMyRegionListData = {
     { id: 1, title: "개포1동" },
     // { id: 2, title: "개포2동" },
   ],
-};
-
-export const successfulUserInfoData = {
-  code: 200,
-  status: "OK",
-  data: {
-    id: 1,
-    nickname: "꼬질 망그러진 곰",
-    profileImageUrl:
-      "https://item.kakaocdn.net/do/b563e153db82fde06e1423472ccf192c960f4ab09fe6e38bae8c63030c9b37f9",
-  },
-  message: "사용자 정보 조회를 성공하였습니다",
-};
-
-export const unsuccessfulUserInfoData = {
-  code: 401,
-  status: "OK",
-  data: null,
-  message: "유저 정보를 가져오는데 실패했습니다",
 };

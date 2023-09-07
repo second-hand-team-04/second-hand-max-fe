@@ -4,21 +4,22 @@ import designSystem from "@styles/designSystem";
 import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import CustomToaster from "@components/CustomToaster";
-import useUserQuery from "api/queries/useUserQuery";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import { useEffect } from "react";
 
 function App() {
-  const { data: user, refetch: fetchUserInfo } = useUserQuery();
+  const { data: user, refetch: fetchUserInfo } = useUserInfoQuery();
 
   useEffect(() => {
     fetchUserInfo();
+    console.log("App.tsx: ", user);
   }, [user, fetchUserInfo]);
 
   return (
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
       <StyledApp>
-        <RouterProvider router={router(user?.data)} />
+        <RouterProvider router={router(user)} />
         <CustomToaster />
       </StyledApp>
     </ThemeProvider>
