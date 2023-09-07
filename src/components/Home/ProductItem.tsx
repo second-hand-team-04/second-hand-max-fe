@@ -2,6 +2,7 @@ import { styled } from "styled-components";
 import messageIcon from "@assets/icon/message.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import { ProductItemType } from "api/productItem";
+import { formatAsPrice } from "@utils/stringFormatters";
 
 type Props = {
   item: ProductItemType;
@@ -20,7 +21,12 @@ export default function ProductItem({ item }: Props) {
             </RegionAndTime>
             <BadgeAndPrice>
               {item.status && <Badge>{item.status}</Badge>}
-              {item.price && <Price>{item.price}원</Price>}
+
+              <Price>
+                {item.price
+                  ? `${formatAsPrice(String(item.price))}원`
+                  : "가격미정"}
+              </Price>
             </BadgeAndPrice>
           </Information>
           <ReactionContainer>
