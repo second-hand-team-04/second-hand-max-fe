@@ -13,6 +13,11 @@ import KakaoSignInButton from "@components/KakaoSignInButton";
 import useOAuthSignInMutation from "api/queries/useOAuthSignInMutation";
 import { WindowContext } from "context/WindowContext";
 
+const CLIENT_URL =
+  process.env.NODE_ENV === "production"
+    ? import.meta.env.VITE_CLIENT_URL_PROD
+    : import.meta.env.VITE_CLIENT_URL_DEV;
+
 export default function SignInPage() {
   const navigate = useNavigate();
   const { popUpWindow, closePopUpWindow } = useContext(WindowContext);
@@ -49,7 +54,7 @@ export default function SignInPage() {
     if (!popUpWindow) return;
 
     const closeWindowMessageHandler = (e: MessageEvent) => {
-      if (e.origin === window.location.origin) {
+      if (e.origin === CLIENT_URL) {
         const { authCode } = e.data;
         if (authCode) {
           // TODO: determine provider dynamically.
