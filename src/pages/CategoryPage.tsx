@@ -35,7 +35,7 @@ export default function CategoryPage() {
       </AppBar>
       <MainBody>
         {categories &&
-          categories.map((item) => (
+          categories.data.map((item) => (
             <CategoryButton
               key={item.id}
               item={item}
