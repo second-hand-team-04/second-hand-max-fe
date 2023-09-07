@@ -16,6 +16,8 @@ const colors = {
   mint: "#00C7BE",
   orange: "#FF9500",
   red: "#FF3B30",
+  kakaoYellow: "#FEE500",
+  kakaoLabel: `#000000${decToHexOpacity(0.85)}`,
 };
 
 const font = {
@@ -61,6 +63,10 @@ export default {
       background: colors.white,
       backgroundWeak: colors.grey200,
     },
+    kakao: {
+      primary: colors.kakaoYellow,
+      label: colors.kakaoLabel
+    }
   },
   filter: {
     neutralTextWeak:

@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import {
-  ItemListData,
+  successfulItemListData,
   regionListData,
   successfulCategoriesData,
   successfulMyRegionListData,
@@ -8,6 +8,11 @@ import {
   successfulSignUpData,
   unSuccessfulSignUpData,
   unsuccessfulSignInData,
+  successfulUserInfoData,
+  unsuccessfulUserInfoData,
+  successfulRefreshAccessToken,
+  unSuccessfulRefreshAccessToken,
+  successfulSignOutData,
 } from "./data";
 
 export default [
@@ -17,8 +22,27 @@ export default [
   }),
 
   rest.post("/api/auth", async (_, res, ctx) => {
-    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
     return res(ctx.status(200), ctx.json(successfulSignInData));
+    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+  }),
+
+  rest.get("/api/auth/oauth/kakao?code=blah", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulSignInData));
+    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+  }),
+
+  rest.delete("/api/auth", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulSignOutData));
+  }),
+
+  rest.get("/api/auth/refresh", async (_, res, ctx) => {
+    return res(ctx.status(401), ctx.json(unSuccessfulRefreshAccessToken));
+    return res(ctx.status(200), ctx.json(successfulRefreshAccessToken));
+  }),
+
+  rest.get("/api/users/info", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulUserInfoData));
+    return res(ctx.status(400), ctx.json(unsuccessfulUserInfoData));
   }),
 
   rest.get("/api/categories", async (_, res, ctx) => {
@@ -30,7 +54,7 @@ export default [
   }),
 
   rest.get("/api/items?region=1&category=1", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(ItemListData));
+    return res(ctx.status(200), ctx.json(successfulItemListData));
   }),
 
   rest.get("/api/users/regions", async (_, res, ctx) => {

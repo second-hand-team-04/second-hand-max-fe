@@ -11,9 +11,15 @@ type SignInData = {
   refreshToken: string;
 };
 
-type User = {
+export type User = {
   nickname: string;
-  profileImgUrl: string;
+  imageUrl: string;
+};
+
+export type OAuthProvider = "kakao";
+
+type AccessTokenData = {
+  accessToken: string;
 };
 
 export const postSignUp = async (body: FormData) => {
@@ -23,6 +29,30 @@ export const postSignUp = async (body: FormData) => {
 
 export const postSignIn = async (body: SignInCredentials) => {
   const res = await fetcher.post<Response<SignInData>>("/auth", body);
+  return res.data;
+};
+
+export const getOAuthSignIn = async (
+  provider: OAuthProvider,
+  authCode: string
+) => {
+  const res = await fetcher.get<Response<SignInData>>(
+    `/auth/oauth/${provider}?code=${authCode}`
+  );
+  return res.data;
+};
+
+export const deleteSignOut = async () => {
+  const res = await fetcher.delete<Response<null>>("/auth");
+  return res.data;
+};
+
+export const refreshAccessToken = async () => {
+  const res = await fetcher.get<Response<AccessTokenData>>("/auth/refresh", {
+    headers: {
+      Authorization: localStorage.getItem("refreshToken"),
+    },
+  });
   return res.data;
 };
 

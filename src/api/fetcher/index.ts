@@ -1,8 +1,9 @@
 import axios from "axios";
+import { refreshAccessToken } from "api/user";
 
 const BASE_API_URL =
   process.env.NODE_ENV === "production"
-    ? import.meta.env.VITE_APP_API_URL_PROD
+    ? import.meta.env.VITE_API_URL_PROD
     : import.meta.env.VITE_API_URL_DEV;
 
 export const fetcher = axios.create({
@@ -13,12 +14,41 @@ export const fetcher = axios.create({
 fetcher.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("accessToken");
+
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
+
     return config;
   },
   (error) => {
     Promise.reject(error);
+  }
+);
+
+fetcher.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config;
+    // If the access token expired, attempt to refresh it.
+    if (error.response.status === 403 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const res = await refreshAccessToken();
+        localStorage.setItem("accessToken", res.data?.accessToken);
+        return fetcher(originalRequest);
+      } catch (refreshError) {
+        // Refresh token expired.
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+
+        // TODO: navigate the user to `/signin` while displaying the toast
+        // window.location.href = "/signin";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
   }
 );

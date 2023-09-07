@@ -1,23 +1,26 @@
 import { ThemeProvider, styled } from "styled-components";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import CustomToaster from "@components/CustomToaster";
-
-const queryClient = new QueryClient();
+import useUserQuery from "api/queries/useUserQuery";
+import { useEffect } from "react";
 
 function App() {
+  const { data: user, refetch: fetchUserInfo } = useUserQuery();
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [user, fetchUserInfo]);
+
   return (
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
-      <QueryClientProvider client={queryClient}>
-        <StyledApp>
-          <RouterProvider router={router} />
-          <CustomToaster />
-        </StyledApp>
-      </QueryClientProvider>
+      <StyledApp>
+        <RouterProvider router={router(user?.data)} />
+        <CustomToaster />
+      </StyledApp>
     </ThemeProvider>
   );
 }

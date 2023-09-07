@@ -1,6 +1,7 @@
 export const successfulSignInData = {
   code: 200,
   status: "OK",
+  message: "로그인을 성공했습니다",
   data: {
     accessToken: "accessToken",
     refreshToken: "refreshToken",
@@ -9,31 +10,69 @@ export const successfulSignInData = {
       profileImageUrl: "blah",
     },
   },
-  message: "로그인을 성공했습니다",
 };
 
 export const unsuccessfulSignInData = {
   code: 401,
-  status: "OK",
+  status: "Unauthenticated",
+  message: "이메일 또는 비밀번호가 일치하지 않습니다",
   data: null,
-  message: "로그인을 실패했습니다",
 };
 
 export const successfulSignUpData = {
   code: 201,
   status: "OK",
-  data: null,
   message: "회원가입을 성공했습니다",
+  data: null,
 };
 
 export const unSuccessfulSignUpData = {
   code: 400,
-  status: "OK",
-  data: null,
+  status: "Bad Request",
   message: "회원가입을 실패했습니다",
+  data: null,
 };
 
-// TODO: `<Response>`형태로 변경
+export const successfulSignOutData = {
+  code: 200,
+  status: "OK",
+  message: "로그아웃을 성공했습니다",
+  data: null,
+};
+
+export const successfulRefreshAccessToken = {
+  code: 200,
+  status: "OK",
+  message: "Access Token 발급을 성공했습니다",
+  data: {
+    accessToken: "accessToken",
+  },
+};
+
+export const unSuccessfulRefreshAccessToken = {
+  code: 401,
+  status: "Bad Request",
+  message: "Access Token 발급을 실패했습니다",
+  data: null,
+};
+
+export const successfulUserInfoData = {
+  code: 200,
+  status: "OK",
+  message: "사용자 정보 조회를 성공하였습니다",
+  data: {
+    nickname: "Kakamotobi",
+    profileImageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/800px-African_Bush_Elephant.jpg",
+  },
+};
+
+export const unsuccessfulUserInfoData = {
+  code: 400,
+  status: "Bad Request",
+  message: "사용자 정보 조회를 실패했습니다",
+  data: null,
+};
 
 export const successfulCategoriesData = {
   code: 200,
@@ -117,7 +156,6 @@ export const successfulCategoriesData = {
   ],
 };
 
-// TODO: `<Response>`형태로 변경 서버 API 우선 사용 중이라 추후 변경 예정
 export const regionListData = {
   code: 200,
   status: "OK",
@@ -144,7 +182,10 @@ export const regionListData = {
   },
 };
 
-export const ItemListData = {
+export const successfulItemListData = {
+  code: 200,
+  status: "OK",
+  message: "상품 목록 조회를 성공하였습니다",
   data: [
     {
       id: 1,
