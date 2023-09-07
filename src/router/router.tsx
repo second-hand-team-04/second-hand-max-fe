@@ -17,17 +17,16 @@ const router = (user: User | undefined) =>
   createBrowserRouter(
     createRoutesFromElements(
       <Route path="/">
-        <Route index element={<HomePage />} />
-        <Route path="categories" element={<CategoryPage />} />
-        {/* <Route path="product/:id" element={<ProductPage />} /> */}
-
         <Route element={<PublicOnlyRoute user={user} />}>
           <Route path="signup" element={<SignUpPage />} />
+          <Route index path="signin" element={<SignInPage />} />
         </Route>
-        <Route path="signin" element={<SignInPage />} />
 
         <Route element={<ProtectedRoute user={user} />}>
+          <Route index element={<HomePage />} />
+          <Route path="categories" element={<CategoryPage />} />
           <Route path="product/new" element={<NewProductPage />} />
+          {/* <Route path="product/:id" element={<ProductPage />} /> */}
           {/* <Route path="wishlist" element={<WishlistPage />} /> */}
           {/* <Route path="transactions" element={<MyTransactionsPage />} /> */}
           {/* <Route path="wishlist" element={<MyWishlistPage />} /> */}
