@@ -119,23 +119,29 @@ export const successfulCategoriesData = {
 
 // TODO: `<Response>`형태로 변경 서버 API 우선 사용 중이라 추후 변경 예정
 export const regionListData = {
-  data: [
-    { id: 1, title: "서울 강남구 개포1동" },
-    { id: 2, title: "서울 강남구 개포2동" },
-    { id: 3, title: "서울 강남구 개포3동" },
-    { id: 4, title: "서울 강남구 개포1동" },
-    { id: 5, title: "서울 강남구 개포2동" },
-    { id: 6, title: "서울 강남구 개포3동" },
-    { id: 7, title: "서울 강남구 개포1동" },
-    { id: 8, title: "서울 강남구 개포2동" },
-    { id: 9, title: "서울 강남구 개포3동" },
-    { id: 10, title: "서울 강남구 개포1동" },
-    { id: 11, title: "서울 강남구 개포2동" },
-    { id: 12, title: "서울 강남구 개포3동" },
-    { id: 13, title: "서울 강남구 개포1동" },
-    { id: 14, title: "서울 강남구 개포2동" },
-    { id: 15, title: "서울 강남구 개포3동" },
-  ],
+  code: 200,
+  status: "OK",
+  message: "나의 동네 목록 조회를 성공하였습니다",
+  data: {
+    hasMore: true,
+    regions: [
+      { id: 1, title: "서울 강남구 개포1동" },
+      { id: 2, title: "서울 강남구 개포2동" },
+      { id: 3, title: "서울 강남구 개포3동" },
+      { id: 4, title: "서울 강남구 개포1동" },
+      { id: 5, title: "서울 강남구 개포2동" },
+      { id: 6, title: "서울 강남구 개포3동" },
+      { id: 7, title: "서울 강남구 개포1동" },
+      { id: 8, title: "서울 강남구 개포2동" },
+      { id: 9, title: "서울 강남구 개포3동" },
+      { id: 10, title: "서울 강남구 개포1동" },
+      { id: 11, title: "서울 강남구 개포2동" },
+      { id: 12, title: "서울 강남구 개포3동" },
+      { id: 13, title: "서울 강남구 개포1동" },
+      { id: 14, title: "서울 강남구 개포2동" },
+      { id: 15, title: "서울 강남구 개포3동" },
+    ],
+  },
 };
 
 export const ItemListData = {
@@ -237,6 +243,6 @@ export const successfulMyRegionListData = {
   message: "나의 동네 목록 조회를 성공하였습니다",
   data: [
     { id: 1, title: "개포1동" },
-    { id: 2, title: "개포2동" },
+    // { id: 2, title: "개포2동" },
   ],
 };

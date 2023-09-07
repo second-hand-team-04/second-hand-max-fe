@@ -1,10 +1,10 @@
 import { styled } from "styled-components";
 import messageIcon from "@assets/icon/message.svg";
 import heartIcon from "@assets/icon/heart.svg";
-import { ItemType } from "api/item";
+import { ProductItemType } from "api/productItem";
 
 type Props = {
-  item: ItemType;
+  item: ProductItemType;
 };
 
 export default function ProductItem({ item }: Props) {
@@ -24,30 +24,25 @@ export default function ProductItem({ item }: Props) {
             </BadgeAndPrice>
           </Information>
           <ReactionContainer>
-            <div style={{ display: "flex", gap: "4px" }}>
-              <ReactionButton>
-                <img
-                  style={{ width: "16px", height: "16px" }}
-                  src={messageIcon}
-                  alt="chat"
-                />
-                <span>{item.numChat}</span>
-              </ReactionButton>
-              <ReactionButton>
-                <img
-                  style={{ width: "16px", height: "16px" }}
-                  src={heartIcon}
-                  alt="heart"
-                />
-                <span>{item.numLikes}</span>
-              </ReactionButton>
-            </div>
+            <ReactionButton>
+              <ReactionImage src={messageIcon} alt="chat" />
+              <span>{item.numChat}</span>
+            </ReactionButton>
+            <ReactionButton>
+              <ReactionImage src={heartIcon} alt="heart" />
+              <span>{item.numLikes}</span>
+            </ReactionButton>
           </ReactionContainer>
         </Content>
       </ItemContentArea>
     </StyledItem>
   );
 }
+
+const ReactionImage = styled.img`
+  width: 16px;
+  height: 16px;
+`;
 
 const ReactionButton = styled.button`
   display: flex;
@@ -78,6 +73,7 @@ const Information = styled.div`
 `;
 
 const ReactionContainer = styled.div`
+ gap: 4px
   width: 100%;
   height: 24px;
   display: flex;

@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 
 import queryKeys from "./queryKeys";
-import { getItem } from "api/item";
+import { getProductItems } from "api/productItem";
 
 export default function useItemQuery() {
   return useQuery({
     queryKey: [queryKeys.items],
-    queryFn: getItem,
+    queryFn: getProductItems,
     select: (res) => res.data,
   });
 }

@@ -1,11 +1,7 @@
 import xIcon from "@assets/icon/x.svg";
 import circleXFilled from "@assets/icon/circle-x-filled.svg";
 import plus from "@assets/icon/plus.svg";
-import {
-  IconWrapper,
-  ModalHeader,
-  ModalTitle,
-} from "@components/common/Modal/ModalStyles";
+import { ModalHeader, ModalTitle } from "@components/common/Modal/ModalStyles";
 import Modal from "@components/common/Modal/Modal";
 import { styled } from "styled-components";
 import { ButtonsContainer } from "./RegionModal";
@@ -15,12 +11,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import queryKeys from "api/queries/queryKeys";
 import { toast } from "react-hot-toast";
 import { AxiosError } from "axios";
-import { keepLastNeighborhood } from "@utils/stringFormatters";
+import { keepLastRegion } from "@utils/stringFormatters";
 
 type Props = {
   isRegionAddModal: boolean;
   onRegionModalClose: () => void;
-  onRegionAdd: () => void;
+  onOpenRegionSelectModal: () => void;
   selectedRegionList: RegionType[];
   selectMyRegion: (region: RegionType) => void;
   selectedRegion: RegionType;
@@ -29,7 +25,7 @@ type Props = {
 export default function RegionSelectModal({
   isRegionAddModal,
   onRegionModalClose,
-  onRegionAdd,
+  onOpenRegionSelectModal,
   selectedRegionList,
   selectMyRegion,
   selectedRegion,
@@ -38,6 +34,7 @@ export default function RegionSelectModal({
 
   const selectedOneRegion = selectedRegionList.length === 1;
 
+  // TODO : useMutation으로 변경해야함
   const onRegionDelete = async (itemId: number) => {
     if (selectedOneRegion) {
       toast.error("동네는 최소 1개이상 선택해야해요.");
@@ -47,11 +44,10 @@ export default function RegionSelectModal({
     try {
       const res = await deleteUserRegion(itemId);
 
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.region.userRegions.queryKey,
-      });
-
       if (res.code === 200) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.region.userRegions.queryKey,
+        });
         toast.success("선택한 동네가 삭제되었어요.");
       }
     } catch (error) {
@@ -67,9 +63,12 @@ export default function RegionSelectModal({
     <Modal onClose={() => {}}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
         <ModalTitle>동네 설정</ModalTitle>
-        <IconWrapper>
-          <img onClick={onRegionModalClose} src={xIcon} alt="close" />
-        </IconWrapper>
+        <Button
+          style={{ padding: "12px", width: "48px", height: "48px" }}
+          variant="plain"
+          onClick={onRegionModalClose}>
+          <img src={xIcon} alt="close" />
+        </Button>
       </ModalHeader>
       <RegionModalContent>
         <ContentNotice>
@@ -86,9 +85,7 @@ export default function RegionSelectModal({
               }}
               key={index}
               onClick={() => selectMyRegion(item)}>
-              <RegionButtonText>
-                {keepLastNeighborhood(item.title)}
-              </RegionButtonText>
+              <RegionButtonText>{keepLastRegion(item.title)}</RegionButtonText>
               <CircleXFilled
                 onClick={() => onRegionDelete(item.id)}
                 src={circleXFilled}
@@ -104,7 +101,7 @@ export default function RegionSelectModal({
             }}
             variant="outlined"
             size="L"
-            onClick={onRegionAdd}>
+            onClick={onOpenRegionSelectModal}>
             <img src={plus} alt="plus" />
             <AddButtonText>추가</AddButtonText>
           </Button>

@@ -1,7 +1,7 @@
 import { fetcher } from "api/fetcher";
 import { Response } from "api/types";
 
-export type ItemType = {
+export type ProductItemType = {
   id: number;
   title: string;
   region: string;
@@ -14,8 +14,8 @@ export type ItemType = {
   numLikes: number;
 };
 
-export const getItem = async () => {
-  const res = await fetcher.get<Response<ItemType[]>>(
+export const getProductItems = async () => {
+  const res = await fetcher.get<Response<ProductItemType[]>>(
     `/items?region=${regionNum}&category=${categoryNum}`
   );
   return res.data;

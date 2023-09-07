@@ -6,21 +6,21 @@ import { RegionType } from "api/region";
 import { toast } from "react-hot-toast";
 
 type Props = {
-  onClose: () => void;
+  onRegionModalClose: () => void;
   selectedRegionList: RegionType[];
   selectMyRegion: (region: RegionType) => void;
   selectedRegion: RegionType;
 };
 
 export default function RegionModal({
-  onClose,
+  onRegionModalClose,
   selectedRegionList,
   selectMyRegion,
   selectedRegion,
 }: Props) {
   const [isRegionAddModal, setIsRegionAddModal] = useState(false);
 
-  const onRegionAdd = () => {
+  const onOpenRegionSelectModal = () => {
     if (selectedRegionList.length === 2) {
       toast.error("동네는 최대 2개까지 설정 가능해요.");
       return;
@@ -32,15 +32,10 @@ export default function RegionModal({
     setIsRegionAddModal(false);
   };
 
-  const onRegionModalClose = () => {
-    onClose();
-  };
-
   return isRegionAddModal ? (
     <RegionAddModal
       {...{
         isRegionAddModal,
-
         onRegionModalClose,
         switchToSelectModal,
       }}
@@ -51,7 +46,7 @@ export default function RegionModal({
         isRegionAddModal,
         selectMyRegion,
         onRegionModalClose,
-        onRegionAdd,
+        onOpenRegionSelectModal,
         selectedRegionList,
         selectedRegion,
       }}

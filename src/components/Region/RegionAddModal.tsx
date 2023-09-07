@@ -2,7 +2,6 @@ import xIcon from "@assets/icon/x.svg";
 import chevronLeft from "@assets/icon/chevron-left.svg";
 import Modal from "@components/common/Modal/Modal";
 import {
-  IconWrapper,
   ModalBody,
   ModalHeader,
   ModalList,
@@ -11,45 +10,44 @@ import { useState } from "react";
 import { styled } from "styled-components";
 import RegionItem from "./RegionItem";
 import { useRegionListQuery } from "api/queries/useRegionsQuery";
-import { addUserRegion } from "api/region";
+import { postUserRegion } from "api/region";
 import { useQueryClient } from "@tanstack/react-query";
 import queryKeys from "api/queries/queryKeys";
 import { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import Button from "@components/common/Button/Button";
 
 type Props = {
   isRegionAddModal: boolean;
-
   onRegionModalClose: () => void;
   switchToSelectModal: () => void;
 };
 
 export default function RegionAddModal({
   isRegionAddModal,
-
   onRegionModalClose,
   switchToSelectModal,
 }: Props) {
   const queryClient = useQueryClient();
 
-  const [inputValue, setInputValue] = useState<string>("");
+  const [regionInputValue, setRegionInputValue] = useState<string>("");
 
   const { data: regionList } = useRegionListQuery();
 
-  const onRegionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  console.log(regionList);
+  const onRegionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRegionInputValue(e.target.value);
   };
 
   const onRegionItemClick = async (itemId: number) => {
-    setInputValue("");
-
     try {
-      const res = await addUserRegion(itemId);
+      const res = await postUserRegion(itemId);
 
       if (res.code === 201) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.region.userRegions.queryKey,
         });
+        setRegionInputValue("");
         toast.success("나의 동네로 설정되었어요.");
       }
     } catch (error) {
@@ -66,17 +64,23 @@ export default function RegionAddModal({
   return (
     <Modal onClose={() => {}}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
-        <IconWrapper onClick={switchToSelectModal}>
+        <Button
+          style={{ padding: "12px", width: "48px", height: "48px" }}
+          variant="plain"
+          onClick={switchToSelectModal}>
           <img src={chevronLeft} alt="back" />
-        </IconWrapper>
-        <IconWrapper onClick={onRegionModalClose}>
+        </Button>
+        <Button
+          style={{ padding: "12px", width: "48px", height: "48px" }}
+          variant="plain"
+          onClick={onRegionModalClose}>
           <img src={xIcon} alt="close" />
-        </IconWrapper>
+        </Button>
       </ModalHeader>
       <ModalBody>
         <SearchBar
-          value={inputValue}
-          onChange={onRegionChange}
+          value={regionInputValue}
+          onChange={onRegionInputChange}
           placeholder="동명(읍, 면)으로 검색(ex. 서초동)"
         />
         <ModalList>

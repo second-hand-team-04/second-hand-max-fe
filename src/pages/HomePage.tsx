@@ -9,14 +9,14 @@ import layoutGridIcon from "@assets/icon/layout-grid.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import NavBar from "@components/NavBar/NavBar";
-import useItemQuery from "api/queries/useItemQuery";
+import useItemQuery from "api/queries/useProductItemsQuery";
 import ProductItem from "@components/Home/ProductItem";
 import { RegionType } from "api/region";
 import { useUserRegionListQuery } from "api/queries/useRegionsQuery";
 import RegionModal from "@components/Region/RegionModal";
 import { useEffect, useRef, useState } from "react";
 import { FabButton } from "@components/Home/FabButton";
-import { keepLastNeighborhood } from "@utils/stringFormatters";
+import { keepLastRegion } from "@utils/stringFormatters";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -27,7 +27,8 @@ export default function HomePage() {
     title: "역삼1동",
   });
 
-  const { data: productItemList, isLoading: isLoadingItem } = useItemQuery();
+  const { data: productItems, isLoading: isLoadingProductItems } =
+    useItemQuery();
   const { data: regionList } = useUserRegionListQuery();
 
   const previousRegionListLength = useRef<number>(0);
@@ -57,7 +58,7 @@ export default function HomePage() {
     navigate("/product/new");
   };
 
-  if (isLoadingItem) return <div>로딩중...</div>;
+  if (isLoadingProductItems) return <div>로딩중...</div>;
 
   return (
     <StyledHomePage>
@@ -66,20 +67,20 @@ export default function HomePage() {
           selectedRegion={selectedRegion}
           selectMyRegion={selectMyRegion}
           selectedRegionList={regionList}
-          onClose={closeRegionModal}
+          onRegionModalClose={closeRegionModal}
         />
       ) : null}
       <AppBar isTop={true}>
         <div style={{ flexGrow: 1 }}>
           <SelectInput
             name="선택된 동네"
-            value={keepLastNeighborhood(selectedRegion.title)}
+            value={keepLastRegion(selectedRegion.title)}
             onChange={onChangeSelectedRegion}>
             {regionList &&
               regionList.length > 0 &&
               regionList.map((region: RegionType) => (
                 <SelectItem key={region.id} item={region}>
-                  {keepLastNeighborhood(region.title)}
+                  {keepLastRegion(region.title)}
                 </SelectItem>
               ))}
             <SelectItem
@@ -97,9 +98,9 @@ export default function HomePage() {
       </AppBar>
       <ProductItemArea>
         <ProductItemList>
-          {productItemList &&
-            productItemList.length > 0 &&
-            productItemList.map((product) => (
+          {productItems &&
+            productItems.length > 0 &&
+            productItems.map((product) => (
               <ProductItem key={product.id} item={product} />
             ))}
         </ProductItemList>
