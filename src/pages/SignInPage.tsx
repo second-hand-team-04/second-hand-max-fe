@@ -6,13 +6,25 @@ import NavBar from "@components/NavBar/NavBar";
 import { validateEmail } from "@utils/textValidators";
 import Button from "@components/common/Button/Button";
 import { useNavigate } from "react-router-dom";
-import { FormEvent } from "react";
+import { FormEvent, useContext, useEffect } from "react";
 import useSignInMutation from "api/queries/useSignInMutation";
+import useUserQuery from "api/queries/useUserQuery";
+import KakaoSignInButton from "@components/KakaoSignInButton";
+import useOAuthSignInMutation from "api/queries/useOAuthSignInMutation";
+import { WindowContext } from "context/WindowContext";
+
+const CLIENT_URL =
+  process.env.NODE_ENV === "production"
+    ? import.meta.env.VITE_CLIENT_URL_PROD
+    : import.meta.env.VITE_CLIENT_URL_DEV;
 
 export default function SignInPage() {
   const navigate = useNavigate();
+  const { popUpWindow, closePopUpWindow } = useContext(WindowContext);
 
   const { mutate: signInMutate } = useSignInMutation();
+  const { mutate: oAuthSignInMutate } = useOAuthSignInMutation();
+  const { refetch: fetchUserInfo } = useUserQuery();
 
   const {
     value: email,
@@ -24,7 +36,41 @@ export default function SignInPage() {
   const onSignIn = async (e: FormEvent) => {
     e.preventDefault();
     signInMutate({ email, password });
+    fetchUserInfo();
   };
+
+  // Receive auth code in the popup window from the OAuth provider and send it to the original window.
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode = urlParams.get("code");
+    if (authCode) {
+      // Send auth code to original window.
+      window.opener.postMessage({ authCode }, window.location.origin);
+    }
+  }, []);
+
+  // Receive auth code in original window from popup window.
+  useEffect(() => {
+    if (!popUpWindow) return;
+
+    const closeWindowMessageHandler = (e: MessageEvent) => {
+      if (e.origin === CLIENT_URL) {
+        const { authCode } = e.data;
+        if (authCode) {
+          // TODO: determine provider dynamically.
+          oAuthSignInMutate({ provider: "kakao", authCode });
+          fetchUserInfo();
+        }
+        closePopUpWindow();
+      }
+    };
+
+    window.addEventListener("message", closeWindowMessageHandler);
+
+    return () => {
+      window.removeEventListener("message", closeWindowMessageHandler);
+    };
+  }, [closePopUpWindow, fetchUserInfo, oAuthSignInMutate, popUpWindow]);
 
   const isAllFieldsFilled = !!email && !emailError && !!password;
 
@@ -34,43 +80,47 @@ export default function SignInPage() {
         <AppBarTitle>내 계정</AppBarTitle>
       </AppBar>
 
-      <Form onSubmit={onSignIn}>
-        <InputControl>
-          <TextInputLabel>이메일</TextInputLabel>
-          <TextInput
-            {...{
-              placeholder: "이메일",
-              value: email,
-              onChange: onEmailChange,
-            }}
-          />
-          {<TextInputError>{emailError}</TextInputError>}
-        </InputControl>
-        <InputControl>
-          <TextInputLabel>비밀번호</TextInputLabel>
-          <TextInput
-            {...{
-              type: "password",
-              placeholder: "비밀번호",
-              value: password,
-              onChange: onPasswordChange,
-            }}
-          />
-        </InputControl>
+      <Wrapper>
+        <Form onSubmit={onSignIn}>
+          <InputControl>
+            <TextInputLabel>이메일</TextInputLabel>
+            <TextInput
+              {...{
+                placeholder: "이메일",
+                value: email,
+                onChange: onEmailChange,
+              }}
+            />
+            {<TextInputError>{emailError}</TextInputError>}
+          </InputControl>
+          <InputControl>
+            <TextInputLabel>비밀번호</TextInputLabel>
+            <TextInput
+              {...{
+                type: "password",
+                placeholder: "비밀번호",
+                value: password,
+                onChange: onPasswordChange,
+              }}
+            />
+          </InputControl>
 
-        <Button
-          type="submit"
-          variant="contained"
-          size="M"
-          style={{ width: "100%" }}
-          disabled={!isAllFieldsFilled}>
-          <ButtonText>로그인</ButtonText>
+          <Button
+            type="submit"
+            variant="contained"
+            size="M"
+            style={{ width: "100%" }}
+            disabled={!isAllFieldsFilled}>
+            <ButtonText>로그인</ButtonText>
+          </Button>
+        </Form>
+
+        <KakaoSignInButton />
+
+        <Button variant="plain" size="M" onClick={() => navigate("/signup")}>
+          회원가입
         </Button>
-      </Form>
-
-      <Button variant="plain" size="M" onClick={() => navigate("/signup")}>
-        회원가입
-      </Button>
+      </Wrapper>
 
       <NavBar />
     </StyledSignInPage>
@@ -95,10 +145,18 @@ const AppBarTitle = styled.p`
   text-align: center;
 `;
 
+const Wrapper = styled.div`
+  width: 100%;
+  padding-inline: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Form = styled.form`
   width: 100%;
   margin-bottom: 16px;
-  padding-inline: 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;

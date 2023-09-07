@@ -9,7 +9,7 @@ import {
   validateNickname,
   validatePassword,
 } from "@utils/textValidators";
-import { FormEvent, useRef } from "react";
+import { FormEvent } from "react";
 import useImageInput from "@hooks/useImageInput";
 import TextInput from "@components/common/TextInput/TextInput";
 import useSignUpMutation from "api/queries/useSignUpMutation";
@@ -19,10 +19,8 @@ export default function SignUpPage() {
 
   const { mutate: signUpMutate } = useSignUpMutation();
 
-  const formRef = useRef(null);
-
   const {
-    imageFile: profilePictureImage,
+    imageFile: profileImage,
     error: imageFileError,
     onChange: onProfilePictureChange,
   } = useImageInput({ sizeLimit: 2000000 });
@@ -55,7 +53,16 @@ export default function SignUpPage() {
 
   const onSignUp = async (e: FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(formRef.current!);
+
+    const formData = new FormData();
+    formData.append(
+      "request",
+      new Blob([JSON.stringify({ email, password, nickname })])
+    );
+    if (profileImage) {
+      formData.append("image", profileImage);
+    }
+
     signUpMutate(formData);
   };
 
@@ -72,7 +79,7 @@ export default function SignUpPage() {
     isPasswordMatch;
 
   return (
-    <Form ref={formRef} onSubmit={onSignUp}>
+    <Form onSubmit={onSignUp}>
       <AppBar padding="8px">
         <Button
           type="button"
@@ -96,9 +103,7 @@ export default function SignUpPage() {
       <FormInnerContainer>
         <ProfilePictureLabel
           htmlFor="profilePictureInput"
-          $pictureURL={
-            profilePictureImage ? URL.createObjectURL(profilePictureImage) : ""
-          }>
+          $pictureURL={profileImage ? URL.createObjectURL(profileImage) : ""}>
           <ProfilePictureInput
             type="file"
             accept=".jpg, .jpeg, .png"
