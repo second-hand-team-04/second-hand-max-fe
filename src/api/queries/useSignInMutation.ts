@@ -3,9 +3,11 @@ import { postSignIn } from "api/user";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import useUserInfoQuery from "./useUserInfoQuery";
 
 export default function useSignInMutation() {
   const navigate = useNavigate();
+  const { refetch: fetchUserInfo } = useUserInfoQuery();
 
   return useMutation({
     mutationFn: postSignIn,
@@ -15,6 +17,8 @@ export default function useSignInMutation() {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
+      fetchUserInfo();
+      
       navigate("/");
     },
     onError: (error) => {

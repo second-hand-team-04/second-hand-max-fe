@@ -8,7 +8,6 @@ import Button from "@components/common/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { FormEvent, useContext, useEffect } from "react";
 import useSignInMutation from "api/queries/useSignInMutation";
-import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import KakaoSignInButton from "@components/KakaoSignInButton";
 import useOAuthSignInMutation from "api/queries/useOAuthSignInMutation";
 import { WindowContext } from "context/WindowContext";
@@ -24,7 +23,6 @@ export default function SignInPage() {
 
   const { mutate: signInMutate } = useSignInMutation();
   const { mutate: oAuthSignInMutate } = useOAuthSignInMutation();
-  const { refetch: fetchUserInfo } = useUserInfoQuery();
 
   const {
     value: email,
@@ -36,7 +34,6 @@ export default function SignInPage() {
   const onSignIn = async (e: FormEvent) => {
     e.preventDefault();
     signInMutate({ email, password });
-    fetchUserInfo();
   };
 
   // Receive auth code in the popup window from the OAuth provider and send it to the original window.
@@ -59,7 +56,6 @@ export default function SignInPage() {
         if (authCode) {
           // TODO: determine provider dynamically.
           oAuthSignInMutate({ provider: "kakao", authCode });
-          fetchUserInfo();
         }
         closePopUpWindow();
       }
@@ -70,7 +66,7 @@ export default function SignInPage() {
     return () => {
       window.removeEventListener("message", closeWindowMessageHandler);
     };
-  }, [closePopUpWindow, fetchUserInfo, oAuthSignInMutate, popUpWindow]);
+  }, [closePopUpWindow, oAuthSignInMutate, popUpWindow]);
 
   const isAllFieldsFilled = !!email && !emailError && !!password;
 
