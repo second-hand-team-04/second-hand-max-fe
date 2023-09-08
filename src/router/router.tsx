@@ -12,6 +12,7 @@ import SignInPage from "@pages/SignInPage";
 import { User } from "api/user";
 import HomePage from "@pages/HomePage";
 import MyProfilePage from "@pages/MyProfilePage";
+import FallbackPage from "@pages/FallbackPage";
 
 const router = (user: User | undefined) =>
   createBrowserRouter(
@@ -34,6 +35,8 @@ const router = (user: User | undefined) =>
           {/* <Route path="chats" element={<MyChatsPage />} /> */}
           {/* <Route path="chats/:chatId" element={<ChatPage />} /> */}
         </Route>
+
+        <Route path="*" element={<FallbackPage />} />
       </Route>
     )
   );
