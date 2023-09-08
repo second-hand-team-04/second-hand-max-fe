@@ -43,7 +43,6 @@ export const getOAuthSignIn = async (
   const res = await fetcher.get<Response<SignInData>>(
     `/auth/oauth/${provider}?code=${authCode}`
   );
-  console.log("OAuth Signin Server Response:", res.data);
   return res.data;
 };
 

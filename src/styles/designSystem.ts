@@ -23,6 +23,7 @@ const colors = {
 const font = {
   displayStrong20: "700 20px Noto Sans KR, sans-serif",
   displayStrong16: "700 16px Noto Sans KR, sans-serif",
+  displayDefault26: "400 26px Noto Sans KR, sans-serif",
   displayDefault16: "400 16px Noto Sans KR, sans-serif",
   displayDefault12: "400 12px Noto Sans KR, sans-serif",
 
@@ -65,8 +66,8 @@ export default {
     },
     kakao: {
       primary: colors.kakaoYellow,
-      label: colors.kakaoLabel
-    }
+      label: colors.kakaoLabel,
+    },
   },
   filter: {
     neutralTextWeak:
