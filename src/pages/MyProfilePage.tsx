@@ -7,12 +7,8 @@ import useImageInput from "@hooks/useImageInput";
 import { useEffect, useState } from "react";
 import Button from "@components/common/Button/Button";
 import useSignOutMutation from "api/queries/useSignOutMutation";
-import { useQueryClient } from "@tanstack/react-query";
-import queryKeys from "api/queries/queryKeys";
 
 export default function MyProfilePage() {
-  const queryClient = useQueryClient();
-
   const { data: userInfo } = useUserInfoQuery();
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
 
@@ -35,8 +31,6 @@ export default function MyProfilePage() {
 
   const onSignOutClick = () => {
     signOutMutate();
-    console.log("queryKey:", queryKeys.user.info().queryKey);
-    queryClient.setQueryData(queryKeys.user.info().queryKey, () => null);
   };
 
   return (
