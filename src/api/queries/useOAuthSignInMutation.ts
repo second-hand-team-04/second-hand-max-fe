@@ -3,9 +3,11 @@ import { OAuthProvider, getOAuthSignIn } from "api/user";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import useUserInfoQuery from "./useUserInfoQuery";
 
 export default function useOAuthSignInMutation() {
   const navigate = useNavigate();
+  const { refetch: fetchUserInfo } = useUserInfoQuery();
 
   return useMutation({
     mutationFn: ({
@@ -20,6 +22,8 @@ export default function useOAuthSignInMutation() {
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+
+      fetchUserInfo();
 
       navigate("/");
     },
