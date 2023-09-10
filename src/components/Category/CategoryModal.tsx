@@ -12,7 +12,6 @@ import Modal from "@components/common/Modal/Modal";
 import { CategoryType } from "api/category/index";
 
 type Props = {
-  isOpen: boolean;
   categoryList: CategoryType[];
   currentSelectedCategory: string;
   onCategoryModalClose: () => void;
@@ -20,7 +19,6 @@ type Props = {
 };
 
 export default function CategoryModal({
-  isOpen,
   categoryList,
   currentSelectedCategory,
   onCategoryModalClose,
@@ -31,7 +29,7 @@ export default function CategoryModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onCategoryModalClose}>
+    <Modal onClose={onCategoryModalClose}>
       <ModalHeader>
         <ModalTitle>카테고리</ModalTitle>
         <IconWrapper onClick={onCategoryModalClose}>
@@ -40,17 +38,16 @@ export default function CategoryModal({
       </ModalHeader>
       <ModalBody>
         <ModalList>
-          {categoryList &&
-            categoryList.slice(1).map((item) => (
-              <CategoryItem
-                {...{
-                  key: item.id,
-                  item,
-                  onClick: onCategoryItemClick,
-                  isSelected: item.title === currentSelectedCategory,
-                }}
-              />
-            ))}
+          {categoryList.slice(1).map((item) => (
+            <CategoryItem
+              {...{
+                key: item.id,
+                item,
+                onClick: onCategoryItemClick,
+                isSelected: item.title === currentSelectedCategory,
+              }}
+            />
+          ))}
         </ModalList>
       </ModalBody>
     </Modal>

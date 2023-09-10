@@ -8,16 +8,17 @@ export default function useCategory(categoryList: CategoryType[] | []) {
   useEffect(() => {
     if (categoryList.length === 0) return;
 
+    const remainingCategories = categoryList.slice(1);
     if (!selectedCategory) {
-      const finalThreeCategories = getRandomSubarray(categoryList, 3);
+      const finalThreeCategories = getRandomSubarray(remainingCategories, 3);
       setTagCategories(finalThreeCategories);
       setSelectedCategory(finalThreeCategories[0].title);
       return;
     }
-    const filteredList = categoryList.filter(
+    const filteredList = remainingCategories.filter(
       (category) => category.title !== selectedCategory
     );
-    const selectedCategoryObject = categoryList.find(
+    const selectedCategoryObject = remainingCategories.find(
       (category) => category.title === selectedCategory
     );
 

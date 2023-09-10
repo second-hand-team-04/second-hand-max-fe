@@ -1,22 +1,26 @@
 import { ThemeProvider, styled } from "styled-components";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import { RouterProvider } from "react-router-dom";
 import router from "router/router";
-
-const queryClient = new QueryClient();
+import CustomToaster from "@components/CustomToaster";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
+import { useEffect } from "react";
 
 function App() {
+  const { data: user, refetch: fetchUserInfo } = useUserInfoQuery();
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [user, fetchUserInfo]);
+
   return (
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
-      <QueryClientProvider client={queryClient}>
-        <StyledApp>
-          <RouterProvider router={router} />
-        </StyledApp>
-      </QueryClientProvider>
+      <StyledApp>
+        <RouterProvider router={router(user)} />
+        <CustomToaster />
+      </StyledApp>
     </ThemeProvider>
   );
 }
@@ -26,4 +30,5 @@ export default App;
 const StyledApp = styled.div`
   width: 393px;
   height: 852px;
+  position: relative;
 `;

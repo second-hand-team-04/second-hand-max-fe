@@ -1,48 +1,74 @@
 import xIcon from "@assets/icon/x.svg";
 import circleXFilled from "@assets/icon/circle-x-filled.svg";
 import plus from "@assets/icon/plus.svg";
-import {
-  IconWrapper,
-  ModalHeader,
-  ModalTitle,
-} from "@components/common/Modal/ModalStyles";
+import { ModalHeader, ModalTitle } from "@components/common/Modal/ModalStyles";
 import Modal from "@components/common/Modal/Modal";
 import { styled } from "styled-components";
 import { ButtonsContainer } from "./RegionModal";
 import Button from "@components/common/Button/Button";
+import { RegionType, deleteUserRegion } from "api/region";
+import { useQueryClient } from "@tanstack/react-query";
+import queryKeys from "api/queries/queryKeys";
+import { toast } from "react-hot-toast";
+import { AxiosError } from "axios";
+import { keepLastRegion } from "@utils/stringFormatters";
 
 type Props = {
   isRegionAddModal: boolean;
-  isRegionModalOpen: boolean;
   onRegionModalClose: () => void;
-  onRegionAdd: () => void;
-  selectedRegionList: string[];
+  onOpenRegionSelectModal: () => void;
+  selectedRegionList: RegionType[];
+  selectMyRegion: (region: RegionType) => void;
+  selectedRegion: RegionType;
 };
 
 export default function RegionSelectModal({
   isRegionAddModal,
-  isRegionModalOpen,
   onRegionModalClose,
-  onRegionAdd,
+  onOpenRegionSelectModal,
   selectedRegionList,
+  selectMyRegion,
+  selectedRegion,
 }: Props) {
+  const queryClient = useQueryClient();
+
   const selectedOneRegion = selectedRegionList.length === 1;
 
-  const onRegionDelete = () => {
+  // TODO : useMutation으로 변경해야함
+  const onRegionDelete = async (itemId: number) => {
     if (selectedOneRegion) {
-      console.log("동네는 최소 1개이상 선택해야해요.");
+      toast.error("동네는 최소 1개이상 선택해야해요.");
       return;
     }
-    console.log("동네 삭제");
+
+    try {
+      const res = await deleteUserRegion(itemId);
+
+      if (res.code === 200) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.region.userRegions.queryKey,
+        });
+        toast.success("선택한 동네가 삭제되었어요.");
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    }
   };
 
   return (
-    <Modal isOpen={isRegionModalOpen} onClose={onRegionModalClose}>
+    <Modal onClose={() => {}}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
         <ModalTitle>동네 설정</ModalTitle>
-        <IconWrapper>
+        <Button
+          style={{ padding: "12px", width: "48px", height: "48px" }}
+          variant="plain"
+          onClick={onRegionModalClose}>
           <img src={xIcon} alt="close" />
-        </IconWrapper>
+        </Button>
       </ModalHeader>
       <RegionModalContent>
         <ContentNotice>
@@ -52,10 +78,16 @@ export default function RegionSelectModal({
         </ContentNotice>
         <ButtonsContainer>
           {selectedRegionList.map((item, index) => (
-            <Button style={{ flexDirection: "row" }} key={index}>
-              <RegionButtonText>{item}</RegionButtonText>
+            <Button
+              style={{
+                flexDirection: "row",
+                opacity: selectedRegion.id === item.id ? 1 : 0.3,
+              }}
+              key={index}
+              onClick={() => selectMyRegion(item)}>
+              <RegionButtonText>{keepLastRegion(item.title)}</RegionButtonText>
               <CircleXFilled
-                onClick={onRegionDelete}
+                onClick={() => onRegionDelete(item.id)}
                 src={circleXFilled}
                 alt="close"
               />
@@ -69,7 +101,7 @@ export default function RegionSelectModal({
             }}
             variant="outlined"
             size="L"
-            onClick={onRegionAdd}>
+            onClick={onOpenRegionSelectModal}>
             <img src={plus} alt="plus" />
             <AddButtonText>추가</AddButtonText>
           </Button>

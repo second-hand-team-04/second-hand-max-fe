@@ -16,11 +16,14 @@ const colors = {
   mint: "#00C7BE",
   orange: "#FF9500",
   red: "#FF3B30",
+  kakaoYellow: "#FEE500",
+  kakaoLabel: `#000000${decToHexOpacity(0.85)}`,
 };
 
 const font = {
   displayStrong20: "700 20px Noto Sans KR, sans-serif",
   displayStrong16: "700 16px Noto Sans KR, sans-serif",
+  displayDefault26: "400 26px Noto Sans KR, sans-serif",
   displayDefault16: "400 16px Noto Sans KR, sans-serif",
   displayDefault12: "400 12px Noto Sans KR, sans-serif",
 
@@ -44,6 +47,7 @@ export default {
       backgroundWeak: colors.grey50,
       backgroundBold: colors.grey400,
       backgroundBlur: colors.grey100, // needs backdrop-filter: blur(8px);
+      backgroundDisabled: colors.grey700,
       border: colors.grey500,
       borderStrong: colors.grey700,
       overlay: colors.grey600,
@@ -56,8 +60,13 @@ export default {
     },
     system: {
       warning: colors.red,
+      success: colors.mint,
       background: colors.white,
       backgroundWeak: colors.grey200,
+    },
+    kakao: {
+      primary: colors.kakaoYellow,
+      label: colors.kakaoLabel,
     },
   },
   filter: {

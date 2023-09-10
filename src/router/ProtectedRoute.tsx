@@ -1,14 +1,15 @@
-// import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { User } from "api/user";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
-export default function ProtectedRoute() {
-  // TODO: replace with auth context.
-  // const { data: user, isFetched } = useUser();
-  // const navigate = useNavigate();
+export default function ProtectedRoute({ user }: { user: User | undefined }) {
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (isFetched && !user) navigate("/signin");
-  // }, [isFetched, user, navigate]);
+  useEffect(() => {
+    if (!user) {
+      navigate("/signin");
+    }
+  }, [user, navigate]);
 
   return <Outlet />;
 }
