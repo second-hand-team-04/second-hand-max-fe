@@ -44,7 +44,7 @@ export default function RegionSelectModal({
     try {
       const res = await deleteUserRegion(itemId);
 
-      if (res.code === 200) {
+      if (res.status === 204) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.region.userRegions.queryKey,
         });
@@ -60,7 +60,7 @@ export default function RegionSelectModal({
   };
 
   return (
-    <Modal onClose={() => {}}>
+    <Modal onClose={onRegionModalClose}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
         <ModalTitle>동네 설정</ModalTitle>
         <Button
