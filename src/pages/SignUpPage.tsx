@@ -13,6 +13,7 @@ import { FormEvent } from "react";
 import useImageInput from "@hooks/useImageInput";
 import TextInput from "@components/common/TextInput/TextInput";
 import useSignUpMutation from "api/queries/useSignUpMutation";
+import Routes from "router/Routes";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ export default function SignUpPage() {
           type="button"
           variant="plain"
           size="L"
-          onClick={() => navigate("/")}>
+          onClick={() => navigate(Routes.HOME)}>
           닫기
         </Button>
         <AppBarTitle style={{ flexGrow: 1, textAlign: "center" }}>

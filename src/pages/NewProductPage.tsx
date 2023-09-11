@@ -15,6 +15,7 @@ import useImageInput from "@hooks/useImageInput";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import useText from "@hooks/useText";
 import { formatAsPrice } from "@utils/stringFormatters";
+import Routes from "router/Routes";
 
 export default function NewProductPage() {
   const navigate = useNavigate();
@@ -131,7 +132,7 @@ export default function NewProductPage() {
         <Button
           style={{ width: "62px" }}
           variant="plain"
-          onClick={() => navigate("/")}>
+          onClick={() => navigate(Routes.HOME)}>
           <CloseButtonText>닫기</CloseButtonText>
         </Button>
         <TitleArea style={{ flexGrow: "1" }}>내 물건 팔기</TitleArea>

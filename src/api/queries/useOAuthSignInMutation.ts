@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { OAuthProvider, getOAuthSignIn } from "api/user";
 import { useNavigate } from "react-router-dom";
 import useUserInfoQuery from "./useUserInfoQuery";
+import Routes from "router/Routes";
 
 export default function useOAuthSignInMutation() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function useOAuthSignInMutation() {
 
       fetchUserInfo();
 
-      navigate("/");
+      navigate(Routes.HOME);
     },
   });
 }

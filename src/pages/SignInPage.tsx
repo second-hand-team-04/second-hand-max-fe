@@ -11,6 +11,7 @@ import useSignInMutation from "api/queries/useSignInMutation";
 import KakaoSignInButton from "@components/KakaoSignInButton";
 import useOAuthSignInMutation from "api/queries/useOAuthSignInMutation";
 import { WindowContext } from "context/WindowContext";
+import Routes from "router/Routes";
 
 const CLIENT_URL =
   process.env.NODE_ENV === "production"
@@ -113,7 +114,10 @@ export default function SignInPage() {
 
         <KakaoSignInButton />
 
-        <Button variant="plain" size="M" onClick={() => navigate("/signup")}>
+        <Button
+          variant="plain"
+          size="M"
+          onClick={() => navigate(Routes.SIGNUP)}>
           회원가입
         </Button>
       </Wrapper>

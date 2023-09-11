@@ -17,6 +17,7 @@ import RegionModal from "@components/Region/RegionModal";
 import { useEffect, useRef, useState } from "react";
 import { FabButton } from "@components/Home/FabButton";
 import { keepLastRegion } from "@utils/stringFormatters";
+import Routes from "router/Routes";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export default function HomePage() {
   };
 
   const postNewProduct = () => {
-    navigate("/product/new");
+    navigate(Routes.NEWPRODUCT);
   };
 
   if (isLoadingProductItems) return <div>로딩중...</div>;

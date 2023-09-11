@@ -5,6 +5,7 @@ import Button from "@components/common/Button/Button";
 import CategoryButton from "@components/Category/CategoryButton";
 import { useNavigate } from "react-router-dom";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import Routes from "router/Routes";
 
 export default function CategoryPage() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function CategoryPage() {
   const { data: categories, isLoading } = useCategoriesQuery();
 
   const onBackButtonClick = () => {
-    navigate("/");
+    navigate(Routes.HOME);
   };
 
   const onCategoryButtonClick = (categoryTitle: string) => {

@@ -2,6 +2,7 @@ import { styled } from "styled-components";
 import logo from "@assets/images/logo.jpeg";
 import { useNavigate } from "react-router-dom";
 import Button from "@components/common/Button/Button";
+import Routes from "router/Routes";
 
 export default function FallbackPage() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function FallbackPage() {
         <GoBackButton variant="contained" onClick={() => window.history.go(-1)}>
           이전 화면으로 가기
         </GoBackButton>
-        <Button variant="contained" onClick={() => navigate("/")}>
+        <Button variant="contained" onClick={() => navigate(Routes.HOME)}>
           홈으로 가기
         </Button>
       </ButtonsContainer>

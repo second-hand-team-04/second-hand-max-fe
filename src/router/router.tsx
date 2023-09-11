@@ -13,27 +13,27 @@ import { User } from "api/user";
 import HomePage from "@pages/HomePage";
 import MyProfilePage from "@pages/MyProfilePage";
 import FallbackPage from "@pages/FallbackPage";
+import Routes from "./Routes";
 
 const router = (user: User | undefined) =>
   createBrowserRouter(
     createRoutesFromElements(
       <Route path="/">
         <Route element={<PublicOnlyRoute user={user} />}>
-          <Route path="signup" element={<SignUpPage />} />
-          <Route index path="signin" element={<SignInPage />} />
+          <Route path={Routes.SIGNUP} element={<SignUpPage />} />
+          <Route index path={Routes.SIGNIN} element={<SignInPage />} />
         </Route>
 
         <Route element={<ProtectedRoute user={user} />}>
           <Route index element={<HomePage />} />
-          <Route path="categories" element={<CategoryPage />} />
-          <Route path="product/new" element={<NewProductPage />} />
-          {/* <Route path="product/:id" element={<ProductPage />} /> */}
-          {/* <Route path="wishlist" element={<WishlistPage />} /> */}
-          {/* <Route path="transactions" element={<MyTransactionsPage />} /> */}
-          {/* <Route path="wishlist" element={<MyWishlistPage />} /> */}
-          <Route path="profile" element={<MyProfilePage />} />
-          {/* <Route path="chats" element={<MyChatsPage />} /> */}
-          {/* <Route path="chats/:chatId" element={<ChatPage />} /> */}
+          <Route path={Routes.CATEGORIES} element={<CategoryPage />} />
+          <Route path={Routes.NEWPRODUCT} element={<NewProductPage />} />
+          {/* <Route path={Routes.PRODUCTITEM} element={<ProductPage />} /> */}
+          {/* <Route path={Routes.TRANSACTIONS} element={<MyTransactionsPage />} /> */}
+          {/* <Route path={Routes.WISHLIST} element={<MyWishlistPage />} /> */}
+          <Route path={Routes.PROFILE} element={<MyProfilePage />} />
+          {/* <Route path={Routes.CHATS} element={<MyChatsPage />} /> */}
+          {/* <Route path={Route.CHAT} element={<ChatPage />} /> */}
         </Route>
 
         <Route path="*" element={<FallbackPage />} />
