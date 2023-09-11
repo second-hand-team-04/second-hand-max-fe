@@ -44,11 +44,13 @@ export default function RegionSelectModal({
     try {
       const res = await deleteUserRegion(itemId);
 
-      if (res.code === 200) {
+      if (res.status === 204) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.region.userRegions.queryKey,
         });
         toast.success("선택한 동네가 삭제되었어요.");
+      } else {
+        throw Error("동네 삭제에 실패했어요.");
       }
     } catch (error) {
       if (error instanceof AxiosError) {

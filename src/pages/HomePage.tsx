@@ -14,7 +14,7 @@ import ProductItem from "@components/Home/ProductItem";
 import { RegionType } from "api/region";
 import { useUserRegionListQuery } from "api/queries/useRegionsQuery";
 import RegionModal from "@components/Region/RegionModal";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FabButton } from "@components/Home/FabButton";
 import { keepLastRegion } from "@utils/stringFormatters";
 
@@ -22,32 +22,29 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const [isRegionModalOpen, setIsRegionModalOpen] = useState(false);
-  const [selectedRegion, onChangeSelectedRegion] = useSelectInput({
-    id: 1,
-    title: "역삼1동",
-  });
 
   const { data: productItems, isLoading: isLoadingProductItems } =
     useItemQuery();
   const { data: regionList } = useUserRegionListQuery();
 
-  const previousRegionListLength = useRef<number>(0);
+  const [selectedRegion, setSelectedRegion] = useSelectInput(
+    regionList ? regionList[0] : { id: 0, title: "역삼1동" }
+  );
 
   useEffect(() => {
     if (!regionList || regionList.length === 0) return;
 
-    if (regionList.length !== previousRegionListLength.current) {
-      onChangeSelectedRegion(regionList[0]);
+    if (!regionList.some((region) => region.id === selectedRegion.id)) {
+      setSelectedRegion(regionList[0]);
     }
-    previousRegionListLength.current = regionList.length;
-  }, [regionList, onChangeSelectedRegion, selectedRegion.title]);
+  }, [regionList, setSelectedRegion, selectedRegion.id]);
 
   const onSelectMyRegionButtonClick = () => {
     setIsRegionModalOpen(true);
   };
 
   const selectMyRegion = (region: RegionType) => {
-    onChangeSelectedRegion(region);
+    setSelectedRegion(region);
   };
 
   const closeRegionModal = () => {
@@ -75,7 +72,7 @@ export default function HomePage() {
           <SelectInput
             name="선택된 동네"
             value={keepLastRegion(selectedRegion.title)}
-            onChange={onChangeSelectedRegion}>
+            onChange={setSelectedRegion}>
             {regionList &&
               regionList.length > 0 &&
               regionList.map((region: RegionType) => (

@@ -4,13 +4,12 @@ import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import { styled } from "styled-components";
 import cameraIcon from "@assets/icon/camera.svg";
 import useImageInput from "@hooks/useImageInput";
-import { useEffect, useState } from "react";
+// import { useEffect } from "react";
 import Button from "@components/common/Button/Button";
 import useSignOutMutation from "api/queries/useSignOutMutation";
 
 export default function MyProfilePage() {
   const { data: userInfo } = useUserInfoQuery();
-  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
 
   const { mutate: signOutMutate } = useSignOutMutation();
 
@@ -20,14 +19,11 @@ export default function MyProfilePage() {
     onChange: onProfilePictureChange,
   } = useImageInput({ sizeLimit: 2000000 });
 
-  useEffect(() => {
-    if (!profilePictureImage && userInfo) {
-      setProfileImageUrl(userInfo.imageUrl);
-    }
-    if (profilePictureImage) {
-      setProfileImageUrl(URL.createObjectURL(profilePictureImage));
-    }
-  }, [profilePictureImage, userInfo]);
+  const profileImageUrl = profilePictureImage
+    ? URL.createObjectURL(profilePictureImage)
+    : userInfo?.imageUrl
+    ? userInfo.imageUrl
+    : "";
 
   const onSignOutClick = () => {
     signOutMutate();

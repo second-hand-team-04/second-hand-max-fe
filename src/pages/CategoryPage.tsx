@@ -9,7 +9,7 @@ import useCategoriesQuery from "api/queries/useCategoriesQuery";
 export default function CategoryPage() {
   const navigate = useNavigate();
 
-  const { data: categories, isLoading } = useCategoriesQuery();
+  const { data: categories, isLoading, isSuccess } = useCategoriesQuery();
 
   const onBackButtonClick = () => {
     navigate("/");
@@ -19,7 +19,8 @@ export default function CategoryPage() {
     console.log("navigate", categoryTitle);
   };
 
-  if (isLoading) return <LoadingIndicator>로딩중...</LoadingIndicator>;
+  if (isLoading || !isSuccess)
+    return <LoadingIndicator>로딩중...</LoadingIndicator>;
 
   return (
     <StyledCategoryPage>
@@ -34,14 +35,13 @@ export default function CategoryPage() {
         <TitleArea>카테고리</TitleArea>
       </AppBar>
       <MainBody>
-        {categories &&
-          categories.map((item) => (
-            <CategoryButton
-              key={item.id}
-              item={item}
-              onCategoryButtonClick={onCategoryButtonClick}
-            />
-          ))}
+        {categories.map((item) => (
+          <CategoryButton
+            key={item.id}
+            item={item}
+            onCategoryButtonClick={onCategoryButtonClick}
+          />
+        ))}
       </MainBody>
     </StyledCategoryPage>
   );
