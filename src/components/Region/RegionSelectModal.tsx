@@ -19,7 +19,7 @@ type Props = {
   onOpenRegionSelectModal: () => void;
   selectedRegionList: RegionType[];
   selectMyRegion: (region: RegionType) => void;
-  selectedRegion: RegionType;
+  selectedRegion: RegionType | null;
 };
 
 export default function RegionSelectModal({
@@ -83,7 +83,11 @@ export default function RegionSelectModal({
             <Button
               style={{
                 flexDirection: "row",
-                opacity: selectedRegion.id === item.id ? 1 : 0.3,
+                opacity: selectedRegion
+                  ? selectedRegion.id === item.id
+                    ? 1
+                    : 0.3
+                  : 1,
               }}
               key={index}
               onClick={() => selectMyRegion(item)}>

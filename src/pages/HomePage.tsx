@@ -25,19 +25,20 @@ export default function HomePage() {
 
   const { data: productItems, isLoading: isLoadingProductItems } =
     useItemQuery();
-  const { data: regionList } = useUserRegionListQuery();
+  const { data: regionList, isSuccess } = useUserRegionListQuery();
 
-  const [selectedRegion, setSelectedRegion] = useSelectInput(
-    regionList ? regionList[0] : { id: 0, title: "역삼1동" }
-  );
+  const [selectedRegion, setSelectedRegion] = useSelectInput(null);
 
   useEffect(() => {
-    if (!regionList || regionList.length === 0) return;
+    if (!regionList) return;
 
-    if (!regionList.some((region) => region.id === selectedRegion.id)) {
+    if (
+      !selectedRegion ||
+      !regionList.some((region) => region.id === selectedRegion.id)
+    ) {
       setSelectedRegion(regionList[0]);
     }
-  }, [regionList, setSelectedRegion, selectedRegion.id]);
+  }, [regionList, setSelectedRegion, selectedRegion]);
 
   const onSelectMyRegionButtonClick = () => {
     setIsRegionModalOpen(true);
@@ -55,13 +56,13 @@ export default function HomePage() {
     navigate("/product/new");
   };
 
-  if (isLoadingProductItems) return <div>로딩중...</div>;
+  if (isLoadingProductItems || !isSuccess) return <div>로딩중...</div>;
 
   return (
     <StyledHomePage>
       {isRegionModalOpen && regionList ? (
         <RegionModal
-          selectedRegion={selectedRegion}
+          selectedRegion={selectedRegion ? selectedRegion : null}
           selectMyRegion={selectMyRegion}
           selectedRegionList={regionList}
           onRegionModalClose={closeRegionModal}
@@ -71,7 +72,7 @@ export default function HomePage() {
         <div style={{ flexGrow: 1 }}>
           <SelectInput
             name="선택된 동네"
-            value={keepLastRegion(selectedRegion.title)}
+            value={selectedRegion ? keepLastRegion(selectedRegion.title) : ""}
             onChange={setSelectedRegion}>
             {regionList &&
               regionList.length > 0 &&

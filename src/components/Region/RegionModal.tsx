@@ -9,7 +9,7 @@ type Props = {
   onRegionModalClose: () => void;
   selectedRegionList: RegionType[];
   selectMyRegion: (region: RegionType) => void;
-  selectedRegion: RegionType;
+  selectedRegion: RegionType | null;
 };
 
 export default function RegionModal({
