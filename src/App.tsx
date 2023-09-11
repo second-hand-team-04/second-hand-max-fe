@@ -8,11 +8,11 @@ import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import { useEffect } from "react";
 
 function App() {
-  const { data: user, refetch: fetchUserInfo } = useUserInfoQuery();
+  const { data: user, refetch: refetchUserInfo } = useUserInfoQuery();
 
   useEffect(() => {
-    fetchUserInfo();
-  }, [user, fetchUserInfo]);
+    refetchUserInfo();
+  }, [refetchUserInfo]);
 
   return (
     <ThemeProvider theme={designSystem}>

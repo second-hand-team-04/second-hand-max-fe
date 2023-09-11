@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import "index.css";
 import browserServiceWorker from "mocks/browserServiceWorker.ts";
 import {
+  MutationCache,
   QueryCache,
   QueryClient,
   QueryClientProvider,
@@ -20,6 +21,15 @@ if (process.env.NODE_ENV === "development") {
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    },
+  }),
+  mutationCache: new MutationCache({
     onError: (error) => {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message);
