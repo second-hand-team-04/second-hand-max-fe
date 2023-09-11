@@ -1,4 +1,4 @@
-import { rest } from "msw";
+import { RestRequest, rest } from "msw";
 import {
   successfulItemListData,
   regionListData,
@@ -15,14 +15,21 @@ import {
   successfulSignOutData,
 } from "./data";
 
+const isAuthorized = (req: RestRequest) => {
+  return !!req.headers.get("Authorization");
+};
+
 export default [
   rest.post("/api/users/signup", async (_, res, ctx) => {
     return res(ctx.status(400), ctx.json(unSuccessfulSignUpData));
     return res(ctx.status(201), ctx.json(successfulSignUpData));
   }),
 
-  rest.post("/api/auth", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(successfulSignInData));
+  rest.post("/api/auth", async (req, res, ctx) => {
+    const { email, password } = await req.json();
+    if (email === "d@d.com" && password === "hello123!") {
+      return res(ctx.status(200), ctx.json(successfulSignInData));
+    }
     return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
   }),
 
@@ -40,9 +47,11 @@ export default [
     return res(ctx.status(200), ctx.json(successfulRefreshAccessToken));
   }),
 
-  rest.get("/api/users/info", async (_, res, ctx) => {
+  rest.get("/api/users/info", async (req, res, ctx) => {
+    if (!isAuthorized(req)) {
+      return res(ctx.status(400), ctx.json(unsuccessfulUserInfoData));
+    }
     return res(ctx.status(200), ctx.json(successfulUserInfoData));
-    return res(ctx.status(400), ctx.json(unsuccessfulUserInfoData));
   }),
 
   rest.get("/api/categories", async (_, res, ctx) => {
