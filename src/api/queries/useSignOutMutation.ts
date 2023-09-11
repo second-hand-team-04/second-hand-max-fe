@@ -15,7 +15,10 @@ export default function useSignOutMutation() {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 
-      queryClient.setQueryData(queryKeys.user.info().queryKey, () => null);
+      queryClient.resetQueries({
+        queryKey: queryKeys.user.info().queryKey,
+        exact: true,
+      });
 
       navigate("/signin");
     },
