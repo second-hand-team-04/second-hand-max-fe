@@ -23,7 +23,7 @@ export const getUserRegions = async () => {
 
 export const deleteUserRegion = async (id: number) => {
   const res = await fetcher.delete<Response<null>>(`/users/regions/${id}`);
-  return res.data;
+  return res;
 };
 
 export const postUserRegion = async (regionId: number) => {
