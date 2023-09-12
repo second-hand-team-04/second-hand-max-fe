@@ -29,7 +29,7 @@ export default function HomePage() {
     data: productItemsData,
     isLoading: isLoadingProductItems,
     isFetching: isFetchingProductItems,
-    fetchNextPage,
+    fetchNextPage: fetchMoreProductItems,
   } = useProductItemsInfiniteQuery({
     regionId: selectedRegion.id,
     categoryId: selectedCategory.id,
@@ -96,26 +96,27 @@ export default function HomePage() {
             </SelectItem>
           </SelectInput>
         </div>
-        <Link to="/categories" style={{ padding: "0 8px" }}>
+        <Link to={Routes.CATEGORIES} style={{ padding: "0 8px" }}>
           <Button variant="plain" size="M">
             <img src={layoutGridIcon} alt="카테고리 보기" />
           </Button>
         </Link>
       </AppBar>
       <ProductItemArea>
-        {/* TODO: 로딩 spinner */}
         {isLoadingProductItems && <div>로딩중...</div>}
         <InfiniteScrollList
           style={{ padding: "50px 0 64px 0" }}
-          onEndReached={() => !isFetchingProductItems && fetchNextPage()}>
+          onEndReached={() =>
+            !isFetchingProductItems && fetchMoreProductItems()
+          }>
           {productItemsData &&
             productItemsData.pages.map((group, idx) => (
               <Fragment key={idx}>
                 {group.data.items?.map((item) => (
                   <ProductItem
-                    onClick={() => navigate(`/product/${item.id}`)}
                     key={item.id}
                     item={item}
+                    onClick={() => navigate(`/product/${item.id}`)}
                   />
                 ))}
               </Fragment>
