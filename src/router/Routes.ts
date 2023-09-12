@@ -4,6 +4,7 @@ export default {
   SIGNIN: "/signin",
   CATEGORIES: "/categories",
   NEWPRODUCT: "/product/new",
+  EDITPRODUCT: "/product/:id/edit",
   PRODUCTITEM: "product/:id",
   TRANSACTIONS: "/transactions",
   WISHLIST: "/wishlist",
