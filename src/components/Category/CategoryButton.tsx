@@ -1,28 +1,32 @@
 import Button from "@components/common/Button/Button";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import { CategoryType } from "api/category/index";
+import { useContext } from "react";
 import { styled } from "styled-components";
 
 type Props = {
   item: CategoryType;
-  onCategoryButtonClick: (categoryTitle: string) => void;
 };
 
-export default function CategoryButton({ item, onCategoryButtonClick }: Props) {
+export default function CategoryButton({ item }: Props) {
+  const { onChangeSelectedCategory } = useContext(ProductItemsFiltersContext);
+
   return (
-    <Button
+    <StyledCategoryButton
       variant="plain"
-      style={{
-        width: "80px",
-        height: "68px",
-        gap: "8px",
-        padding: "0",
-      }}
-      onClick={() => onCategoryButtonClick(item.title)}>
+      onClick={() => onChangeSelectedCategory(item)}>
       <CategoryImage src={item.imageUrl} alt={item.title} />
       <CategoryTitle>{item.title}</CategoryTitle>
-    </Button>
+    </StyledCategoryButton>
   );
 }
+
+const StyledCategoryButton = styled(Button)`
+  width: 80px;
+  height: 68px;
+  gap: 8px;
+  padding: 0;
+`;
 
 const CategoryImage = styled.img`
   width: 44px;

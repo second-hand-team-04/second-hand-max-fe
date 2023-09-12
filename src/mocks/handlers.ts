@@ -1,18 +1,20 @@
 import { rest } from "msw";
 import {
   successfulItemListData,
-  regionListData,
+  successfulAllRegionsData,
   successfulCategoriesData,
-  successfulMyRegionListData,
+  successfulUserRegionsData,
   successfulSignInData,
   successfulSignUpData,
+  successfulUserInfoData,
+  successfulRefreshAccessToken,
+  successfulSignOutData,
   unSuccessfulSignUpData,
   unsuccessfulSignInData,
-  successfulUserInfoData,
   unsuccessfulUserInfoData,
-  successfulRefreshAccessToken,
   unSuccessfulRefreshAccessToken,
-  successfulSignOutData,
+  unSuccessfulItemListData,
+  successfulUserRegionSelectData,
 } from "./data";
 
 export default [
@@ -50,23 +52,31 @@ export default [
   }),
 
   rest.get("/api/regions", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(regionListData));
+    return res(ctx.status(200), ctx.json(successfulAllRegionsData));
   }),
 
-  rest.get("/api/items?region=1&category=1", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(successfulItemListData));
-  }),
+  rest.get(
+    "/api/items?region=1&category=1&page=0&size=10",
+    async (_, res, ctx) => {
+      return res(ctx.status(200), ctx.json(successfulItemListData));
+      return res(ctx.status(400), ctx.json(unSuccessfulItemListData));
+    }
+  ),
 
   rest.get("/api/users/regions", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(successfulMyRegionListData));
+    return res(ctx.status(200), ctx.json(successfulUserRegionsData));
+  }),
+
+  rest.patch("/api/users/regions/:id", async (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulUserRegionSelectData));
   }),
 
   rest.delete("/api/users/regions/:id", (req, res, ctx) => {
-    const currentRegionListData = successfulMyRegionListData.data;
+    const currentRegionListData = successfulUserRegionsData.data;
 
     const id = Number(req.params.id);
 
-    const updatedRegions = currentRegionListData.filter(
+    const updatedRegions = currentRegionListData.items.filter(
       (region) => region.id !== id
     );
     return res(ctx.status(200), ctx.json(updatedRegions));

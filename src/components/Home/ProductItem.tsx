@@ -56,7 +56,6 @@ const ReactionButton = styled.button`
   height: 16px;
 
   > img {
-    filter: ${({ theme: { filter } }) => filter.neutralTextWeak};
     border-radius: 8px;
   }
 

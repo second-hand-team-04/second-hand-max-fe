@@ -19,11 +19,12 @@ const router = (user: User | undefined) =>
     createRoutesFromElements(
       <Route path="/">
         <Route element={<PublicOnlyRoute user={user} />}>
-          <Route path="signup" element={<SignUpPage />} />
           <Route index path="signin" element={<SignInPage />} />
+          <Route path="signup" element={<SignUpPage />} />
         </Route>
 
         <Route element={<ProtectedRoute user={user} />}>
+          {/* TODO: `/items?region=1&category=1` 형태로 변경 */}
           <Route index element={<HomePage />} />
           <Route path="categories" element={<CategoryPage />} />
           <Route path="product/new" element={<NewProductPage />} />

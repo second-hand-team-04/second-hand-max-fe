@@ -9,39 +9,28 @@ import useCategoriesQuery from "api/queries/useCategoriesQuery";
 export default function CategoryPage() {
   const navigate = useNavigate();
 
-  const { data: categories, isLoading } = useCategoriesQuery();
+  const { data: categories, isLoading, isSuccess } = useCategoriesQuery();
 
-  const onBackButtonClick = () => {
-    navigate("/");
-  };
-
-  const onCategoryButtonClick = (categoryTitle: string) => {
-    console.log("navigate", categoryTitle);
-  };
-
-  if (isLoading) return <LoadingIndicator>로딩중...</LoadingIndicator>;
+  // TODO: MainBody 내부로 이동
+  if (isLoading || !isSuccess)
+    return <LoadingIndicator>로딩중...</LoadingIndicator>;
 
   return (
     <StyledCategoryPage>
       <AppBar>
         <Button
-          onClick={onBackButtonClick}
+          variant="plain"
           style={{ flexDirection: "row", width: "86px" }}
-          variant="plain">
+          onClick={() => navigate("/")}>
           <img src={chevronLeftIcon} alt="chevronLeftIcon" />
           <BackButtonText>뒤로</BackButtonText>
         </Button>
         <TitleArea>카테고리</TitleArea>
       </AppBar>
       <MainBody>
-        {categories &&
-          categories.map((item) => (
-            <CategoryButton
-              key={item.id}
-              item={item}
-              onCategoryButtonClick={onCategoryButtonClick}
-            />
-          ))}
+        {categories.map((item) => (
+          <CategoryButton key={item.id} item={item} />
+        ))}
       </MainBody>
     </StyledCategoryPage>
   );

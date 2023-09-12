@@ -5,6 +5,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import CustomToaster from "@components/CustomToaster";
 import useUserInfoQuery from "api/queries/useUserInfoQuery";
+import { ProductItemsFiltersProvider } from "@context/ProductItemsFiltersContext";
 
 function App() {
   const { data: user } = useUserInfoQuery();
@@ -12,10 +13,13 @@ function App() {
   return (
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
-      <StyledApp>
-        <RouterProvider router={router(user)} />
-        <CustomToaster />
-      </StyledApp>
+
+      <ProductItemsFiltersProvider>
+        <StyledApp>
+          <RouterProvider router={router(user)} />
+          <CustomToaster />
+        </StyledApp>
+      </ProductItemsFiltersProvider>
     </ThemeProvider>
   );
 }

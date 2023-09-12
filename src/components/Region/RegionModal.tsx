@@ -1,27 +1,26 @@
 import { styled } from "styled-components";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import RegionSelectModal from "./RegionSelectModal";
 import RegionAddModal from "./RegionAddModal";
 import { RegionType } from "api/region";
 import { toast } from "react-hot-toast";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 
 type Props = {
-  onRegionModalClose: () => void;
-  selectedRegionList: RegionType[];
-  selectMyRegion: (region: RegionType) => void;
-  selectedRegion: RegionType;
+  userRegionList: RegionType[];
+  closeRegionModal: () => void;
 };
 
 export default function RegionModal({
-  onRegionModalClose,
-  selectedRegionList,
-  selectMyRegion,
-  selectedRegion,
+  userRegionList,
+  closeRegionModal,
 }: Props) {
   const [isRegionAddModal, setIsRegionAddModal] = useState(false);
 
+  const { onChangeSelectedRegion } = useContext(ProductItemsFiltersContext);
+
   const onOpenRegionSelectModal = () => {
-    if (selectedRegionList.length === 2) {
+    if (userRegionList.length === 2) {
       toast.error("동네는 최대 2개까지 설정 가능해요.");
       return;
     }
@@ -36,19 +35,18 @@ export default function RegionModal({
     <RegionAddModal
       {...{
         isRegionAddModal,
-        onRegionModalClose,
+        closeRegionModal,
         switchToSelectModal,
       }}
     />
   ) : (
     <RegionSelectModal
       {...{
+        userRegionList,
         isRegionAddModal,
-        selectMyRegion,
-        onRegionModalClose,
+        closeRegionModal,
+        onChangeSelectedRegion,
         onOpenRegionSelectModal,
-        selectedRegionList,
-        selectedRegion,
       }}
     />
   );
