@@ -11,7 +11,7 @@ type AllRegionsData = {
   regions: RegionType[];
 };
 
-type UserRegions = {
+type UserRegionsData = {
   selectedId: number;
   regions: RegionType[];
 };
@@ -22,7 +22,7 @@ export const getAllRegions = async () => {
 };
 
 export const getUserRegions = async () => {
-  const res = await fetcher.get<Response<UserRegions>>("/users/regions");
+  const res = await fetcher.get<Response<UserRegionsData>>("/users/regions");
   return res.data;
 };
 

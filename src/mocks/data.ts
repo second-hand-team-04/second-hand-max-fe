@@ -12,7 +12,7 @@ export const successfulSignInData = {
   },
 };
 
-export const unsuccessfulSignInData = {
+export const unSuccessfulSignInData = {
   code: 401,
   status: "Unauthenticated",
   message: "이메일 또는 비밀번호가 일치하지 않습니다",
@@ -68,7 +68,7 @@ export const successfulUserInfoData = {
   },
 };
 
-export const unsuccessfulUserInfoData = {
+export const unSuccessfulUserInfoData = {
   code: 400,
   status: "Bad Request",
   message: "사용자 정보 조회를 실패했습니다",
@@ -309,5 +309,52 @@ export const unSuccessfulItemListData = {
   code: 400,
   status: "Bad Request",
   message: "상품 목록 조회를 실패하였습니다",
+  data: null,
+};
+
+export const successfulWishlistItemsData = {
+  code: 200,
+  status: "OK",
+  message: "관심목록 조회를 성공하였습니다",
+  data: {
+    hasMore: false,
+    items: [
+      {
+        id: 1,
+        title: "잎사귀 포스터",
+        region: "역삼1동",
+        status: "예약중",
+        thumbnailUrl: "http://image.com",
+        updatedAt: "2023-08-24 08:15:00",
+        price: 5000,
+        numChat: 1,
+        numLikes: 3,
+      },
+      {
+        id: 2,
+        title: "잎사귀 포스터2",
+        region: "역삼1동",
+        status: "판매중",
+        thumbnailUrl: "http://image.com",
+        updatedAt: "2023-08-25 09:20:00",
+        price: 6000,
+        numChat: 2,
+        numLikes: 1,
+      },
+    ],
+  },
+};
+
+export const successfulWishlistItemAdd = {
+  code: 201,
+  status: "Created",
+  message: "관심목록 추가를 성공하였습니다",
+  data: null,
+};
+
+export const successfulWishlistItemDelete = {
+  code: 200,
+  status: "OK",
+  message: "관심목록 삭제를 성공하였습니다",
   data: null,
 };

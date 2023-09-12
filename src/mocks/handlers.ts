@@ -10,11 +10,14 @@ import {
   successfulUserInfoData,
   successfulUserRegionSelectData,
   successfulUserRegionsData,
+  successfulWishlistItemAdd,
+  successfulWishlistItemDelete,
+  successfulWishlistItemsData,
   unSuccessfulItemListData,
   unSuccessfulRefreshAccessToken,
+  unSuccessfulSignInData,
   unSuccessfulSignUpData,
-  unsuccessfulSignInData,
-  unsuccessfulUserInfoData,
+  unSuccessfulUserInfoData,
 } from "./data";
 
 const isAuthorized = (req: RestRequest) => {
@@ -32,12 +35,12 @@ export default [
     if (email === "d@d.com" && password === "hello123!") {
       return res(ctx.status(200), ctx.json(successfulSignInData));
     }
-    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+    return res(ctx.status(401), ctx.json(unSuccessfulSignInData));
   }),
 
   rest.get("/api/auth/oauth/kakao?code=blah", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(successfulSignInData));
-    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+    return res(ctx.status(401), ctx.json(unSuccessfulSignInData));
   }),
 
   rest.delete("/api/auth", async (_, res, ctx) => {
@@ -51,7 +54,7 @@ export default [
 
   rest.get("/api/users/info", async (req, res, ctx) => {
     if (!isAuthorized(req)) {
-      return res(ctx.status(400), ctx.json(unsuccessfulUserInfoData));
+      return res(ctx.status(400), ctx.json(unSuccessfulUserInfoData));
     }
     return res(ctx.status(200), ctx.json(successfulUserInfoData));
   }),
@@ -89,5 +92,17 @@ export default [
       (region) => region.id !== id
     );
     return res(ctx.status(200), ctx.json(updatedRegions));
+  }),
+
+  rest.get("/api/users/wishlist?category=1&page=0&size=0", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulWishlistItemsData));
+  }),
+
+  rest.post("/api/users/wishlist/:itemId", (_, res, ctx) => {
+    return res(ctx.status(201), ctx.json(successfulWishlistItemAdd));
+  }),
+
+  rest.delete("/api/users/wishlist/:itemId", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulWishlistItemDelete));
   }),
 ];
