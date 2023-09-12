@@ -65,11 +65,6 @@ export default function HomePage() {
     setIsRegionModalOpen(false);
   };
 
-  const getProductItemDetails = (id: number) => {
-    console.log(id);
-    navigate(`/product/${id}`);
-  };
-
   if (isLoadingProductItems) return <div>로딩중...</div>;
 
   return (
@@ -118,7 +113,7 @@ export default function HomePage() {
               <Fragment key={idx}>
                 {group.data.items?.map((item) => (
                   <ProductItem
-                    onClick={getProductItemDetails}
+                    onClick={() => navigate(`/product/${item.id}`)}
                     key={item.id}
                     item={item}
                   />

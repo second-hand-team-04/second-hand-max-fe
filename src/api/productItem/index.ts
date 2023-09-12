@@ -19,7 +19,7 @@ export type ProductItemDetails = {
   title: string;
   status: "판매중" | "판매완료" | "예약중";
   content: string;
-  updatedAt: string; // 더 정확한 날짜 처리를 원한다면 'Date'를 사용하세요.
+  updatedAt: string;
   price: number;
   category: string;
   seller: {
@@ -36,7 +36,7 @@ export type ProductItemDetails = {
   }>;
 };
 
-export type PostProductItemBody = {
+export type ProductItemBody = {
   title: string;
   price: number | null;
   content: string;
@@ -65,12 +65,12 @@ export const getProductItemDetails = async (id: number) => {
   return res.data;
 };
 
-export const postProductItem = async (body: PostProductItemBody) => {
+export const postProductItem = async (body: ProductItemBody) => {
   const res = await fetcher.post<Response<null>>("/items", body);
   return res.data;
 };
 
-export const putProductItem = async (id: number, body: PostProductItemBody) => {
+export const putProductItem = async (id: number, body: ProductItemBody) => {
   const res = await fetcher.put<Response<null>>(`/items/${id}`, body);
   return res.data;
 };

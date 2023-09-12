@@ -93,15 +93,12 @@ export default [
   }),
 
   rest.get("/api/items/:id", (req, res, ctx) => {
-    // 요청에서 id 값을 가져옵니다.
     const { id } = req.params;
 
-    // successfulItemListData의 data 배열에서 id 값이 일치하는 상품을 찾습니다.
     const item = successfulProductItemData.data.find(
       (product) => product.id === Number(id)
     );
 
-    // 일치하는 상품이 있을 경우 해당 상품을 반환하고, 없으면 에러 메시지를 반환합니다.
     if (item) {
       return res(
         ctx.status(200),

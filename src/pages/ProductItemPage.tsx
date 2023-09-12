@@ -3,7 +3,7 @@ import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import dotsIcon from "@assets/icon/dots.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import AppBar from "@components/AppBar";
-import ProductImage from "@components/Product/ProductImage";
+
 import { defaultThumbnail } from "@components/Product/ProductItem";
 import Button from "@components/common/Button/Button";
 import { SelectItem } from "@components/common/SelectInput";
@@ -75,14 +75,10 @@ export default function ProductItemPage() {
       <ImageSlider>
         {productItemDetails && productItemDetails.images.length > 0 ? (
           productItemDetails.images.map((image) => (
-            <ProductImage
-              key={image.id}
-              imageUrl={image.url}
-              alt="상품 이미지"
-            />
+            <ProductImage key={image.id} src={image.url} alt="상품 이미지" />
           ))
         ) : (
-          <ProductImage imageUrl={defaultThumbnail} alt="기본 이미지" />
+          <ProductImage src={defaultThumbnail} alt="기본 이미지" />
         )}
       </ImageSlider>
       <ProductInfo>
@@ -129,6 +125,12 @@ export default function ProductItemPage() {
     </StyledProductItemPage>
   );
 }
+
+const ProductImage = styled.img`
+  width: 393px;
+  height: 491px;
+  object-fit: cover;
+`;
 
 const DeleteText = styled.span`
   color: ${({ theme: { color } }) => color.system.warning};
