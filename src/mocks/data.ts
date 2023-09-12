@@ -189,7 +189,7 @@ export const successfulUserRegionsData = {
   message: "나의 동네 목록 조회를 성공하였습니다",
   data: {
     selectedId: 1,
-    items: [
+    regions: [
       { id: 1, title: "개포1동" },
       // { id: 2, title: "개포2동" },
     ],
