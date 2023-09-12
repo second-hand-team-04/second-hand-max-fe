@@ -124,10 +124,7 @@ export default function MyProfilePage() {
         {isEditMode ? (
           <>
             <UserNameLabel>
-              <input
-                style={{
-                  textAlign: "center",
-                }}
+              <UserNameEditInput
                 type="text"
                 placeholder={userInfo?.nickname}
                 value={nickname ? nickname : userInfo?.nickname}
@@ -140,28 +137,40 @@ export default function MyProfilePage() {
         ) : (
           <UserNameLabel>{userInfo?.nickname}</UserNameLabel>
         )}
-        <Button
-          onClick={onSignOutClick}
-          style={{ marginTop: "40px", width: "329px" }}
-          variant="contained">
-          로그아웃
-        </Button>
+        {!isEditMode && (
+          <Button
+            onClick={onSignOutClick}
+            style={{ marginTop: "40px", width: "329px" }}
+            variant="contained">
+            로그아웃
+          </Button>
+        )}
       </ContentArea>
       <NavBar />
     </StyledProfilePage>
   );
 }
 
-const SideButtonText = styled.button`
+const SideButtonText = styled.span`
   font: ${({ theme: { font } }) => font.availableStrong16};
   color: ${({ theme: { color } }) => color.neutral.text};
 `;
 
 const UserNameLabel = styled.p`
+  width: 120px;
   margin-top: 24px;
   font: ${({ theme: { font } }) => font.displayStrong16};
   font-size: 17px;
   color: ${({ theme: { color } }) => color.neutral.textStrong};
+  text-align: center;
+`;
+
+const UserNameEditInput = styled.input`
+  width: inherit;
+  text-align: center;
+
+  border-bottom: ${({ theme: { color } }) =>
+    `1px solid ${color.neutral.borderStrong}`};
 `;
 
 const StyledProfilePage = styled.div`

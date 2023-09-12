@@ -7,7 +7,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import { ThemeProvider, styled } from "styled-components";
 
-function App() {
+export default function App() {
   const { data: user } = useUserInfoQuery();
 
   return (
@@ -23,8 +23,6 @@ function App() {
     </ThemeProvider>
   );
 }
-
-export default App;
 
 const StyledApp = styled.div`
   width: 393px;
