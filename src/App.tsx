@@ -5,22 +5,21 @@ import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import CustomToaster from "@components/CustomToaster";
 import useUserInfoQuery from "api/queries/useUserInfoQuery";
-import { useEffect } from "react";
+import { ProductItemsFiltersProvider } from "@context/ProductItemsFiltersContext";
 
 function App() {
-  const { data: user, refetch: refetchUserInfo } = useUserInfoQuery();
-
-  useEffect(() => {
-    refetchUserInfo();
-  }, [refetchUserInfo]);
+  const { data: user } = useUserInfoQuery();
 
   return (
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
-      <StyledApp>
-        <RouterProvider router={router(user)} />
-        <CustomToaster />
-      </StyledApp>
+
+      <ProductItemsFiltersProvider>
+        <StyledApp>
+          <RouterProvider router={router(user)} />
+          <CustomToaster />
+        </StyledApp>
+      </ProductItemsFiltersProvider>
     </ThemeProvider>
   );
 }

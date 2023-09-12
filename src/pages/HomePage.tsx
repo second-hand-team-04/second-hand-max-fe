@@ -1,91 +1,94 @@
 import AppBar from "@components/AppBar";
 import Button from "@components/common/Button/Button";
-import {
-  SelectInput,
-  SelectItem,
-  useSelectInput,
-} from "@components/common/SelectInput";
+import { SelectInput, SelectItem } from "@components/common/SelectInput";
 import layoutGridIcon from "@assets/icon/layout-grid.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import NavBar from "@components/NavBar/NavBar";
-import useItemQuery from "api/queries/useProductItemsQuery";
+import useProductItemsInfiniteQuery from "api/queries/useProductItemsInfiniteQuery";
 import ProductItem from "@components/Home/ProductItem";
 import { RegionType } from "api/region";
-import { useUserRegionListQuery } from "api/queries/useRegionsQuery";
+import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
 import RegionModal from "@components/Region/RegionModal";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { FabButton } from "@components/Home/FabButton";
 import { keepLastRegion } from "@utils/stringFormatters";
 import Routes from "router/Routes";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
+import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScrollList";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
+  const { selectedRegion, selectedCategory, onChangeSelectedRegion } =
+    useContext(ProductItemsFiltersContext);
+
   const [isRegionModalOpen, setIsRegionModalOpen] = useState(false);
-  const [selectedRegion, onChangeSelectedRegion] = useSelectInput({
-    id: 1,
-    title: "역삼1동",
+
+  const {
+    data: productItemsData,
+    isLoading: isLoadingProductItems,
+    isFetching: isFetchingProductItems,
+    fetchNextPage,
+  } = useProductItemsInfiniteQuery({
+    regionId: selectedRegion.id,
+    categoryId: selectedCategory.id,
   });
-
-  const { data: productItems, isLoading: isLoadingProductItems } =
-    useItemQuery();
-  const { data: regionList } = useUserRegionListQuery();
-
-  const previousRegionListLength = useRef<number>(0);
+  const { data: userRegions, isSuccess: isSuccessUserRegions } =
+    useUserRegionsQuery();
 
   useEffect(() => {
-    if (!regionList || regionList.length === 0) return;
-
-    if (regionList.length !== previousRegionListLength.current) {
-      onChangeSelectedRegion(regionList[0]);
+    if (isSuccessUserRegions) {
+      const userSelectedRegionId = userRegions.selectedId;
+      const userSelectedRegion = userRegions.regions.find(
+        (region) => region.id === userSelectedRegionId
+      );
+      if (userSelectedRegion) {
+        onChangeSelectedRegion(userSelectedRegion);
+      }
     }
-    previousRegionListLength.current = regionList.length;
-  }, [regionList, onChangeSelectedRegion, selectedRegion.title]);
+  }, [isSuccessUserRegions, onChangeSelectedRegion, userRegions]);
 
-  const onSelectMyRegionButtonClick = () => {
+  // TODO
+  // const [searchParams] = useSearchParams();
+  // useEffect(() => {
+  //   // URL query params 기준으로 `useProductItemsInfiniteQuery` 조작
+  //   const regionId = searchParams.get("region");
+  //   const categoryId = searchParams.get("category");
+  // });
+
+  const openRegionModal = () => {
     setIsRegionModalOpen(true);
-  };
-
-  const selectMyRegion = (region: RegionType) => {
-    onChangeSelectedRegion(region);
   };
 
   const closeRegionModal = () => {
     setIsRegionModalOpen(false);
   };
 
-  const postNewProduct = () => {
-    navigate(Routes.NEWPRODUCT);
-  };
-
-  if (isLoadingProductItems) return <div>로딩중...</div>;
-
   return (
     <StyledHomePage>
-      {isRegionModalOpen && regionList ? (
+      {isRegionModalOpen && userRegions ? (
         <RegionModal
-          selectedRegion={selectedRegion}
-          selectMyRegion={selectMyRegion}
-          selectedRegionList={regionList}
-          onRegionModalClose={closeRegionModal}
+          {...{
+            userRegionList: userRegions.regions,
+            closeRegionModal,
+          }}
         />
       ) : null}
       <AppBar isTop={true}>
         <div style={{ flexGrow: 1 }}>
           <SelectInput
             name="선택된 동네"
-            value={keepLastRegion(selectedRegion.title)}
+            value={selectedRegion ? keepLastRegion(selectedRegion.title) : ""}
             onChange={onChangeSelectedRegion}>
-            {regionList &&
-              regionList.length > 0 &&
-              regionList.map((region: RegionType) => (
+            {userRegions &&
+              userRegions.regions.map((region: RegionType) => (
                 <SelectItem key={region.id} item={region}>
                   {keepLastRegion(region.title)}
                 </SelectItem>
               ))}
             <SelectItem
-              onClick={onSelectMyRegionButtonClick}
+              onClick={openRegionModal}
               item={{ id: 0, title: "내 동네 설정하기" }}>
               내 동네 설정하기
             </SelectItem>
@@ -98,16 +101,23 @@ export default function HomePage() {
         </Link>
       </AppBar>
       <ProductItemArea>
-        <ProductItemList>
-          {productItems &&
-            productItems.length > 0 &&
-            productItems.map((product) => (
-              <ProductItem key={product.id} item={product} />
+        {/* TODO: 로딩 spinner */}
+        {isLoadingProductItems && <div>로딩중...</div>}
+        <InfiniteScrollList
+          style={{ padding: "50px 0 64px 0" }}
+          onEndReached={() => !isFetchingProductItems && fetchNextPage()}>
+          {productItemsData &&
+            productItemsData.pages.map((group, idx) => (
+              <Fragment key={idx}>
+                {group.data.items.map((item) => (
+                  <ProductItem key={item.id} item={item} />
+                ))}
+              </Fragment>
             ))}
-        </ProductItemList>
+        </InfiniteScrollList>
       </ProductItemArea>
       <NavBar />
-      <FabButton onClick={postNewProduct} />
+      <FabButton onClick={() => navigate(Routes.NEWPRODUCT)} />
     </StyledHomePage>
   );
 }
@@ -126,24 +136,10 @@ const ProductItemArea = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-
   flex-direction: column;
   padding: 0 16px;
   background: ${({ theme: { color } }) => color.accent.text};
-
   &::-webkit-scrollbar {
     display: none;
   }
-`;
-
-const ProductItemList = styled.ul`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  padding: 50px 0 64px 0;
-  overflow-y: scroll;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  flex-direction: column;
 `;

@@ -10,39 +10,29 @@ import Routes from "router/Routes";
 export default function CategoryPage() {
   const navigate = useNavigate();
 
-  const { data: categories, isLoading } = useCategoriesQuery();
-
-  const onBackButtonClick = () => {
-    navigate(Routes.HOME);
-  };
-
-  const onCategoryButtonClick = (categoryTitle: string) => {
-    console.log("navigate", categoryTitle);
-  };
-
-  if (isLoading) return <LoadingIndicator>로딩중...</LoadingIndicator>;
+  const { data: categories, isLoading: isLoadingCategories } =
+    useCategoriesQuery();
 
   return (
     <StyledCategoryPage>
       <AppBar>
         <Button
-          onClick={onBackButtonClick}
+          variant="plain"
           style={{ flexDirection: "row", width: "86px" }}
-          variant="plain">
+          onClick={() => navigate(Routes.HOME)}>
           <img src={chevronLeftIcon} alt="chevronLeftIcon" />
           <BackButtonText>뒤로</BackButtonText>
         </Button>
         <TitleArea>카테고리</TitleArea>
       </AppBar>
       <MainBody>
-        {categories &&
-          categories.map((item) => (
-            <CategoryButton
-              key={item.id}
-              item={item}
-              onCategoryButtonClick={onCategoryButtonClick}
-            />
-          ))}
+        {isLoadingCategories ? (
+          <LoadingIndicator>로딩중...</LoadingIndicator>
+        ) : (
+          categories?.map((item) => (
+            <CategoryButton key={item.id} item={item} />
+          ))
+        )}
       </MainBody>
     </StyledCategoryPage>
   );
