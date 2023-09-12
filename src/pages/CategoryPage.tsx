@@ -11,14 +11,7 @@ export default function CategoryPage() {
 
   const { data: categories, isLoading, isSuccess } = useCategoriesQuery();
 
-  const onBackButtonClick = () => {
-    navigate("/");
-  };
-
-  const onCategoryButtonClick = (categoryTitle: string) => {
-    console.log("navigate", categoryTitle);
-  };
-
+  // TODO: MainBody 내부로 이동
   if (isLoading || !isSuccess)
     return <LoadingIndicator>로딩중...</LoadingIndicator>;
 
@@ -26,9 +19,9 @@ export default function CategoryPage() {
     <StyledCategoryPage>
       <AppBar>
         <Button
-          onClick={onBackButtonClick}
+          variant="plain"
           style={{ flexDirection: "row", width: "86px" }}
-          variant="plain">
+          onClick={() => navigate("/")}>
           <img src={chevronLeftIcon} alt="chevronLeftIcon" />
           <BackButtonText>뒤로</BackButtonText>
         </Button>
@@ -36,11 +29,7 @@ export default function CategoryPage() {
       </AppBar>
       <MainBody>
         {categories.map((item) => (
-          <CategoryButton
-            key={item.id}
-            item={item}
-            onCategoryButtonClick={onCategoryButtonClick}
-          />
+          <CategoryButton key={item.id} item={item} />
         ))}
       </MainBody>
     </StyledCategoryPage>
