@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 
-export default function useOutsideClick(callbackFn: () => void) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
+export default function useOutsideClick<T extends HTMLElement = HTMLDivElement>(
+  callbackFn: () => void
+) {
+  const containerRef = useRef<T | null>(null);
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (
@@ -16,7 +17,7 @@ export default function useOutsideClick(callbackFn: () => void) {
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [containerRef, callbackFn]);
+  }, [ callbackFn]);
 
   return containerRef;
 }

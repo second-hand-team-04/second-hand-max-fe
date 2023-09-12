@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
+import queryKeys from "./queryKeys";
 import { patchUserInfo } from "api/user";
 import { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import queryKeys from "./queryKeys";
 
 export default function useUserInfoMutation() {
   return useMutation({

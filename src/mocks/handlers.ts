@@ -3,6 +3,7 @@ import {
   successfulAllRegionsData,
   successfulCategoriesData,
   successfulItemListData,
+  successfulProductItemData,
   successfulRefreshAccessToken,
   successfulSignInData,
   successfulSignOutData,
@@ -89,5 +90,33 @@ export default [
       (region) => region.id !== id
     );
     return res(ctx.status(200), ctx.json(updatedRegions));
+  }),
+
+  rest.get("/api/items/:id", (req, res, ctx) => {
+    const { id } = req.params;
+
+    const item = successfulProductItemData.data.find(
+      (product) => product.id === Number(id)
+    );
+
+    if (item) {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          ...successfulProductItemData,
+          data: item,
+        })
+      );
+    } else {
+      return res(
+        ctx.status(404),
+        ctx.json({
+          code: 404,
+          status: "Not Found",
+          message: "상품을 찾을 수 없습니다",
+          data: null,
+        })
+      );
+    }
   }),
 ];

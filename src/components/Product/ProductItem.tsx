@@ -6,11 +6,12 @@ import { styled } from "styled-components";
 
 type Props = {
   item: ProductItemType;
+  onClick: (id: number) => void;
 };
 
-export default function ProductItem({ item }: Props) {
+export default function ProductItem({ item, onClick }: Props) {
   return (
-    <StyledItem>
+    <StyledItem onClick={() => onClick(item.id)}>
       <ItemImage src={item.thumbnail || defaultThumbnail} />
       <ItemContentArea>
         <Content>
@@ -56,6 +57,7 @@ const ReactionButton = styled.button`
   height: 16px;
 
   > img {
+    filter: ${({ theme: { filter } }) => filter.neutralTextWeak};
     border-radius: 8px;
   }
 
@@ -133,6 +135,7 @@ const ContentText = styled.div`
   color: ${({ theme: { color } }) => color.neutral.text};
 `;
 const StyledItem = styled.li`
+  cursor: pointer;
   width: 100%;
   height: 152px;
   display: flex;
@@ -156,5 +159,5 @@ const ItemContentArea = styled.div`
 `;
 
 // ! FIXME: 임시로 사용중인 이미지
-const defaultThumbnail =
+export const defaultThumbnail =
   "https://mblogthumb-phinf.pstatic.net/MjAyMDExMDFfMTgy/MDAxNjA0MjI4ODc1NDMw.Ex906Mv9nnPEZGCh4SREknadZvzMO8LyDzGOHMKPdwAg.ZAmE6pU5lhEdeOUsPdxg8-gOuZrq_ipJ5VhqaViubI4g.JPEG.gambasg/%EC%9C%A0%ED%8A%9C%EB%B8%8C_%EA%B8%B0%EB%B3%B8%ED%94%84%EB%A1%9C%ED%95%84_%ED%95%98%EB%8A%98%EC%83%89.jpg?type=w800";

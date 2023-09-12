@@ -1,8 +1,8 @@
 import layoutGridIcon from "@assets/icon/layout-grid.svg";
 import AppBar from "@components/AppBar";
 import { FabButton } from "@components/Home/FabButton";
-import ProductItem from "@components/Home/ProductItem";
 import NavBar from "@components/NavBar/NavBar";
+import ProductItem from "@components/Product/ProductItem";
 import RegionModal from "@components/Region/RegionModal";
 import Button from "@components/common/Button/Button";
 import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScrollList";
@@ -65,6 +65,8 @@ export default function HomePage() {
     setIsRegionModalOpen(false);
   };
 
+  if (isLoadingProductItems) return <div>로딩중...</div>;
+
   return (
     <StyledHomePage>
       {isRegionModalOpen && userRegions ? (
@@ -109,8 +111,12 @@ export default function HomePage() {
           {productItemsData &&
             productItemsData.pages.map((group, idx) => (
               <Fragment key={idx}>
-                {group.data.items.map((item) => (
-                  <ProductItem key={item.id} item={item} />
+                {group.data.items?.map((item) => (
+                  <ProductItem
+                    onClick={() => navigate(`/product/${item.id}`)}
+                    key={item.id}
+                    item={item}
+                  />
                 ))}
               </Fragment>
             ))}
