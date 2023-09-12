@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import queryKeys from "./queryKeys";
 import { getProductItems } from "api/productItem";
+import queryKeys from "./queryKeys";
 
 export default function useProductItemsInfiniteQuery(filters: {
   regionId: number;

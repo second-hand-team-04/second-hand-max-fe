@@ -1,19 +1,19 @@
+import cameraIcon from "@assets/icon/camera.svg";
 import AppBar from "@components/AppBar";
 import NavBar from "@components/NavBar/NavBar";
-import useUserInfoQuery from "api/queries/useUserInfoQuery";
-import { styled } from "styled-components";
-import cameraIcon from "@assets/icon/camera.svg";
-import useImageInput from "@hooks/useImageInput";
 import Button from "@components/common/Button/Button";
-import useSignOutMutation from "api/queries/useSignOutMutation";
-import { useState } from "react";
+import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
-import { validateNickname } from "@utils/textValidators";
-import useUserInfoMutation from "api/queries/useProfileMutation";
 import { useQueryClient } from "@tanstack/react-query";
+import { validateNickname } from "@utils/textValidators";
 import queryKeys from "api/queries/queryKeys";
+import useUserInfoMutation from "api/queries/useProfileMutation";
+import useSignOutMutation from "api/queries/useSignOutMutation";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import { AxiosError } from "axios";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { styled } from "styled-components";
 
 export default function MyProfilePage() {
   const queryClient = useQueryClient();
@@ -124,10 +124,7 @@ export default function MyProfilePage() {
         {isEditMode ? (
           <>
             <UserNameLabel>
-              <input
-                style={{
-                  textAlign: "center",
-                }}
+              <UserNameEditInput
                 type="text"
                 placeholder={userInfo?.nickname}
                 value={nickname ? nickname : userInfo?.nickname}
@@ -140,28 +137,40 @@ export default function MyProfilePage() {
         ) : (
           <UserNameLabel>{userInfo?.nickname}</UserNameLabel>
         )}
-        <Button
-          onClick={onSignOutClick}
-          style={{ marginTop: "40px", width: "329px" }}
-          variant="contained">
-          로그아웃
-        </Button>
+        {!isEditMode && (
+          <Button
+            onClick={onSignOutClick}
+            style={{ marginTop: "40px", width: "329px" }}
+            variant="contained">
+            로그아웃
+          </Button>
+        )}
       </ContentArea>
       <NavBar />
     </StyledProfilePage>
   );
 }
 
-const SideButtonText = styled.button`
+const SideButtonText = styled.span`
   font: ${({ theme: { font } }) => font.availableStrong16};
   color: ${({ theme: { color } }) => color.neutral.text};
 `;
 
 const UserNameLabel = styled.p`
+  width: 120px;
   margin-top: 24px;
   font: ${({ theme: { font } }) => font.displayStrong16};
   font-size: 17px;
   color: ${({ theme: { color } }) => color.neutral.textStrong};
+  text-align: center;
+`;
+
+const UserNameEditInput = styled.input`
+  width: inherit;
+  text-align: center;
+
+  border-bottom: ${({ theme: { color } }) =>
+    `1px solid ${color.neutral.borderStrong}`};
 `;
 
 const StyledProfilePage = styled.div`

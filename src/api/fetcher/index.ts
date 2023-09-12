@@ -1,5 +1,6 @@
-import axios from "axios";
 import { refreshAccessToken } from "api/user";
+import axios from "axios";
+import Routes from "router/Routes";
 
 const BASE_API_URL =
   process.env.NODE_ENV === "production"
@@ -44,7 +45,7 @@ fetcher.interceptors.response.use(
         localStorage.removeItem("refreshToken");
 
         // TODO: navigate the user to `/signin` while displaying the toast
-        window.location.href = "/signin";
+        window.location.href = Routes.SIGNIN;
         return Promise.reject(refreshError);
       }
     }

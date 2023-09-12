@@ -1,19 +1,19 @@
-import xIcon from "@assets/icon/x.svg";
 import circleXFilled from "@assets/icon/circle-x-filled.svg";
 import plus from "@assets/icon/plus.svg";
-import { ModalHeader, ModalTitle } from "@components/common/Modal/ModalStyles";
+import xIcon from "@assets/icon/x.svg";
+import Button from "@components/common/Button/Button";
 import Modal from "@components/common/Modal/Modal";
+import { ModalHeader, ModalTitle } from "@components/common/Modal/ModalStyles";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { keepLastRegion } from "@utils/stringFormatters";
+import queryKeys from "api/queries/queryKeys";
+import { RegionType, deleteUserRegion } from "api/region";
+import { AxiosError } from "axios";
+import { useContext } from "react";
+import { toast } from "react-hot-toast";
 import { styled } from "styled-components";
 import { ButtonsContainer } from "./RegionModal";
-import Button from "@components/common/Button/Button";
-import { RegionType, deleteUserRegion } from "api/region";
-import { useQueryClient } from "@tanstack/react-query";
-import queryKeys from "api/queries/queryKeys";
-import { toast } from "react-hot-toast";
-import { AxiosError } from "axios";
-import { keepLastRegion } from "@utils/stringFormatters";
-import { useContext } from "react";
-import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 
 type Props = {
   userRegionList: RegionType[];

@@ -1,26 +1,18 @@
-import { styled } from "styled-components";
-import NavBarTab from "./NavBarTab";
-import homeIcon from "@assets/icon/home.svg";
-import newsIcon from "@assets/icon/news.svg";
 import heartIcon from "@assets/icon/heart.svg";
+import homeIcon from "@assets/icon/home.svg";
 import messageIcon from "@assets/icon/message.svg";
+import newsIcon from "@assets/icon/news.svg";
 import userCircleIcon from "@assets/icon/user-circle.svg";
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import Routes from "router/Routes";
+import { styled } from "styled-components";
+import NavBarTab from "./NavBarTab";
 
 export default function NavBar() {
   const location = useLocation();
-  const [activePath, setActivePath] = useState("");
-  // const { data: userInfo } = useUserInfoQuery();
 
-  useEffect(() => {
-    // "내 계정"("/profile") 탭은 SignInPage("/signin")와 MyProfilePage("/profile")가 공유.
-    if (location.pathname === "/signin") {
-      setActivePath("/profile");
-    } else {
-      setActivePath(location.pathname);
-    }
-  }, [location.pathname]);
+  const activePath =
+    location.pathname === Routes.SIGNIN ? Routes.PROFILE : location.pathname;
 
   return (
     <StyledNavBar>

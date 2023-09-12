@@ -1,7 +1,7 @@
-import { styled } from "styled-components";
+import useOutsideClick from "@hooks/useOutsideClick";
 import React from "react";
 import ReactDOM from "react-dom";
-import useOutsideClick from "@hooks/useOutsideClick";
+import { styled } from "styled-components";
 
 type Props = {
   onClose: () => void;

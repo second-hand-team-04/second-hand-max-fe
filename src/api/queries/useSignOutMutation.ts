@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteSignOut } from "api/user";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
+import Routes from "router/Routes";
 import queryKeys from "./queryKeys";
 
 export default function useSignOutMutation() {
@@ -15,16 +14,12 @@ export default function useSignOutMutation() {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 
-      queryClient.setQueryData(queryKeys.user.info().queryKey, () => null);
+      queryClient.resetQueries({
+        queryKey: queryKeys.user.info().queryKey,
+        exact: true,
+      });
 
-      navigate("/signin");
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
+      navigate(Routes.SIGNIN);
     },
   });
 }

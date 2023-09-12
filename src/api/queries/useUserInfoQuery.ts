@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import queryKeys from "./queryKeys";
 import { getUserInfo } from "api/user";
+import queryKeys from "./queryKeys";
 
 export default function useUserInfoQuery() {
   return useQuery({

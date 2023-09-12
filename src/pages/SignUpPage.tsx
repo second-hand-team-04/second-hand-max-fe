@@ -1,18 +1,19 @@
+import cameraIcon from "@assets/icon/camera.svg";
 import AppBar from "@components/AppBar";
 import Button from "@components/common/Button/Button";
-import cameraIcon from "@assets/icon/camera.svg";
-import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import TextInput from "@components/common/TextInput/TextInput";
+import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
 import {
   validateEmail,
   validateNickname,
   validatePassword,
 } from "@utils/textValidators";
-import { FormEvent } from "react";
-import useImageInput from "@hooks/useImageInput";
-import TextInput from "@components/common/TextInput/TextInput";
 import useSignUpMutation from "api/queries/useSignUpMutation";
+import { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import Routes from "router/Routes";
+import { styled } from "styled-components";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ export default function SignUpPage() {
           type="button"
           variant="plain"
           size="L"
-          onClick={() => navigate("/")}>
+          onClick={() => navigate(Routes.HOME)}>
           닫기
         </Button>
         <AppBarTitle style={{ flexGrow: 1, textAlign: "center" }}>

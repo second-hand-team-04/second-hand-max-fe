@@ -1,10 +1,10 @@
-import { styled } from "styled-components";
-import { useContext, useState } from "react";
-import RegionSelectModal from "./RegionSelectModal";
-import RegionAddModal from "./RegionAddModal";
-import { RegionType } from "api/region";
-import { toast } from "react-hot-toast";
 import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
+import { RegionType } from "api/region";
+import { useContext, useState } from "react";
+import { toast } from "react-hot-toast";
+import { styled } from "styled-components";
+import RegionAddModal from "./RegionAddModal";
+import RegionSelectModal from "./RegionSelectModal";
 
 type Props = {
   userRegionList: RegionType[];

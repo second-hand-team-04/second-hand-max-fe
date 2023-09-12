@@ -1,7 +1,7 @@
-import { ReactNode, ButtonHTMLAttributes } from "react";
-import { ContainedButton, OutlinedButton, PlainButton } from "./ButtonVariants";
-import { Variant, Size } from "./types";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 import { BackgroundColor, BorderColor, BorderRadius, Color } from "../types";
+import { ContainedButton, OutlinedButton, PlainButton } from "./ButtonVariants";
+import { Size, Variant } from "./types";
 
 type Props = {
   variant?: Variant;

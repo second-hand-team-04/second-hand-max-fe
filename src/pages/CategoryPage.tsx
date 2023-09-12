@@ -1,19 +1,17 @@
-import AppBar from "@components/AppBar";
-import { styled } from "styled-components";
 import chevronLeftIcon from "@assets/icon/chevron-left.svg";
-import Button from "@components/common/Button/Button";
+import AppBar from "@components/AppBar";
 import CategoryButton from "@components/Category/CategoryButton";
-import { useNavigate } from "react-router-dom";
+import Button from "@components/common/Button/Button";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import { useNavigate } from "react-router-dom";
+import Routes from "router/Routes";
+import { styled } from "styled-components";
 
 export default function CategoryPage() {
   const navigate = useNavigate();
 
-  const { data: categories, isLoading, isSuccess } = useCategoriesQuery();
-
-  // TODO: MainBody 내부로 이동
-  if (isLoading || !isSuccess)
-    return <LoadingIndicator>로딩중...</LoadingIndicator>;
+  const { data: categories, isLoading: isLoadingCategories } =
+    useCategoriesQuery();
 
   return (
     <StyledCategoryPage>
@@ -21,16 +19,20 @@ export default function CategoryPage() {
         <Button
           variant="plain"
           style={{ flexDirection: "row", width: "86px" }}
-          onClick={() => navigate("/")}>
+          onClick={() => navigate(Routes.HOME)}>
           <img src={chevronLeftIcon} alt="chevronLeftIcon" />
           <BackButtonText>뒤로</BackButtonText>
         </Button>
         <TitleArea>카테고리</TitleArea>
       </AppBar>
       <MainBody>
-        {categories.map((item) => (
-          <CategoryButton key={item.id} item={item} />
-        ))}
+        {isLoadingCategories ? (
+          <LoadingIndicator>로딩중...</LoadingIndicator>
+        ) : (
+          categories?.map((item) => (
+            <CategoryButton key={item.id} item={item} />
+          ))
+        )}
       </MainBody>
     </StyledCategoryPage>
   );

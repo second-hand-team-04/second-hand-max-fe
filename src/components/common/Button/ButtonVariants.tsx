@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
-import { Size } from "./types";
 import { BackgroundColor, BorderColor, BorderRadius, Color } from "../types";
+import { Size } from "./types";
 
 interface ButtonTransientProps {
   $size: Size;
