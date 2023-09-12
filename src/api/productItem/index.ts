@@ -14,12 +14,17 @@ export type ProductItemType = {
   numLikes: number;
 };
 
-export const getProductItems = async () => {
-  const res = await fetcher.get<Response<ProductItemType[]>>(
-    `/items?region=${regionNum}&category=${categoryNum}`
-  );
+export const getProductItems = async ({
+  regionId = 1,
+  categoryId = 1,
+  page = 0,
+}: {
+  regionId: number;
+  categoryId: number;
+  page: number;
+}) => {
+  const res = await fetcher.get<
+    Response<{ hasMore: boolean; items: ProductItemType[] }>
+  >(`/items?region=${regionId}&category=${categoryId}&page=${page}&size=10`);
   return res.data;
 };
-
-const regionNum = 1;
-const categoryNum = 1;
