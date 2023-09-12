@@ -36,6 +36,9 @@ export const ProductItemsKeys = createQueryKeys("productItems", {
   register: () => ({
     queryKey: ["registration"],
   }),
+  edit: (itemId: number) => ({
+    queryKey: [itemId],
+  }),
 });
 
 export const queryKeys = mergeQueryKeys(

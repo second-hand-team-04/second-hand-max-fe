@@ -69,3 +69,8 @@ export const postProductItem = async (body: PostProductItemBody) => {
   const res = await fetcher.post<Response<null>>("/items", body);
   return res.data;
 };
+
+export const putProductItem = async (id: number, body: PostProductItemBody) => {
+  const res = await fetcher.put<Response<null>>(`/items/${id}`, body);
+  return res.data;
+};

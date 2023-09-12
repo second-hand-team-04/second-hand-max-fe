@@ -12,14 +12,13 @@ import useText from "@hooks/useText";
 import { formatAsNumber, formatAsPrice } from "@utils/stringFormatters";
 import useRandomCategories from "@utils/useRandomCategories";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
+import useProductItemEditMutation from "api/queries/useProductItemEditMutation";
 import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
-
-import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
-import useProductItemMutation from "api/queries/useProductItemMutation";
 
 export default function EditProductItemPage() {
   const navigate = useNavigate();
@@ -32,11 +31,9 @@ export default function EditProductItemPage() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
   const [pictureFileList, setPictureFileList] = useState<File[]>([]);
-  const [pictureUrlList, setPictureUrlList] = useState<
-    { id: number; url: string }[]
-  >(productItemDetails?.images ?? []);
-
-  const { mutateAsync: postProductItemMutateAsync } = useProductItemMutation();
+  const [pictureList, setPictureList] = useState<{ id: number; url: string }[]>(
+    productItemDetails?.images ?? []
+  );
 
   const { value: titleInputValue, onChange: onTitleInputChange } = useText({
     initialValue: productItemDetails?.title,
@@ -47,6 +44,20 @@ export default function EditProductItemPage() {
   const { value: priceInputValue, onChange: onChangeForPrice } = useText({
     initialValue: String(productItemDetails?.price),
   });
+
+  const requestData = {
+    title: titleInputValue,
+    price: Number(formatAsNumber(priceInputValue)),
+    content: contentInputValue,
+    imageIds: pictureList.map((picture) => picture.id),
+    categoryId: 1,
+    regionId: 1,
+  };
+
+  const { mutateAsync: putProductItemMutateAsync } = useProductItemEditMutation(
+    Number(id),
+    requestData
+  );
 
   const { data: categories, isLoading } = useCategoriesQuery();
   const { tagCategories, selectedCategory, setSelectedCategory } =
@@ -71,7 +82,7 @@ export default function EditProductItemPage() {
   useEffect(() => {
     if (productPictureImage) {
       setPictureFileList((prevList) => [...prevList, productPictureImage]);
-      setPictureUrlList((prevList) => [
+      setPictureList((prevList) => [
         ...prevList,
         {
           id: productPictureImage.lastModified,
@@ -132,14 +143,13 @@ export default function EditProductItemPage() {
         title: titleInputValue,
         price: Number(formatAsNumber(priceInputValue)),
         content: contentInputValue,
-        imageIds: pictureFileList.map((picture) =>
-          Number(picture.lastModified)
-        ),
+        imageIds: pictureList.map((picture) => picture.id),
         categoryId: 1,
         regionId: 1,
       };
+      console.log(requestData);
 
-      const res = await postProductItemMutateAsync(requestData);
+      const res = await putProductItemMutateAsync();
 
       console.log(res);
     } catch (error) {
@@ -151,11 +161,38 @@ export default function EditProductItemPage() {
     }
   };
 
+  // const requestData = {
+  //   title: titleInputValue,
+  //   price: Number(formatAsNumber(priceInputValue)),
+  //   content: contentInputValue,
+  //   imageIds: pictureFileList.map((picture) => Number(picture.lastModified)),
+  //   categoryId: 1,
+  //   regionId: 1,
+  // };
+
+  // function hasChanged(
+  //   initialValues: ProductItemDetails,
+  //   requestValues: PostProductItemBody
+  // ) {
+  //   if (initialValues.title !== requestValues.title) return true;
+  //   if (initialValues.price !== requestValues.price) return true;
+  //   if (initialValues.content !== requestValues.content) return true;
+  //   return false;
+  // }
+  // ! 보내는 데이터랑 받는 데이터 구조가 달라서 처음 받은 데이터랑 비교할 떄 어려움을 겪음 api 데이터 구조 얘기해봐야할듯
+
   const isValid =
     titleInputValue.length > 0 &&
     contentInputValue.length > 0 &&
-    pictureFileList.length > 0 &&
-    pictureFileList.length <= 10;
+    pictureList.length > 0 &&
+    pictureList.length <= 10;
+
+  console.log(
+    titleInputValue.length > 0,
+    contentInputValue.length > 0,
+    pictureList.length,
+    isValid
+  );
 
   if (isLoading) return <div>로딩중</div>;
 
@@ -210,8 +247,8 @@ export default function EditProductItemPage() {
               <img src={cameraIcon} alt="camera" />
               <PictureCount>{pictureFileList.length}/10</PictureCount>
             </AddButton>
-            {pictureUrlList &&
-              pictureUrlList.map((picture) => {
+            {pictureList &&
+              pictureList.map((picture) => {
                 const imageUrl = picture.url;
                 return (
                   <PictureWrapper key={picture.id}>
