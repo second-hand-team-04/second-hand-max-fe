@@ -8,7 +8,7 @@ export default function useProductItemsInfiniteQuery(filters: {
   categoryId: number;
 }) {
   return useInfiniteQuery({
-    queryKey: [queryKeys.item.list(filters).queryKey],
+    queryKey: [queryKeys.productItems.list(filters).queryKey],
     queryFn: (ctx) =>
       getProductItems({
         regionId: filters.regionId,

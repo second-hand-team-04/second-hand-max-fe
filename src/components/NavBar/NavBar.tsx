@@ -49,7 +49,8 @@ const navBarList = [
   {
     title: "판매내역",
     imgSrc: newsIcon,
-    path: "/transactions",
+    // path: "/transactions",
+    path: "product", // 임시 실제는 product/:id
   },
   {
     title: "관심상품",

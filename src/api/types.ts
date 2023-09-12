@@ -4,3 +4,8 @@ export type Response<T> = {
   data: T;
   message: string;
 };
+
+export type ProductItemFilter = {
+  regionId: number;
+  categoryId: number;
+};

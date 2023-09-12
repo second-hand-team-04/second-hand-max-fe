@@ -2,6 +2,7 @@ import {
   createQueryKeys,
   mergeQueryKeys,
 } from "@lukemorales/query-key-factory";
+// import { ProductItemFilter } from "api/types";
 import { getUserInfo } from "api/user";
 
 export const userKeys = createQueryKeys("user", {
@@ -27,10 +28,13 @@ export const regionKeys = createQueryKeys("region", {
   userRegions: ["userRegions"],
 });
 
-export const ItemKeys = createQueryKeys("item", {
+export const ProductItemsKeys = createQueryKeys("productItems", {
   detail: (itemId: number) => [itemId],
   list: (filters: { regionId: number; categoryId: number }) => ({
     queryKey: [filters],
+  }),
+  register: () => ({
+    queryKey: ["registration"],
   }),
 });
 
@@ -38,7 +42,7 @@ export const queryKeys = mergeQueryKeys(
   categoryKeys,
   regionKeys,
   userKeys,
-  ItemKeys
+  ProductItemsKeys
 );
 
 export default queryKeys;
