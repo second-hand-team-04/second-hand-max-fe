@@ -62,7 +62,7 @@ export default function RegionSelectModal({
   };
 
   return (
-    <Modal onClose={() => {}}>
+    <Modal onClose={onRegionModalClose}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
         <ModalTitle>동네 설정</ModalTitle>
         <Button

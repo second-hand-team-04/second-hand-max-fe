@@ -64,3 +64,12 @@ export const getUserInfo = async () => {
   const res = await fetcher.get<Response<User>>("/users/info");
   return res.data;
 };
+
+export const patchUserInfo = async (body: FormData) => {
+  const res = await fetcher.patch<Response<null>>("/users/info", body, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};

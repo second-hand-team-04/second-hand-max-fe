@@ -32,6 +32,7 @@ export default function RegionAddModal({
 
   const [regionInputValue, setRegionInputValue] = useState<string>("");
 
+
   const { data: regionList } = useRegionListQuery();
 
   console.log(regionList);
@@ -62,7 +63,7 @@ export default function RegionAddModal({
   };
 
   return (
-    <Modal onClose={() => {}}>
+    <Modal onClose={onRegionModalClose}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
         <Button
           style={{ padding: "12px", width: "48px", height: "48px" }}
