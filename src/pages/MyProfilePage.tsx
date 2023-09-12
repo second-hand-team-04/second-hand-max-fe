@@ -22,7 +22,7 @@ export default function MyProfilePage() {
 
   const { data: userInfo } = useUserInfoQuery();
   const { mutate: signOutMutate } = useSignOutMutation();
-  const { mutateAsync } = useUserInfoMutation();
+  const { mutateAsync: userInfoMutateAsync } = useUserInfoMutation();
 
   const {
     value: nickname,
@@ -70,10 +70,9 @@ export default function MyProfilePage() {
         formData.append("image", profilePictureImage);
       }
 
-      const res = await mutateAsync(formData);
-      console.log(res);
+      const res = await userInfoMutateAsync(formData);
 
-      if (res.status === 200) {
+      if (res.code === 200) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.user.info().queryKey,
         });

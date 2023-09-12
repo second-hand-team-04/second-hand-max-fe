@@ -71,5 +71,5 @@ export const patchUserInfo = async (body: FormData) => {
       "Content-Type": "multipart/form-data",
     },
   });
-  return res;
+  return res.data;
 };
