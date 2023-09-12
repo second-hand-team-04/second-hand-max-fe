@@ -26,6 +26,7 @@ export default function CategoryModal({
 }: Props) {
   const onCategoryItemClick = (itemTitle: string) => {
     onCategoryItemSelect(itemTitle);
+    onCategoryModalClose();
   };
 
   return (

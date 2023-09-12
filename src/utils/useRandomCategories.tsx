@@ -1,9 +1,17 @@
 import { CategoryType } from "api/category/index";
 import { useEffect, useState } from "react";
 
-export default function useCategory(categoryList: CategoryType[] | []) {
+type Props = {
+  categoryList: CategoryType[] | [];
+  fixedCategory?: string;
+};
+
+export default function useRandomCategories({
+  categoryList,
+  fixedCategory,
+}: Props) {
   const [tagCategories, setTagCategories] = useState<CategoryType[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(fixedCategory || "");
 
   useEffect(() => {
     if (categoryList.length === 0) return;
@@ -31,7 +39,7 @@ export default function useCategory(categoryList: CategoryType[] | []) {
     ];
 
     setTagCategories(finalThreeCategories);
-  }, [selectedCategory, categoryList]);
+  }, [selectedCategory, categoryList, fixedCategory]);
 
   return { tagCategories, selectedCategory, setSelectedCategory };
 }

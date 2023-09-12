@@ -2,7 +2,7 @@ import { RestRequest, rest } from "msw";
 import {
   successfulAllRegionsData,
   successfulCategoriesData,
-  successfulItemListData,
+  successfulProductItemsData,
   successfulRefreshAccessToken,
   successfulSignInData,
   successfulSignOutData,
@@ -13,7 +13,7 @@ import {
   successfulWishlistItemAdd,
   successfulWishlistItemDelete,
   successfulWishlistItemsData,
-  unSuccessfulItemListData,
+  unSuccessfulProductItemsData,
   unSuccessfulRefreshAccessToken,
   unSuccessfulSignInData,
   unSuccessfulSignUpData,
@@ -70,10 +70,38 @@ export default [
   rest.get(
     "/api/items?region=1&category=1&page=0&size=10",
     async (_, res, ctx) => {
-      return res(ctx.status(200), ctx.json(successfulItemListData));
-      return res(ctx.status(400), ctx.json(unSuccessfulItemListData));
+      return res(ctx.status(200), ctx.json(successfulProductItemsData));
+      return res(ctx.status(400), ctx.json(unSuccessfulProductItemsData));
     }
   ),
+
+  rest.get("/api/items/:id", (req, res, ctx) => {
+    const { id } = req.params;
+
+    const item = successfulProductItemsData.data.find(
+      (product) => product.id === Number(id)
+    );
+
+    if (item) {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          ...successfulProductItemsData,
+          data: item,
+        })
+      );
+    } else {
+      return res(
+        ctx.status(404),
+        ctx.json({
+          code: 404,
+          status: "Not Found",
+          message: "상품을 찾을 수 없습니다",
+          data: null,
+        })
+      );
+    }
+  }),
 
   rest.get("/api/users/regions", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(successfulUserRegionsData));

@@ -34,7 +34,7 @@ export const patchUserRegion = async (id: number) => {
 
 export const deleteUserRegion = async (id: number) => {
   const res = await fetcher.delete<Response<null>>(`/users/regions/${id}`);
-  return res;
+  return res.data;
 };
 
 export const postUserRegion = async (regionId: number) => {
