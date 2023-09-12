@@ -13,7 +13,7 @@ type AllRegionsData = {
 
 type UserRegions = {
   selectedId: number;
-  items: RegionType[];
+  regions: RegionType[];
 };
 
 export const getAllRegions = async () => {
