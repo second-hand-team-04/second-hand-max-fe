@@ -1,11 +1,11 @@
-import AppBar from "@components/AppBar";
-import { styled } from "styled-components";
 import chevronLeftIcon from "@assets/icon/chevron-left.svg";
-import Button from "@components/common/Button/Button";
+import AppBar from "@components/AppBar";
 import CategoryButton from "@components/Category/CategoryButton";
-import { useNavigate } from "react-router-dom";
+import Button from "@components/common/Button/Button";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";
+import { styled } from "styled-components";
 
 export default function CategoryPage() {
   const navigate = useNavigate();

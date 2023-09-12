@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { postSignUp } from "api/user";
-import queryKeys from "./queryKeys";
 import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";
+import queryKeys from "./queryKeys";
 
 export default function useSignUpMutation() {
   const navigate = useNavigate();

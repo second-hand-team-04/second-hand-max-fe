@@ -1,8 +1,8 @@
-import { styled } from "styled-components";
-import messageIcon from "@assets/icon/message.svg";
 import heartIcon from "@assets/icon/heart.svg";
-import { ProductItemType } from "api/productItem";
+import messageIcon from "@assets/icon/message.svg";
 import { formatAsPrice } from "@utils/stringFormatters";
+import { ProductItemType } from "api/productItem";
+import { styled } from "styled-components";
 
 type Props = {
   item: ProductItemType;

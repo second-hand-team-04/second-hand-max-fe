@@ -1,11 +1,11 @@
-import { ThemeProvider, styled } from "styled-components";
+import CustomToaster from "@components/CustomToaster";
+import { ProductItemsFiltersProvider } from "@context/ProductItemsFiltersContext";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import { RouterProvider } from "react-router-dom";
 import router from "router/router";
-import CustomToaster from "@components/CustomToaster";
-import useUserInfoQuery from "api/queries/useUserInfoQuery";
-import { ProductItemsFiltersProvider } from "@context/ProductItemsFiltersContext";
+import { ThemeProvider, styled } from "styled-components";
 
 function App() {
   const { data: user } = useUserInfoQuery();

@@ -1,21 +1,21 @@
-import AppBar from "@components/AppBar";
-import Button from "@components/common/Button/Button";
-import { SelectInput, SelectItem } from "@components/common/SelectInput";
 import layoutGridIcon from "@assets/icon/layout-grid.svg";
-import { Link, useNavigate } from "react-router-dom";
-import { styled } from "styled-components";
-import NavBar from "@components/NavBar/NavBar";
-import useProductItemsInfiniteQuery from "api/queries/useProductItemsInfiniteQuery";
-import ProductItem from "@components/Home/ProductItem";
-import { RegionType } from "api/region";
-import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
-import RegionModal from "@components/Region/RegionModal";
-import { Fragment, useContext, useEffect, useState } from "react";
+import AppBar from "@components/AppBar";
 import { FabButton } from "@components/Home/FabButton";
-import { keepLastRegion } from "@utils/stringFormatters";
-import Routes from "router/Routes";
-import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
+import ProductItem from "@components/Home/ProductItem";
+import NavBar from "@components/NavBar/NavBar";
+import RegionModal from "@components/Region/RegionModal";
+import Button from "@components/common/Button/Button";
 import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScrollList";
+import { SelectInput, SelectItem } from "@components/common/SelectInput";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
+import { keepLastRegion } from "@utils/stringFormatters";
+import useProductItemsInfiniteQuery from "api/queries/useProductItemsInfiniteQuery";
+import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
+import { RegionType } from "api/region";
+import { Fragment, useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Routes from "router/Routes";
+import { styled } from "styled-components";
 
 export default function HomePage() {
   const navigate = useNavigate();

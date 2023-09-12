@@ -1,7 +1,6 @@
 import { ModalListItem } from "@components/common/Modal/ModalStyles";
 import { CategoryType } from "api/category";
 
-
 type Props = {
   item: CategoryType;
   onClick: (itemTitle: string) => void;

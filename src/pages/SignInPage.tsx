@@ -1,17 +1,17 @@
 import AppBar from "@components/AppBar";
-import TextInput from "@components/common/TextInput/TextInput";
-import { styled } from "styled-components";
-import useText from "@hooks/useText";
-import NavBar from "@components/NavBar/NavBar";
-import { validateEmail } from "@utils/textValidators";
-import Button from "@components/common/Button/Button";
-import { useNavigate } from "react-router-dom";
-import { FormEvent, useContext, useEffect } from "react";
-import useSignInMutation from "api/queries/useSignInMutation";
 import KakaoSignInButton from "@components/KakaoSignInButton";
+import NavBar from "@components/NavBar/NavBar";
+import Button from "@components/common/Button/Button";
+import TextInput from "@components/common/TextInput/TextInput";
+import useText from "@hooks/useText";
+import { validateEmail } from "@utils/textValidators";
 import useOAuthSignInMutation from "api/queries/useOAuthSignInMutation";
+import useSignInMutation from "api/queries/useSignInMutation";
 import { WindowContext } from "context/WindowContext";
+import { FormEvent, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";
+import { styled } from "styled-components";
 
 const CLIENT_URL =
   process.env.NODE_ENV === "production"

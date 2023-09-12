@@ -1,5 +1,5 @@
-import axios from "axios";
 import { refreshAccessToken } from "api/user";
+import axios from "axios";
 import Routes from "router/Routes";
 
 const BASE_API_URL =

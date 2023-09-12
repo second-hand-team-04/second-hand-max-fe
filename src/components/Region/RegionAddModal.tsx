@@ -1,21 +1,21 @@
-import xIcon from "@assets/icon/x.svg";
 import chevronLeft from "@assets/icon/chevron-left.svg";
+import xIcon from "@assets/icon/x.svg";
+import Button from "@components/common/Button/Button";
 import Modal from "@components/common/Modal/Modal";
 import {
   ModalBody,
   ModalHeader,
   ModalList,
 } from "@components/common/Modal/ModalStyles";
-import { useState } from "react";
-import { styled } from "styled-components";
-import RegionItem from "./RegionItem";
-import useAllRegionsQuery from "api/queries/useUserRegionsQuery";
-import { postUserRegion } from "api/region";
 import { useQueryClient } from "@tanstack/react-query";
 import queryKeys from "api/queries/queryKeys";
+import useAllRegionsQuery from "api/queries/useUserRegionsQuery";
+import { postUserRegion } from "api/region";
 import { AxiosError } from "axios";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
-import Button from "@components/common/Button/Button";
+import { styled } from "styled-components";
+import RegionItem from "./RegionItem";
 
 type Props = {
   isRegionAddModal: boolean;

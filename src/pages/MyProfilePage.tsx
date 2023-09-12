@@ -1,19 +1,19 @@
+import cameraIcon from "@assets/icon/camera.svg";
 import AppBar from "@components/AppBar";
 import NavBar from "@components/NavBar/NavBar";
-import useUserInfoQuery from "api/queries/useUserInfoQuery";
-import { styled } from "styled-components";
-import cameraIcon from "@assets/icon/camera.svg";
-import useImageInput from "@hooks/useImageInput";
 import Button from "@components/common/Button/Button";
-import useSignOutMutation from "api/queries/useSignOutMutation";
-import { useState } from "react";
+import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
-import { validateNickname } from "@utils/textValidators";
-import useUserInfoMutation from "api/queries/useProfileMutation";
 import { useQueryClient } from "@tanstack/react-query";
+import { validateNickname } from "@utils/textValidators";
 import queryKeys from "api/queries/queryKeys";
+import useUserInfoMutation from "api/queries/useProfileMutation";
+import useSignOutMutation from "api/queries/useSignOutMutation";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import { AxiosError } from "axios";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { styled } from "styled-components";
 
 export default function MyProfilePage() {
   const queryClient = useQueryClient();

@@ -1,18 +1,18 @@
+import CategoryPage from "@pages/CategoryPage";
+import FallbackPage from "@pages/FallbackPage";
+import HomePage from "@pages/HomePage";
+import MyProfilePage from "@pages/MyProfilePage";
+import NewProductPage from "@pages/NewProductPage";
+import SignInPage from "@pages/SignInPage";
+import SignUpPage from "@pages/SignUpPage";
+import { User } from "api/user";
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
-import PublicOnlyRoute from "./PublicOnlyRoute";
 import ProtectedRoute from "./ProtectedRoute";
-import SignUpPage from "@pages/SignUpPage";
-import CategoryPage from "@pages/CategoryPage";
-import NewProductPage from "@pages/NewProductPage";
-import SignInPage from "@pages/SignInPage";
-import { User } from "api/user";
-import HomePage from "@pages/HomePage";
-import MyProfilePage from "@pages/MyProfilePage";
-import FallbackPage from "@pages/FallbackPage";
+import PublicOnlyRoute from "./PublicOnlyRoute";
 import Routes from "./Routes";
 
 const router = (user: User | undefined) =>

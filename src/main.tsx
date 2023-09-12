@@ -1,8 +1,3 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "index.css";
-import browserServiceWorker from "mocks/browserServiceWorker.ts";
 import {
   MutationCache,
   QueryCache,
@@ -10,8 +5,13 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { toast } from "react-hot-toast";
 import { WindowProvider } from "context/WindowContext.tsx";
+import "index.css";
+import browserServiceWorker from "mocks/browserServiceWorker.ts";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { toast } from "react-hot-toast";
+import App from "./App.tsx";
 
 if (process.env.NODE_ENV === "development") {
   browserServiceWorker.start({

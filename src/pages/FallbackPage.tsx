@@ -1,8 +1,8 @@
-import { styled } from "styled-components";
 import logo from "@assets/images/logo.jpeg";
-import { useNavigate } from "react-router-dom";
 import Button from "@components/common/Button/Button";
+import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";
+import { styled } from "styled-components";
 
 export default function FallbackPage() {
   const navigate = useNavigate();

@@ -1,20 +1,20 @@
 import { RestRequest, rest } from "msw";
 import {
-  successfulItemListData,
   successfulAllRegionsData,
   successfulCategoriesData,
-  successfulUserRegionsData,
+  successfulItemListData,
+  successfulRefreshAccessToken,
   successfulSignInData,
+  successfulSignOutData,
   successfulSignUpData,
   successfulUserInfoData,
-  successfulRefreshAccessToken,
-  successfulSignOutData,
+  successfulUserRegionSelectData,
+  successfulUserRegionsData,
+  unSuccessfulItemListData,
+  unSuccessfulRefreshAccessToken,
   unSuccessfulSignUpData,
   unsuccessfulSignInData,
   unsuccessfulUserInfoData,
-  unSuccessfulRefreshAccessToken,
-  unSuccessfulItemListData,
-  successfulUserRegionSelectData,
 } from "./data";
 
 const isAuthorized = (req: RestRequest) => {
@@ -85,7 +85,7 @@ export default [
 
     const id = Number(req.params.id);
 
-    const updatedRegions = currentRegionListData.items.filter(
+    const updatedRegions = currentRegionListData.regions.filter(
       (region) => region.id !== id
     );
     return res(ctx.status(200), ctx.json(updatedRegions));

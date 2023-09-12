@@ -1,21 +1,21 @@
-import AppBar from "@components/AppBar";
 import cameraIcon from "@assets/icon/camera.svg";
-import mapIcon from "@assets/icon/map-pin-filled.svg";
-import circleXIcon from "@assets/icon/circle-x-filled.svg";
 import chevronRightIcon from "@assets/icon/chevron-right.svg";
-import Button from "@components/common/Button/Button";
-import { styled } from "styled-components";
-import useDraggable from "@hooks/useDraggable";
-import React, { useEffect, useState } from "react";
-import { Tag } from "@components/common/Tag/Tag";
+import circleXIcon from "@assets/icon/circle-x-filled.svg";
+import mapIcon from "@assets/icon/map-pin-filled.svg";
+import AppBar from "@components/AppBar";
 import CategoryModal from "@components/Category/CategoryModal";
-import useCategory from "@utils/useCategory";
-import { useNavigate } from "react-router-dom";
+import Button from "@components/common/Button/Button";
+import { Tag } from "@components/common/Tag/Tag";
+import useDraggable from "@hooks/useDraggable";
 import useImageInput from "@hooks/useImageInput";
-import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import useText from "@hooks/useText";
 import { formatAsPrice } from "@utils/stringFormatters";
+import useCategory from "@utils/useCategory";
+import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";
+import { styled } from "styled-components";
 
 export default function NewProductPage() {
   const navigate = useNavigate();

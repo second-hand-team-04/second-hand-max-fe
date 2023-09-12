@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import queryKeys from "./queryKeys";
 import { getUserRegions } from "api/region";
+import queryKeys from "./queryKeys";
 
 export default function useUserRegionsQuery() {
   return useQuery({
