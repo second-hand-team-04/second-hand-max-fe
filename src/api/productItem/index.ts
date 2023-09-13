@@ -7,7 +7,7 @@ export type ProductItemType = {
   region: string;
   status: string;
   sellerId: number;
-  thumbnail: string | null;
+  thumbnailUrl: string | null;
   createdAt: string;
   updatedAt: string;
   price: number | null;
@@ -73,5 +73,18 @@ export const postProductItem = async (body: ProductItemBody) => {
 
 export const putProductItem = async (id: number, body: ProductItemBody) => {
   const res = await fetcher.put<Response<null>>(`/items/${id}`, body);
+  return res.data;
+};
+
+export const patchProductItemStatus = async (
+  id: number,
+  body: { status: number }
+) => {
+  const res = await fetcher.patch<Response<null>>(`/items/${id}`, body);
+  return res.data;
+};
+
+export const deleteProductItem = async (id: number) => {
+  const res = await fetcher.delete<Response<null>>(`items/${id}`);
   return res.data;
 };
