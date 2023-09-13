@@ -1,19 +1,28 @@
-import { ReactNode, useRef, useState } from "react";
+import useViewportIntersection from "@hooks/useIntersection";
+import { MouseEvent, ReactNode, RefObject, useRef, useState } from "react";
 import { styled } from "styled-components";
-import useViewportIntersection from "../../../hooks/useViewportIntersection";
 
 type Props = {
   buttonContent: ReactNode;
+  boundaryElementRef?: RefObject<Element>;
   children: ReactNode;
 };
 
-export default function Dropdown({ buttonContent, children }: Props) {
+export default function Dropdown({
+  buttonContent,
+  boundaryElementRef,
+  children,
+}: Props) {
   const dropdownRef = useRef<HTMLUListElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
-  const intersectingSide = useViewportIntersection(dropdownRef);
+  const intersectingSide = useViewportIntersection(
+    dropdownRef,
+    boundaryElementRef
+  );
 
-  const onToggleIsOpen = () => {
+  const onToggleIsOpen = (e: MouseEvent) => {
+    e.stopPropagation();
     setIsOpen((prev) => !prev);
   };
 
@@ -38,13 +47,12 @@ export default function Dropdown({ buttonContent, children }: Props) {
 }
 
 const StyledDropdown = styled.div`
+  position: relative;
   display: inline-block;
   position: relative;
-  transform: translateX(880px);
 `;
 
 const DropdownButton = styled.button`
-  padding: 8px;
   display: flex;
   align-items: center;
 `;
@@ -54,11 +62,10 @@ const DropdownList = styled.ul<{ $intersectingSide: "left" | "right" | null }>`
   position: absolute;
   top: 48px;
   left: ${({ $intersectingSide }) =>
-    $intersectingSide === "left" || $intersectingSide === null
-      ? "16px"
-      : "auto"};
-  right: ${({ $intersectingSide }) => $intersectingSide === "right" && "16px"};
-  background-color: ${({ theme: { color } }) => color.white};
+    $intersectingSide === "left" || $intersectingSide === null ? "0" : "auto"};
+  right: ${({ $intersectingSide }) => $intersectingSide === "right" && "0"};
+  background-color: ${({ theme: { color } }) => color.neutral.background};
   border-radius: 12px;
   box-shadow: 0px 4px 4px 0px #00000040;
+  z-index: 2;
 `;
