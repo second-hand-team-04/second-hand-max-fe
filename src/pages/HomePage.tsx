@@ -113,11 +113,7 @@ export default function HomePage() {
             productItemsData.pages.map((group, idx) => (
               <Fragment key={idx}>
                 {group.data.items?.map((item) => (
-                  <ProductItem
-                    key={item.id}
-                    item={item}
-                    onClick={() => navigate(`/product/${item.id}`)}
-                  />
+                  <ProductItem key={item.id} item={item} />
                 ))}
               </Fragment>
             ))}

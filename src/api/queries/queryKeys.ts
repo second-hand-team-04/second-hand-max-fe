@@ -41,11 +41,18 @@ export const productItemsKeys = createQueryKeys("productItems", {
   }),
 });
 
+export const wishlistKeys = createQueryKeys("wishlist", {
+  list: (filters: { categoryId: number }) => ({
+    queryKey: [filters],
+  }),
+});
+
 export const queryKeys = mergeQueryKeys(
   categoryKeys,
   regionKeys,
   userKeys,
-  productItemsKeys
+  productItemsKeys,
+  wishlistKeys
 );
 
 export default queryKeys;
