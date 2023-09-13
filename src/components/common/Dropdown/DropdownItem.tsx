@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { MouseEvent, ReactNode } from "react";
 import { styled } from "styled-components";
 
 type Props = {
@@ -8,8 +8,13 @@ type Props = {
 };
 
 export default function DropdownItem({ variant, onClick, children }: Props) {
+  const onClickDropdownItem = (e: MouseEvent) => {
+    e.stopPropagation();
+    onClick();
+  };
+
   return (
-    <StyledDropdownItem $variant={variant} onClick={onClick}>
+    <StyledDropdownItem $variant={variant} onClick={onClickDropdownItem}>
       {children}
     </StyledDropdownItem>
   );
