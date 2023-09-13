@@ -3,7 +3,7 @@ import EditProductItemPage from "@pages/EditProductItemPage";
 import FallbackPage from "@pages/FallbackPage";
 import HomePage from "@pages/HomePage";
 import MyProfilePage from "@pages/MyProfilePage";
-import MyWishlistPage from "@pages/MyWishlistPage";
+// import MyWishlistPage from "@pages/MyWishlistPage";
 import NewProductPage from "@pages/NewProductItemPage";
 import ProductItemPage from "@pages/ProductItemPage";
 import SignInPage from "@pages/SignInPage";
@@ -35,7 +35,7 @@ const router = (user: User | undefined) =>
           <Route path={Routes.PRODUCTITEM} element={<ProductItemPage />} />
           <Route path={Routes.EDITPRODUCT} element={<EditProductItemPage />} />
           {/* <Route path={Routes.TRANSACTIONS} element={<MyTransactionsPage />} /> */}
-          <Route path={Routes.WISHLIST} element={<MyWishlistPage />} />
+          {/* <Route path={Routes.WISHLIST} element={<MyWishlistPage />} /> */}
           <Route path={Routes.PROFILE} element={<MyProfilePage />} />
           {/* <Route path={Routes.CHATS} element={<MyChatsPage />} /> */}
           {/* <Route path={Route.CHAT} element={<ChatPage />} /> */}
