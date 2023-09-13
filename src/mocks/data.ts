@@ -6,6 +6,7 @@ export const successfulSignInData = {
     accessToken: "accessToken",
     refreshToken: "refreshToken",
     user: {
+      id: 1,
       nickname: "Kakamotobi",
       profileImageUrl: "blah",
     },

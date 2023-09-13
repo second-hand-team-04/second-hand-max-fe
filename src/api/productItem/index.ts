@@ -6,6 +6,7 @@ export type ProductItemType = {
   title: string;
   region: string;
   status: string;
+  sellerId: number;
   thumbnail: string | null;
   createdAt: string;
   updatedAt: string;
