@@ -6,18 +6,29 @@ export type RegionType = {
   title: string;
 };
 
-type RegionData = {
+type AllRegionsData = {
   hasMore: boolean;
   regions: RegionType[];
 };
 
-export const getRegionList = async () => {
-  const res = await fetcher.get<Response<RegionData>>("/regions");
+type UserRegionsData = {
+  selectedId: number;
+  regions: RegionType[];
+};
+
+export const getAllRegions = async () => {
+  const res = await fetcher.get<Response<AllRegionsData>>("/regions");
   return res.data;
 };
 
 export const getUserRegions = async () => {
-  const res = await fetcher.get<Response<RegionType[]>>("/users/regions");
+  const res = await fetcher.get<Response<UserRegionsData>>("/users/regions");
+  return res.data;
+};
+
+// 동네 선택
+export const patchUserRegion = async (id: number) => {
+  const res = await fetcher.patch<Response<null>>(`/users/regions/${id}`);
   return res.data;
 };
 

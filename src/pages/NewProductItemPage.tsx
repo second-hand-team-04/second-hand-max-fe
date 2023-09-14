@@ -1,27 +1,33 @@
-import AppBar from "@components/AppBar";
 import cameraIcon from "@assets/icon/camera.svg";
-import mapIcon from "@assets/icon/map-pin-filled.svg";
-import circleXIcon from "@assets/icon/circle-x-filled.svg";
 import chevronRightIcon from "@assets/icon/chevron-right.svg";
-import Button from "@components/common/Button/Button";
-import { styled } from "styled-components";
-import useDraggable from "@hooks/useDraggable";
-import React, { useEffect, useState } from "react";
-import { Tag } from "@components/common/Tag/Tag";
+import circleXIcon from "@assets/icon/circle-x-filled.svg";
+import mapIcon from "@assets/icon/map-pin-filled.svg";
+import AppBar from "@components/AppBar";
 import CategoryModal from "@components/Category/CategoryModal";
-import useCategory from "@utils/useCategory";
-import { useNavigate } from "react-router-dom";
+import Button from "@components/common/Button/Button";
+import { Tag } from "@components/common/Tag/Tag";
+import useDraggable from "@hooks/useDraggable";
 import useImageInput from "@hooks/useImageInput";
-import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import useText from "@hooks/useText";
-import { formatAsPrice } from "@utils/stringFormatters";
+import { formatAsNumber, formatAsPrice } from "@utils/stringFormatters";
+import useRandomCategories from "@utils/useRandomCategories";
+import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import { AxiosError } from "axios";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { styled } from "styled-components";
 
-export default function NewProductPage() {
+import useProductItemMutation from "api/queries/useProductItemMutation";
+
+export default function NewProductItemPage() {
   const navigate = useNavigate();
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
   const [pictureList, setPictureList] = useState<File[]>([]);
+
+  const { mutateAsync: postProductItemMutateAsync } = useProductItemMutation();
 
   const { value: titleInputValue, onChange: onTitleInputChange } = useText();
   const { value: contentInputValue, onChange: onContentInputChange } =
@@ -29,9 +35,8 @@ export default function NewProductPage() {
   const { value: priceInputValue, onChange: onChangeForPrice } = useText();
 
   const { data: categories, isLoading } = useCategoriesQuery();
-  const { tagCategories, selectedCategory, setSelectedCategory } = useCategory(
-    categories ?? []
-  );
+  const { tagCategories, selectedCategory, setSelectedCategory } =
+    useRandomCategories({ categoryList: categories ?? [] });
   const [selectedTag, setSelectedTag] = useState(selectedCategory);
 
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
@@ -97,16 +102,27 @@ export default function NewProductPage() {
     );
   };
 
-  const onPost = () => {
-    console.log(
-      "Post",
-      pictureList,
-      titleInputValue,
-      selectedTag,
-      priceInputValue || null,
-      contentInputValue,
-      currentRegion
-    );
+  const onPost = async () => {
+    try {
+      const requestData = {
+        title: titleInputValue,
+        price: Number(formatAsNumber(priceInputValue)),
+        content: contentInputValue,
+        imageIds: pictureList.map((picture) => Number(picture.lastModified)),
+        categoryId: 1,
+        regionId: 1,
+      };
+
+      const res = await postProductItemMutateAsync(requestData);
+
+      console.log(res);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    }
   };
 
   const isValid =
@@ -203,11 +219,10 @@ export default function NewProductPage() {
                     (tag: { id: number; title: string; imageUrl: string }) => (
                       <Tag
                         key={tag.id}
-                        tag={tag}
+                        title={tag.title}
                         isSelected={selectedTag === tag.title}
-                        onClick={onSelectTag}>
-                        {tag.title}
-                      </Tag>
+                        onClick={() => onSelectTag(tag.title)}
+                      />
                     )
                   )}
                 </TagArea>

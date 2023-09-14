@@ -45,4 +45,5 @@ const StyledAppBar = styled.header<{
     $isTop ? backdropFilter.blur : ""};
   top: ${({ $isTop }) => ($isTop ? "0" : "auto")};
   bottom: ${({ $isTop }) => ($isTop ? "auto" : "0")};
+  z-index: 1;
 `;

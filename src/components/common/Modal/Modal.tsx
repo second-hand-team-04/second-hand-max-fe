@@ -1,6 +1,7 @@
-import { styled } from "styled-components";
+import useOutsideClick from "@hooks/useOutsideClick";
 import React from "react";
 import ReactDOM from "react-dom";
+import { styled } from "styled-components";
 
 type Props = {
   onClose: () => void;
@@ -9,8 +10,10 @@ type Props = {
 export default function Modal({ onClose, children }: Props) {
   const modalRoot = document.getElementById("modal-root");
 
+  const containerRef = useOutsideClick(onClose);
+
   return ReactDOM.createPortal(
-    <StyledModal onClick={onClose}>{children}</StyledModal>,
+    <StyledModal ref={containerRef}>{children}</StyledModal>,
     modalRoot!
   );
 }

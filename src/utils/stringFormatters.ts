@@ -13,3 +13,7 @@ export function keepLastRegion(address: string): string {
 
   return parts[parts.length - 1];
 }
+
+export function formatAsNumber(input: string) {
+  return input.replace(/,/g, "");
+}

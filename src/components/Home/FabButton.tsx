@@ -1,5 +1,5 @@
-import { styled } from "styled-components";
 import plusIcon from "@assets/icon/plus.svg";
+import { styled } from "styled-components";
 
 export function FabButton({ onClick }: { onClick: () => void }) {
   return (

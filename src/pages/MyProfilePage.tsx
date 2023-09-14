@@ -1,18 +1,36 @@
+import cameraIcon from "@assets/icon/camera.svg";
 import AppBar from "@components/AppBar";
 import NavBar from "@components/NavBar/NavBar";
-import useUserInfoQuery from "api/queries/useUserInfoQuery";
-import { styled } from "styled-components";
-import cameraIcon from "@assets/icon/camera.svg";
-import useImageInput from "@hooks/useImageInput";
-import { useEffect, useState } from "react";
 import Button from "@components/common/Button/Button";
+import useImageInput from "@hooks/useImageInput";
+import useText from "@hooks/useText";
+import { useQueryClient } from "@tanstack/react-query";
+import { validateNickname } from "@utils/textValidators";
+import queryKeys from "api/queries/queryKeys";
 import useSignOutMutation from "api/queries/useSignOutMutation";
+import useUserInfoMutation from "api/queries/useUserInfoMutation";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
+import { AxiosError } from "axios";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { styled } from "styled-components";
 
 export default function MyProfilePage() {
-  const { data: userInfo } = useUserInfoQuery();
-  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
+  const queryClient = useQueryClient();
 
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const { data: userInfo } = useUserInfoQuery();
   const { mutate: signOutMutate } = useSignOutMutation();
+  const { mutateAsync: userInfoMutateAsync } = useUserInfoMutation();
+
+  const {
+    value: nickname,
+    error: nicknameError,
+    onChange: onNicknameChange,
+  } = useText({
+    validators: [validateNickname],
+  });
 
   const {
     imageFile: profilePictureImage,
@@ -20,23 +38,74 @@ export default function MyProfilePage() {
     onChange: onProfilePictureChange,
   } = useImageInput({ sizeLimit: 2000000 });
 
-  useEffect(() => {
-    if (!profilePictureImage && userInfo) {
-      setProfileImageUrl(userInfo.imageUrl);
-    }
-    if (profilePictureImage) {
-      setProfileImageUrl(URL.createObjectURL(profilePictureImage));
-    }
-  }, [profilePictureImage, userInfo]);
+  const profileImageUrl = profilePictureImage
+    ? URL.createObjectURL(profilePictureImage)
+    : userInfo?.imageUrl
+    ? userInfo.imageUrl
+    : "";
+
+  const switchEditMode = () => {
+    setIsEditMode(!isEditMode);
+  };
 
   const onSignOutClick = () => {
     signOutMutate();
   };
 
+  const completeEditProfile = async () => {
+    try {
+      const formData = new FormData();
+      const isImageChanged = !!profilePictureImage;
+
+      const requestData = {
+        nickname: nickname,
+        isImageChanged: isImageChanged,
+      };
+      formData.append(
+        "request",
+        new Blob([JSON.stringify(requestData)], { type: "application/json" })
+      );
+
+      if (profilePictureImage) {
+        formData.append("image", profilePictureImage);
+      }
+
+      const res = await userInfoMutateAsync(formData);
+
+      if (res.code === 200) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.user.info().queryKey,
+        });
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    }
+    switchEditMode();
+  };
+
   return (
     <StyledProfilePage>
       <AppBar>
+        {isEditMode ? (
+          <Button
+            onClick={switchEditMode}
+            style={{ width: "62px", position: "absolute", left: 0 }}
+            variant="plain">
+            <SideButtonText>뒤로</SideButtonText>
+          </Button>
+        ) : null}
         <AppBarTitle>내 계정</AppBarTitle>
+
+        <Button
+          onClick={isEditMode ? completeEditProfile : switchEditMode}
+          style={{ width: "62px", position: "absolute", right: 0 }}
+          variant="plain">
+          <SideButtonText>{isEditMode ? "완료" : "수정"}</SideButtonText>
+        </Button>
       </AppBar>
       <ImageInputError>{imageFileError}</ImageInputError>
       <ContentArea>
@@ -52,24 +121,56 @@ export default function MyProfilePage() {
           />
           <CameraIcon src={cameraIcon} alt="사진 등록" />
         </ProfilePictureLabel>
-        <UserNameLabel>{userInfo?.nickname}</UserNameLabel>
-        <Button
-          onClick={onSignOutClick}
-          style={{ marginTop: "40px", width: "329px" }}
-          variant="contained">
-          로그아웃
-        </Button>
+        {isEditMode ? (
+          <>
+            <UserNameLabel>
+              <UserNameEditInput
+                type="text"
+                placeholder={userInfo?.nickname}
+                value={nickname ? nickname : userInfo?.nickname}
+                onChange={onNicknameChange}
+                required
+              />
+            </UserNameLabel>
+            {<TextInputError>{nicknameError}</TextInputError>}
+          </>
+        ) : (
+          <UserNameLabel>{userInfo?.nickname}</UserNameLabel>
+        )}
+        {!isEditMode && (
+          <Button
+            onClick={onSignOutClick}
+            style={{ marginTop: "40px", width: "329px" }}
+            variant="contained">
+            로그아웃
+          </Button>
+        )}
       </ContentArea>
       <NavBar />
     </StyledProfilePage>
   );
 }
 
+const SideButtonText = styled.span`
+  font: ${({ theme: { font } }) => font.availableStrong16};
+  color: ${({ theme: { color } }) => color.neutral.text};
+`;
+
 const UserNameLabel = styled.p`
+  width: 120px;
   margin-top: 24px;
   font: ${({ theme: { font } }) => font.displayStrong16};
   font-size: 17px;
   color: ${({ theme: { color } }) => color.neutral.textStrong};
+  text-align: center;
+`;
+
+const UserNameEditInput = styled.input`
+  width: inherit;
+  text-align: center;
+
+  border-bottom: ${({ theme: { color } }) =>
+    `1px solid ${color.neutral.borderStrong}`};
 `;
 
 const StyledProfilePage = styled.div`
@@ -134,4 +235,13 @@ const ContentArea = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+`;
+
+const TextInputError = styled.p`
+  position: absolute;
+  top: 138px;
+  height: 18px;
+  padding-left: 12px;
+  font: ${({ theme: { font } }) => font.availableDefault12};
+  color: ${({ theme: { color } }) => color.system.warning};
 `;

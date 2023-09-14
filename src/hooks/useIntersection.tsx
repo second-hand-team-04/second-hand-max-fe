@@ -1,7 +1,8 @@
 import { RefObject, useEffect, useState } from "react";
 
-export default function useViewportIntersection(
-  elementRef: RefObject<Element>
+export default function useIntersection(
+  elementRef: RefObject<Element>,
+  boundaryElement?: RefObject<Element>
 ) {
   const [intersectingSide, setIntersectingSide] = useState<
     "left" | "right" | null
@@ -12,7 +13,11 @@ export default function useViewportIntersection(
       const { left, right } = entry.boundingClientRect;
       if (left <= 0) {
         setIntersectingSide("left");
-      } else if (right >= window.innerWidth) {
+      } else if (
+        right >=
+        (boundaryElement?.current?.getBoundingClientRect().right ??
+          window.innerWidth)
+      ) {
         setIntersectingSide("right");
       }
       return;
@@ -26,7 +31,9 @@ export default function useViewportIntersection(
 
     if (!elementNode) return;
 
-    const observerOptions = {};
+    const observerOptions = {
+      root: boundaryElement?.current ?? null,
+    };
     const observer = new IntersectionObserver(updateEntry, observerOptions);
     observer.observe(elementNode);
 

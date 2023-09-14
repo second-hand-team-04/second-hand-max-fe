@@ -1,9 +1,9 @@
-import { styled } from "styled-components";
-import Button from "./common/Button/Button";
 import kakaoBubbleIcon from "@assets/images/kakao_bubble_icon.png";
+import { WindowContext } from "@context/WindowContext";
 import openPopUpWindow from "@utils/openPopUpWindow";
 import { useContext } from "react";
-import { WindowContext } from "@context/WindowContext";
+import { styled } from "styled-components";
+import Button from "./common/Button/Button";
 
 const CLIENT_URL =
   process.env.NODE_ENV === "production"
