@@ -1,18 +1,15 @@
 import { styled } from "styled-components";
 
 export type TagType = {
-  tag: {
-    id: number;
-    title: string;
-  };
+  title: string;
   isSelected: boolean;
   onClick: () => void;
 };
 
-export function Tag({ tag, isSelected, onClick }: TagType) {
+export function Tag({ title, isSelected, onClick }: TagType) {
   return (
     <StyledTag onClick={onClick} $isSelected={isSelected}>
-      {tag.title}
+      {title}
     </StyledTag>
   );
 }
