@@ -71,34 +71,6 @@ export default function ProductItemPage() {
 
   if (isLoading && !productItemDetails) return <div>로딩중</div>;
 
-  const DeleteAlertTitle = styled.p`
-    color: ${({ theme: { color } }) => color.neutral.textStrong};
-    font: ${({ theme: { font } }) => font.displayStrong16};
-    height: 24px;
-  `;
-
-  const AlertBody = styled.div`
-    padding: 24px 32px;
-    width: 100%;
-    display: flex;
-    box-sizing: border-box;
-  `;
-
-  const AlertButtonContainer = styled.div`
-    width: 100%;
-    height: 24px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 32px;
-
-    > button {
-      font: ${({ theme: { font } }) => font.displayDefault16};
-      > span {
-        color: ${({ theme: { color } }) => color.system.warning};
-      }
-    }
-  `;
-
   return (
     <StyledProductItemPage>
       {isDeleteAlertOpen ? (
@@ -172,7 +144,8 @@ export default function ProductItemPage() {
       <ProductInfo>
         <SellerInfo>
           <h3>판매자 정보</h3>
-          <span>{productItemDetails?.seller.nickname}</span>
+          <span>{productItemDetails?.sellerId}</span>
+          {/* TODO: sller. nickname으로 바꿔야함 */}
         </SellerInfo>
         <StatusTab>
           <span>{productItemDetails?.status}</span>
@@ -213,6 +186,34 @@ export default function ProductItemPage() {
     </StyledProductItemPage>
   );
 }
+
+const DeleteAlertTitle = styled.p`
+  color: ${({ theme: { color } }) => color.neutral.textStrong};
+  font: ${({ theme: { font } }) => font.displayStrong16};
+  height: 24px;
+`;
+
+const AlertBody = styled.div`
+  padding: 24px 32px;
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+`;
+
+const AlertButtonContainer = styled.div`
+  width: 100%;
+  height: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 32px;
+
+  > button {
+    font: ${({ theme: { font } }) => font.displayDefault16};
+    > span {
+      color: ${({ theme: { color } }) => color.system.warning};
+    }
+  }
+`;
 
 const ProductImage = styled.img`
   width: 393px;

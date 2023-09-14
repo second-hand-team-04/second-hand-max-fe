@@ -9,7 +9,7 @@ import {
 } from "@components/common/Modal/ModalStyles";
 import { useQueryClient } from "@tanstack/react-query";
 import queryKeys from "api/queries/queryKeys";
-import useAllRegionsQuery from "api/queries/useUserRegionsQuery";
+import useAllRegionsQuery from "api/queries/useAllRegionsQuery";
 import { postUserRegion } from "api/region";
 import { AxiosError } from "axios";
 import { useState } from "react";

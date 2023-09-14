@@ -78,7 +78,7 @@ export default [
 
   rest.get("/api/items/:id", (req, res, ctx) => {
     const { id } = req.params;
-
+    console.log(id);
     const item = successfulProductItemsData.data.items.find(
       (product) => product.id === Number(id)
     );

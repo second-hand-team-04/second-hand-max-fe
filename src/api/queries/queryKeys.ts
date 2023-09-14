@@ -24,8 +24,9 @@ export const userKeys = createQueryKeys("user", {
 export const categoryKeys = createQueryKeys("categories");
 
 export const regionKeys = createQueryKeys("region", {
-  all: ["all"],
-  userRegions: ["userRegions"],
+  all: () => ["all"],
+  userRegions: () => ["userRegions"],
+  select: () => ["select"],
 });
 
 export const productItemsKeys = createQueryKeys("productItems", {
