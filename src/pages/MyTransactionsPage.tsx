@@ -47,6 +47,7 @@ export default function MyTransactionsPage() {
         </TagArea>
 
         <InfiniteScrollList
+          style={{ paddingBottom: "100px" }}
           onEndReached={() =>
             !isFetchingTransactionItems && fetchMoreTransactionItems()
           }>
@@ -74,6 +75,7 @@ const StyledMyWishListPage = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${({ theme: { color } }) => color.neutral.background};
+  overflow: hidden;
 `;
 
 const PageTitle = styled.h2`
