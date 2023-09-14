@@ -45,7 +45,7 @@ export default function RegionAddModal({
 
       if (res.code === 201) {
         queryClient.invalidateQueries({
-          queryKey: queryKeys.region.userRegions.queryKey,
+          queryKey: queryKeys.region.userRegions().queryKey,
         });
         setRegionInputValue("");
         toast.success("나의 동네로 설정되었어요.");

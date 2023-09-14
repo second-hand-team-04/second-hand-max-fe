@@ -5,7 +5,7 @@ import mapIcon from "@assets/icon/map-pin-filled.svg";
 import AppBar from "@components/AppBar";
 import CategoryModal from "@components/Category/CategoryModal";
 import Button from "@components/common/Button/Button";
-import { Tag, TagType } from "@components/common/Tag/Tag";
+import { Tag } from "@components/common/Tag/Tag";
 import useDraggable from "@hooks/useDraggable";
 import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
@@ -144,8 +144,8 @@ export default function EditProductItemPage() {
     setSelectedCategory(itemTitle);
   };
 
-  const onSelectTag = (tag: TagType) => {
-    setSelectedTag(tag.title);
+  const onSelectTag = (tagTitle: string) => {
+    setSelectedTag(tagTitle);
     // setCurrentCategoryId(String(tag.id));
   };
 
@@ -279,11 +279,10 @@ export default function EditProductItemPage() {
                     (tag: { id: number; title: string; imageUrl: string }) => (
                       <Tag
                         key={tag.id}
-                        tag={tag}
+                        title={tag.title}
                         isSelected={selectedTag === tag.title}
-                        onClick={onSelectTag}>
-                        {tag.title}
-                      </Tag>
+                        onClick={() => onSelectTag(tag.title)}
+                      />
                     )
                   )}
                 </TagArea>

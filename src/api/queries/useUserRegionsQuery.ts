@@ -4,7 +4,7 @@ import queryKeys from "./queryKeys";
 
 export default function useUserRegionsQuery() {
   return useQuery({
-    queryKey: queryKeys.region.userRegions.queryKey,
+    queryKey: queryKeys.region.userRegions().queryKey,
     queryFn: getUserRegions,
     staleTime: Infinity,
     select: (res) => res.data,
