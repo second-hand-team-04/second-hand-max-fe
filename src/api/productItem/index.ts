@@ -25,10 +25,11 @@ export type ProductItemDetails = {
   updatedAt: string;
   price: number;
   category: string;
-  seller: {
-    id: number;
-    nickname: string;
-  };
+  // seller: {
+  //   id: number;
+  //   nickname: string;
+  // };
+  sellerId: number;
   numChat: number;
   numLikes: number;
   numViews: number;

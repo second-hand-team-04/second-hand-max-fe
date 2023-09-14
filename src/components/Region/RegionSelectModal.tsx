@@ -8,6 +8,7 @@ import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext"
 import { useQueryClient } from "@tanstack/react-query";
 import { keepLastRegion } from "@utils/stringFormatters";
 import queryKeys from "api/queries/queryKeys";
+import useUserRegionMutation from "api/queries/useUserRegionMutation";
 import { RegionType, deleteUserRegion } from "api/region";
 import { AxiosError } from "axios";
 import { useContext } from "react";
@@ -48,11 +49,29 @@ export default function RegionSelectModal({
 
       if (res.code === 204) {
         queryClient.invalidateQueries({
-          queryKey: queryKeys.region.userRegions.queryKey,
+          queryKey: queryKeys.region.userRegions().queryKey,
         });
         toast.success("선택한 동네가 삭제되었어요.");
       } else {
         throw Error("동네 삭제에 실패했어요.");
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    }
+  };
+
+  const { mutateAsync: userRegionMutate } = useUserRegionMutation();
+
+  const selectRegion = async (region: RegionType) => {
+    try {
+      const res = await userRegionMutate(region.id);
+      console.log(res);
+      if (res.code === 204) {
+        onChangeSelectedRegion(region);
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -92,7 +111,7 @@ export default function RegionSelectModal({
                   : 1,
               }}
               key={index}
-              onClick={() => onChangeSelectedRegion(item)}>
+              onClick={() => selectRegion(item)}>
               <RegionButtonText>{keepLastRegion(item.title)}</RegionButtonText>
               <CircleXFilled
                 onClick={() => onRegionDelete(item.id)}
