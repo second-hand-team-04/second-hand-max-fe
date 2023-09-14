@@ -6,6 +6,7 @@ import AppBar from "@components/AppBar";
 import CategoryModal from "@components/Category/CategoryModal";
 import Button from "@components/common/Button/Button";
 import { Tag } from "@components/common/Tag/Tag";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import useDraggable from "@hooks/useDraggable";
 import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
@@ -16,7 +17,7 @@ import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
 import useProductItemEditMutation from "api/queries/useProductItemEditMutation";
 import { AxiosError } from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
@@ -52,6 +53,10 @@ export default function EditProductItemPage() {
     initialValue: String(productItemDetails?.price),
   });
 
+  const { selectedRegion, selectedCategory: selectedCategoryData } = useContext(
+    ProductItemsFiltersContext
+  );
+
   const initialValues = useRef({
     title: titleInputValue,
     content: contentInputValue,
@@ -68,8 +73,8 @@ export default function EditProductItemPage() {
     price: Number(formatAsNumber(priceInputValue)),
     content: contentInputValue,
     imageIds: pictureList.map((picture) => picture.id),
-    categoryId: 1,
-    regionId: 1,
+    categoryId: selectedCategoryData.id,
+    regionId: selectedRegion.id,
   };
 
   const { mutateAsync: putProductItemMutateAsync } = useProductItemEditMutation(
@@ -321,7 +326,7 @@ export default function EditProductItemPage() {
             gap: "8px",
           }}>
           <img src={mapIcon} alt="map" />
-          <RegionText>{currentRegion}</RegionText>
+          <RegionText>{selectedRegion.title}</RegionText>
         </Button>
       </AppBar>
     </StyledNewProductPage>
@@ -525,5 +530,3 @@ const Container = styled.div`
   background: ${({ theme: { color } }) => color.neutral.background};
   // box-sizing: border-box;
 `;
-
-const currentRegion = "역삼1동";
