@@ -7,25 +7,34 @@ import CategoryModal from "@components/Category/CategoryModal";
 import Button from "@components/common/Button/Button";
 import { Tag } from "@components/common/Tag/Tag";
 import useDraggable from "@hooks/useDraggable";
-import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
-import { formatAsNumber, formatAsPrice } from "@utils/stringFormatters";
+import {
+  formatAsNumber,
+  formatAsPrice,
+  keepLastRegion,
+} from "@utils/stringFormatters";
 import useRandomCategories from "@utils/useRandomCategories";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
+import { fetcher } from "api/fetcher";
 import useProductItemMutation from "api/queries/useProductItemMutation";
 
+type Picture = {
+  imageId: number;
+  imageUrl: string;
+};
 export default function NewProductItemPage() {
   const navigate = useNavigate();
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
-  const [pictureList, setPictureList] = useState<File[]>([]);
+  const [pictureList, setPictureList] = useState<Picture[]>([]);
 
   const { mutateAsync: postProductItemMutateAsync } = useProductItemMutation();
 
@@ -35,27 +44,71 @@ export default function NewProductItemPage() {
   const { value: priceInputValue, onChange: onChangeForPrice } = useText();
 
   const { data: categories, isLoading } = useCategoriesQuery();
+  // ! TODO: 태그관련한 카테고리 이름들 바꿔주기
   const { tagCategories, selectedCategory, setSelectedCategory } =
     useRandomCategories({ categoryList: categories ?? [] });
   const [selectedTag, setSelectedTag] = useState(selectedCategory);
 
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
     useDraggable();
-  const {
-    imageFile: productPictureImage,
-    error: imageFileError,
-    onChange: onProductPictureChange,
-  } = useImageInput({ sizeLimit: 2000000 });
+  // const {
+  //   imageFile: productPictureImage,
+  //   error: imageFileError,
+  //   onChange: onProductPictureChange,
+  // } = useImageInput({ sizeLimit: 2000000 });
+
+  const { selectedRegion, selectedCategory: selectedCategoryData } = useContext(
+    ProductItemsFiltersContext
+  );
+
+  // const { mutateAsync: useImageUploadMutate } = useProductItemMutation();
 
   useEffect(() => {
     setSelectedTag(selectedCategory);
   }, [selectedCategory]);
 
-  useEffect(() => {
-    if (productPictureImage) {
-      setPictureList((prevList) => [...prevList, productPictureImage]);
+  // useEffect(() => {
+  //   if (productPictureImage) {
+  //     // setPictureList((prevList) => [...prevList, productPictureImage]);
+  //   }
+  // }, [productPictureImage]);
+
+  const onImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      const files = e.target.files;
+
+      if (!files) return;
+
+      const newImageFile = files[0];
+
+      const formData = new FormData();
+      formData.append(
+        "request",
+        new Blob([JSON.stringify({ type: "item" })], {
+          type: "application/json",
+        })
+      );
+
+      formData.append("image", newImageFile);
+
+      const res = await fetcher.post("/images", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.data.code === 200) {
+        const imageId = res.data.data.id;
+        const imageUrl = res.data.data.imageUrl;
+        setPictureList((prevList) => [...prevList, { imageId, imageUrl }]);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
     }
-  }, [productPictureImage]);
+  };
 
   const onShowScrollBar = () => {
     setIsPictureHover(true);
@@ -98,7 +151,7 @@ export default function NewProductItemPage() {
 
   const onDeletePicture = (pictureId: number) => {
     setPictureList((prevList) =>
-      prevList.filter((picture) => picture.lastModified !== pictureId)
+      prevList.filter((picture) => picture.imageId !== pictureId)
     );
   };
 
@@ -108,9 +161,9 @@ export default function NewProductItemPage() {
         title: titleInputValue,
         price: Number(formatAsNumber(priceInputValue)),
         content: contentInputValue,
-        imageIds: pictureList.map((picture) => Number(picture.lastModified)),
-        categoryId: 1,
-        regionId: 1,
+        imageIds: pictureList.map((picture) => Number(picture.imageId)),
+        categoryId: selectedCategoryData.id,
+        regionId: selectedRegion.id,
       };
 
       const res = await postProductItemMutateAsync(requestData);
@@ -159,7 +212,7 @@ export default function NewProductItemPage() {
       </AppBar>
       <Main>
         <Container>
-          <ImageInputError>{imageFileError}</ImageInputError>
+          {/* <ImageInputError>{imageFileError}</ImageInputError> */}
           <PictureArea
             ref={scrollContainerRef}
             onMouseDown={onDragStart}
@@ -179,19 +232,21 @@ export default function NewProductItemPage() {
                       (e.target as HTMLInputElement).value = "";
                     };
                 }}
-                onChange={onProductPictureChange}
+                onChange={onImageUpload}
               />
               <img src={cameraIcon} alt="camera" />
               <PictureCount>{pictureList.length}/10</PictureCount>
             </AddButton>
             {pictureList &&
-              pictureList.map((picture: File) => {
-                const imageUrl = URL.createObjectURL(picture);
+              pictureList.map((picture: Picture) => {
                 return (
-                  <PictureWrapper key={picture.lastModified}>
-                    <Picture src={imageUrl} alt={picture.name} />
+                  <PictureWrapper key={picture.imageId}>
+                    <Picture
+                      src={picture.imageUrl}
+                      alt={String(picture.imageId)}
+                    />
                     <Button
-                      onClick={() => onDeletePicture(picture.lastModified)}
+                      onClick={() => onDeletePicture(picture.imageId)}
                       variant="plain"
                       style={{
                         zIndex: 10,
@@ -261,7 +316,7 @@ export default function NewProductItemPage() {
             gap: "8px",
           }}>
           <img src={mapIcon} alt="map" />
-          <RegionText>{currentRegion}</RegionText>
+          <RegionText>{keepLastRegion(selectedRegion.title)}</RegionText>
         </Button>
       </AppBar>
     </StyledNewProductPage>
@@ -344,15 +399,15 @@ const ContentArea = styled.textarea`
   }
 `;
 
-const ImageInputError = styled.p`
-  top: 60px;
-  height: 18px;
-  position: absolute;
-  margin-bottom: 2px;
-  font: ${({ theme: { font } }) => font.availableDefault12};
-  font-size: 10px;
-  color: ${({ theme: { color } }) => color.system.warning};
-`;
+// const ImageInputError = styled.p`
+//   top: 60px;
+//   height: 18px;
+//   position: absolute;
+//   margin-bottom: 2px;
+//   font: ${({ theme: { font } }) => font.availableDefault12};
+//   font-size: 10px;
+//   color: ${({ theme: { color } }) => color.system.warning};
+// `;
 
 const PriceInput = styled.input`
   height: 24px;
@@ -465,5 +520,3 @@ const Container = styled.div`
   background: ${({ theme: { color } }) => color.neutral.background};
   // box-sizing: border-box;
 `;
-
-const currentRegion = "역삼1동";
