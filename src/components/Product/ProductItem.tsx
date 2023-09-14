@@ -1,74 +1,126 @@
+import dotsIcon from "@assets/icon/dots.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import messageIcon from "@assets/icon/message.svg";
+import { Dropdown, DropdownItem } from "@components/common/Dropdown";
 import { formatAsPrice } from "@utils/stringFormatters";
 import { ProductItemType } from "api/productItem";
+import useProductItemStatusEditMutation from "api/queries/useProductItemStatusEditMutation";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 type Props = {
   item: ProductItemType;
-  onClick: (id: number) => void;
 };
 
-export default function ProductItem({ item, onClick }: Props) {
-  return (
-    <StyledItem onClick={() => onClick(item.id)}>
-      <ItemImage src={item.thumbnail || defaultThumbnail} />
-      <ItemContentArea>
-        <Content>
-          <Information>
-            <ContentText>{item.title}</ContentText>
-            <RegionAndTime>
-              {item.region}・{item.updatedAt}
-            </RegionAndTime>
-            <BadgeAndPrice>
-              {item.status && <Badge>{item.status}</Badge>}
+export default function ProductItem({ item }: Props) {
+  const navigate = useNavigate();
+  const productItemRef = useRef(null);
 
-              <Price>
-                {item.price
-                  ? `${formatAsPrice(String(item.price))}원`
-                  : "가격미정"}
-              </Price>
-            </BadgeAndPrice>
-          </Information>
-          <ReactionContainer>
-            <ReactionButton>
-              <ReactionImage src={messageIcon} alt="chat" />
-              <span>{item.numChat}</span>
-            </ReactionButton>
-            <ReactionButton>
-              <ReactionImage src={heartIcon} alt="heart" />
-              <span>{item.numLikes}</span>
-            </ReactionButton>
-          </ReactionContainer>
-        </Content>
-      </ItemContentArea>
-    </StyledItem>
+  const { data: userInfo } = useUserInfoQuery();
+
+  const { mutate: statusEditMutate } = useProductItemStatusEditMutation(
+    item.id
+  );
+
+  const onClickProductItem = () => {
+    navigate(`/product/${item.id}`);
+  };
+
+  const isUserSeller = userInfo?.id === item.sellerId;
+
+  const sellerOptions = [
+    {
+      item: { id: 0, title: "게시글 수정" },
+      onClick: () => navigate(`/product/${item.id}/edit`),
+    },
+    {
+      item: { id: 0, title: "판매 중 상태로 전환" },
+      onClick: () => statusEditMutate({ status: 1 }),
+    },
+    {
+      item: { id: 0, title: "판매 완료 상태로 전환" },
+      onClick: () => statusEditMutate({ status: 2 }),
+    },
+    {
+      variant: "danger",
+      item: { id: 0, title: "삭제" },
+      // TODO: open confirmation modal
+      onClick: () => {},
+    },
+  ];
+
+  return (
+    <StyledProductItem onClick={onClickProductItem} ref={productItemRef}>
+      <ProductItemThumbnail src={item.thumbnailUrl || defaultThumbnail} />
+      <ProductItemContent>
+        <Information>
+          <ContentHeader>
+            <span>{item.title}</span>
+            {isUserSeller && (
+              <Dropdown
+                buttonContent={<img src={dotsIcon} />}
+                boundaryElementRef={productItemRef}>
+                {sellerOptions.map(({ variant, item, onClick }, idx) => (
+                  <DropdownItem key={idx} variant={variant} onClick={onClick}>
+                    {item.title}
+                  </DropdownItem>
+                ))}
+              </Dropdown>
+            )}
+          </ContentHeader>
+          <RegionAndTime>
+            {item.region}・{item.updatedAt}
+          </RegionAndTime>
+          <BadgeAndPrice>
+            {item.status && <Badge>{item.status}</Badge>}
+            <Price>
+              {item.price
+                ? `${formatAsPrice(String(item.price))}원`
+                : "가격미정"}
+            </Price>
+          </BadgeAndPrice>
+        </Information>
+        <ReactionContainer>
+          <ReactionItem>
+            <ReactionImage src={messageIcon} alt="chat" />
+            <ReactionDesc>{item.numChat}</ReactionDesc>
+          </ReactionItem>
+          <ReactionItem>
+            <ReactionImage src={heartIcon} alt="heart" />
+            <ReactionDesc>{item.numLikes}</ReactionDesc>
+          </ReactionItem>
+        </ReactionContainer>
+      </ProductItemContent>
+    </StyledProductItem>
   );
 }
 
-const ReactionImage = styled.img`
-  width: 16px;
-  height: 16px;
+const StyledProductItem = styled.li`
+  width: 100%;
+  height: 152px;
+  padding: 16px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
 `;
 
-const ReactionButton = styled.button`
+const ProductItemThumbnail = styled.img`
+  width: 120px;
+  height: 120px;
+  border: 1px solid ${({ theme: { color } }) => color.neutral.border};
+  border-radius: 8px;
+`;
+
+const ProductItemContent = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
-  width: 23px;
-  height: 16px;
-
-  > img {
-    filter: ${({ theme: { filter } }) => filter.neutralTextWeak};
-    border-radius: 8px;
-  }
-
-  > span {
-    display: flex;
-    align-items: center;
-    width: 7px;
-    height: 16px;
-    padding-bottom: 2px;
-    font: ${({ theme: { font } }) => font.displayDefault12};
-  }
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
 `;
 
 const Information = styled.div`
@@ -79,13 +131,16 @@ const Information = styled.div`
   gap: 4px;
 `;
 
-const ReactionContainer = styled.div`
- gap: 4px
-  width: 100%;
-  height: 24px;
+const ContentHeader = styled.div`
+  position: relative;
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  justify-content: space-between;
+  font: ${({ theme: { font } }) => font.displayDefault16};
+  color: ${({ theme: { color } }) => color.neutral.text};
+`;
+
+const RegionAndTime = styled.div`
+  font: ${({ theme: { font } }) => font.displayDefault12};
   color: ${({ theme: { color } }) => color.neutral.textWeak};
 `;
 
@@ -116,46 +171,36 @@ const Price = styled.div`
   color: ${({ theme: { color } }) => color.neutral.textStrong};
 `;
 
-const RegionAndTime = styled.div`
-  font: ${({ theme: { font } }) => font.displayDefault12};
+const ReactionContainer = styled.div`
+  width: 100%;
+  height: 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
   color: ${({ theme: { color } }) => color.neutral.textWeak};
 `;
 
-const Content = styled.div`
-  width: 100%;
-  height: 100%;
+const ReactionItem = styled.div`
+  width: 23px;
+  height: inherit;
   display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
 `;
 
-const ContentText = styled.div`
-  font: ${({ theme: { font } }) => font.displayDefault16};
-  color: ${({ theme: { color } }) => color.neutral.text};
-`;
-const StyledItem = styled.li`
-  cursor: pointer;
-  width: 100%;
-  height: 152px;
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px 0;
+const ReactionImage = styled.img`
+  width: 16px;
+  height: 16px;
+  filter: ${({ theme: { filter } }) => filter.neutralTextWeak};
 `;
 
-const ItemImage = styled.img`
-  width: 120px;
-  height: 120px;
-  border: 1px solid ${({ theme: { color } }) => color.neutral.border};
-  border-radius: 8px;
-`;
-
-const ItemContentArea = styled.div`
-  width: 100%;
-  height: 100%;
+const ReactionDesc = styled.span`
+  width: 7px;
+  height: inherit;
+  padding-bottom: 2px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  font: ${({ theme: { font } }) => font.displayDefault12};
 `;
 
 // ! FIXME: 임시로 사용중인 이미지

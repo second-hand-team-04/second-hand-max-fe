@@ -219,11 +219,10 @@ export default function NewProductItemPage() {
                     (tag: { id: number; title: string; imageUrl: string }) => (
                       <Tag
                         key={tag.id}
-                        tag={tag}
+                        title={tag.title}
                         isSelected={selectedTag === tag.title}
-                        onClick={onSelectTag}>
-                        {tag.title}
-                      </Tag>
+                        onClick={() => onSelectTag(tag.title)}
+                      />
                     )
                   )}
                 </TagArea>
