@@ -35,6 +35,8 @@ export default function RegionSelectModal({
     ProductItemsFiltersContext
   );
 
+  const { mutateAsync: userRegionMutate } = useUserRegionMutation();
+
   const selectedOneRegion = userRegionList.length === 1;
 
   // TODO : useMutation으로 변경
@@ -64,12 +66,10 @@ export default function RegionSelectModal({
     }
   };
 
-  const { mutateAsync: userRegionMutate } = useUserRegionMutation();
-
   const selectRegion = async (region: RegionType) => {
     try {
       const res = await userRegionMutate(region.id);
-      console.log(res);
+
       if (res.code === 204) {
         onChangeSelectedRegion(region);
       }

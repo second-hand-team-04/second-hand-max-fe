@@ -27,7 +27,6 @@ export const regionKeys = createQueryKeys("region", {
   all: () => ["all"],
   userRegions: () => ["userRegions"],
   select: () => ["select"],
-  // select: (regionId: number) => [regionId],
 });
 
 export const productItemsKeys = createQueryKeys("productItems", {
