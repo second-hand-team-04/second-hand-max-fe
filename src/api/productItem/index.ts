@@ -25,19 +25,15 @@ export type ProductItemDetails = {
   updatedAt: string;
   price: number;
   category: string;
-  // seller: {
-  //   id: number;
-  //   nickname: string;
-  // };
-  sellerId: number;
+  seller: {
+    id: number;
+    nickname: string;
+  };
   numChat: number;
   numLikes: number;
   numViews: number;
   isWishlisted: boolean;
-  images: Array<{
-    id: number;
-    url: string;
-  }>;
+  images: PictureType[];
 };
 
 export type ProductItemBody = {
@@ -47,6 +43,11 @@ export type ProductItemBody = {
   imageIds: number[];
   categoryId: number;
   regionId: number;
+};
+
+export type PictureType = {
+  id: number;
+  imageUrl: string;
 };
 
 export const getProductItems = async ({

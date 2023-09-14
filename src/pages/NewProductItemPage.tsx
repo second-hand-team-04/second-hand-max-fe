@@ -23,18 +23,15 @@ import { styled } from "styled-components";
 
 import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import { fetcher } from "api/fetcher";
+import { PictureType } from "api/productItem";
 import useProductItemMutation from "api/queries/useProductItemMutation";
 
-type Picture = {
-  imageId: number;
-  imageUrl: string;
-};
 export default function NewProductItemPage() {
   const navigate = useNavigate();
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
-  const [pictureList, setPictureList] = useState<Picture[]>([]);
+  const [pictureList, setPictureList] = useState<PictureType[]>([]);
 
   const { mutateAsync: postProductItemMutateAsync } = useProductItemMutation();
 
@@ -97,9 +94,9 @@ export default function NewProductItemPage() {
         },
       });
       if (res.data.code === 200) {
-        const imageId = res.data.data.id;
+        const id = res.data.data.id;
         const imageUrl = res.data.data.imageUrl;
-        setPictureList((prevList) => [...prevList, { imageId, imageUrl }]);
+        setPictureList((prevList) => [...prevList, { id, imageUrl }]);
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -151,7 +148,7 @@ export default function NewProductItemPage() {
 
   const onDeletePicture = (pictureId: number) => {
     setPictureList((prevList) =>
-      prevList.filter((picture) => picture.imageId !== pictureId)
+      prevList.filter((picture) => picture.id !== pictureId)
     );
   };
 
@@ -161,7 +158,7 @@ export default function NewProductItemPage() {
         title: titleInputValue,
         price: Number(formatAsNumber(priceInputValue)),
         content: contentInputValue,
-        imageIds: pictureList.map((picture) => Number(picture.imageId)),
+        imageIds: pictureList.map((picture) => Number(picture.id)),
         categoryId: selectedCategoryData.id,
         regionId: selectedRegion.id,
       };
@@ -238,15 +235,12 @@ export default function NewProductItemPage() {
               <PictureCount>{pictureList.length}/10</PictureCount>
             </AddButton>
             {pictureList &&
-              pictureList.map((picture: Picture) => {
+              pictureList.map((picture: PictureType) => {
                 return (
-                  <PictureWrapper key={picture.imageId}>
-                    <Picture
-                      src={picture.imageUrl}
-                      alt={String(picture.imageId)}
-                    />
+                  <PictureWrapper key={picture.id}>
+                    <Picture src={picture.imageUrl} alt={String(picture.id)} />
                     <Button
-                      onClick={() => onDeletePicture(picture.imageId)}
+                      onClick={() => onDeletePicture(picture.id)}
                       variant="plain"
                       style={{
                         zIndex: 10,

@@ -8,16 +8,27 @@ import Button from "@components/common/Button/Button";
 import { Tag } from "@components/common/Tag/Tag";
 import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import useDraggable from "@hooks/useDraggable";
-import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
 import { checkForChanges } from "@utils/objectDifferences";
-import { formatAsNumber, formatAsPrice } from "@utils/stringFormatters";
+import {
+  formatAsNumber,
+  formatAsPrice,
+  keepLastRegion,
+} from "@utils/stringFormatters";
 import useRandomCategories from "@utils/useRandomCategories";
+import { fetcher } from "api/fetcher";
+import { PictureType } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
 import useProductItemEditMutation from "api/queries/useProductItemEditMutation";
 import { AxiosError } from "axios";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
@@ -32,10 +43,10 @@ export default function EditProductItemPage() {
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
-  const [pictureFileList, setPictureFileList] = useState<File[]>([]);
-  const [pictureList, setPictureList] = useState<{ id: number; url: string }[]>(
+  const [pictureList, setPictureList] = useState<PictureType[]>(
     productItemDetails?.images ?? []
   );
+
   // const [currentCategoryId, setCurrentCategoryId] = useState(
   //   productItemDetails?.category
   // ); // ! id로 가져오면 무슨 카테고리인지 알 수가 없음
@@ -92,11 +103,11 @@ export default function EditProductItemPage() {
 
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
     useDraggable();
-  const {
-    imageFile: productPictureImage,
-    error: imageFileError,
-    onChange: onProductPictureChange,
-  } = useImageInput({ sizeLimit: 2000000 });
+  // const {
+  //   imageFile: productPictureImage,
+  //   error: imageFileError,
+  //   onChange: onProductPictureChange,
+  // } = useImageInput({ sizeLimit: 2000000 });
 
   useEffect(() => {
     const currentValues = {
@@ -115,18 +126,18 @@ export default function EditProductItemPage() {
     setSelectedTag(selectedCategory);
   }, [selectedCategory]);
 
-  useEffect(() => {
-    if (productPictureImage) {
-      setPictureFileList((prevList) => [...prevList, productPictureImage]);
-      setPictureList((prevList) => [
-        ...prevList,
-        {
-          id: productPictureImage.lastModified,
-          url: URL.createObjectURL(productPictureImage),
-        },
-      ]);
-    }
-  }, [productPictureImage]);
+  // useEffect(() => {
+  //   if (productPictureImage) {
+  //     setPictureFileList((prevList) => [...prevList, productPictureImage]);
+  //     setPictureList((prevList) => [
+  //       ...prevList,
+  //       {
+  //         id: productPictureImage.lastModified,
+  //         url: URL.createObjectURL(productPictureImage),
+  //       },
+  //     ]);
+  //   }
+  // }, [productPictureImage]);
 
   const onShowScrollBar = () => {
     setIsPictureHover(true);
@@ -160,8 +171,45 @@ export default function EditProductItemPage() {
     onChangeForPrice(e);
   };
 
+  const onImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      const files = e.target.files;
+
+      if (!files) return;
+
+      const newImageFile = files[0];
+
+      const formData = new FormData();
+      formData.append(
+        "request",
+        new Blob([JSON.stringify({ type: "item" })], {
+          type: "application/json",
+        })
+      );
+
+      formData.append("image", newImageFile);
+
+      const res = await fetcher.post("/images", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.data.code === 200) {
+        const id = res.data.data.id;
+        const imageUrl = res.data.data.imageUrl;
+        setPictureList((prevList) => [...prevList, { id, imageUrl }]);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    }
+  };
+
   const onAddPicture = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (pictureFileList.length >= 10) return;
+    if (pictureList.length >= 10) return;
     const inputFile = e.currentTarget.querySelector('input[type="file"]');
     if (inputFile as HTMLInputElement) {
       (inputFile as HTMLInputElement).click();
@@ -223,7 +271,7 @@ export default function EditProductItemPage() {
       </AppBar>
       <Main>
         <Container>
-          <ImageInputError>{imageFileError}</ImageInputError>
+          {/* <ImageInputError>{imageFileError}</ImageInputError> */}
           <PictureArea
             ref={scrollContainerRef}
             onMouseDown={onDragStart}
@@ -243,14 +291,14 @@ export default function EditProductItemPage() {
                       (e.target as HTMLInputElement).value = "";
                     };
                 }}
-                onChange={onProductPictureChange}
+                onChange={onImageUpload}
               />
               <img src={cameraIcon} alt="camera" />
-              <PictureCount>{pictureFileList.length}/10</PictureCount>
+              <PictureCount>{pictureList.length}/10</PictureCount>
             </AddButton>
             {pictureList &&
               pictureList.map((picture) => {
-                const imageUrl = picture.url;
+                const imageUrl = picture.imageUrl;
                 return (
                   <PictureWrapper key={picture.id}>
                     <Picture src={imageUrl} alt={String(picture.id)} />
@@ -326,7 +374,7 @@ export default function EditProductItemPage() {
             gap: "8px",
           }}>
           <img src={mapIcon} alt="map" />
-          <RegionText>{selectedRegion.title}</RegionText>
+          <RegionText>{keepLastRegion(selectedRegion.title)}</RegionText>
         </Button>
       </AppBar>
     </StyledNewProductPage>
@@ -409,15 +457,15 @@ const ContentArea = styled.textarea`
   }
 `;
 
-const ImageInputError = styled.p`
-  top: 60px;
-  height: 18px;
-  position: absolute;
-  margin-bottom: 2px;
-  font: ${({ theme: { font } }) => font.availableDefault12};
-  font-size: 10px;
-  color: ${({ theme: { color } }) => color.system.warning};
-`;
+// const ImageInputError = styled.p`
+//   top: 60px;
+//   height: 18px;
+//   position: absolute;
+//   margin-bottom: 2px;
+//   font: ${({ theme: { font } }) => font.availableDefault12};
+//   font-size: 10px;
+//   color: ${({ theme: { color } }) => color.system.warning};
+// `;
 
 const PriceInput = styled.input`
   height: 24px;

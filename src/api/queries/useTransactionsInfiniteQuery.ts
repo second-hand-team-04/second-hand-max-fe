@@ -10,7 +10,7 @@ export default function useTransactionsInfiniteQuery(filters: {
     queryKey: [queryKeys.transactions.list(filters).queryKey],
     queryFn: (ctx) =>
       getTransactions({
-        status: filters.status,
+        status: filters.status === "0" ? undefined : filters.status,
         page: ctx.pageParam,
       }),
     getNextPageParam: (lastPage, allPages) => {
