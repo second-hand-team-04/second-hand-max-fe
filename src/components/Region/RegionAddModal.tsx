@@ -41,15 +41,17 @@ export default function RegionAddModal({
   const onRegionItemClick = async (itemId: number) => {
     try {
       // TODO: useMutation으로 변경
+      console.log(itemId);
       const res = await postUserRegion(itemId);
+      console.log(res);
 
-      if (res.code === 201) {
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.region.userRegions().queryKey,
-        });
-        setRegionInputValue("");
-        toast.success("나의 동네로 설정되었어요.");
-      }
+      // if (res.code === 201) {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.region.userRegions().queryKey,
+      });
+      setRegionInputValue("");
+      toast.success("나의 동네로 설정되었어요.");
+      // }
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message);

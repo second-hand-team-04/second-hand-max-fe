@@ -32,6 +32,7 @@ export function ProductItemsFiltersProvider({
   });
 
   const onChangeSelectedRegion = (newRegion: FilterType) => {
+    console.log(newRegion);
     setSelectedRegion(newRegion);
   };
 

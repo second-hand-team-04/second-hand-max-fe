@@ -1,6 +1,5 @@
-import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import { RegionType } from "api/region";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { styled } from "styled-components";
 import RegionAddModal from "./RegionAddModal";
@@ -16,8 +15,6 @@ export default function RegionModal({
   closeRegionModal,
 }: Props) {
   const [isRegionAddModal, setIsRegionAddModal] = useState(false);
-
-  const { onChangeSelectedRegion } = useContext(ProductItemsFiltersContext);
 
   const onOpenRegionSelectModal = () => {
     if (userRegionList.length === 2) {
@@ -45,7 +42,7 @@ export default function RegionModal({
         userRegionList,
         isRegionAddModal,
         closeRegionModal,
-        onChangeSelectedRegion,
+
         onOpenRegionSelectModal,
       }}
     />
