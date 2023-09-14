@@ -4,6 +4,7 @@ export default function useOutsideClick<T extends HTMLElement = HTMLDivElement>(
   callbackFn: () => void
 ) {
   const containerRef = useRef<T | null>(null);
+
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (
@@ -17,7 +18,7 @@ export default function useOutsideClick<T extends HTMLElement = HTMLDivElement>(
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [ callbackFn]);
+  }, [callbackFn]);
 
   return containerRef;
 }

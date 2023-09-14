@@ -1,12 +1,15 @@
 import { fetcher } from "api/fetcher";
 import { Response } from "api/types";
 
+export type ProductItemStatus = "판매중" | "판매완료" | "예약중";
+
 export type ProductItemType = {
   id: number;
   title: string;
   region: string;
-  status: string;
-  thumbnail: string | null;
+  status: ProductItemStatus;
+  sellerId: number;
+  thumbnailUrl: string | null;
   createdAt: string;
   updatedAt: string;
   price: number | null;
@@ -17,7 +20,7 @@ export type ProductItemType = {
 export type ProductItemDetails = {
   id: number;
   title: string;
-  status: "판매중" | "판매완료" | "예약중";
+  status: ProductItemStatus;
   content: string;
   updatedAt: string;
   price: number;
@@ -75,7 +78,15 @@ export const putProductItem = async (id: number, body: ProductItemBody) => {
   return res.data;
 };
 
+export const patchProductItemStatus = async (
+  id: number,
+  body: { status: number }
+) => {
+  const res = await fetcher.patch<Response<null>>(`/items/${id}`, body);
+  return res.data;
+};
+
 export const deleteProductItem = async (id: number) => {
-  const res = await fetcher.delete<Response<null>>(`/items/${id}`);
+  const res = await fetcher.delete<Response<null>>(`items/${id}`);
   return res.data;
 };

@@ -2,20 +2,23 @@ import { RestRequest, rest } from "msw";
 import {
   successfulAllRegionsData,
   successfulCategoriesData,
-  successfulItemListData,
-  successfulProductItemData,
+  successfulProductItemsData,
   successfulRefreshAccessToken,
   successfulSignInData,
   successfulSignOutData,
   successfulSignUpData,
+  successfulTransactionItemsData,
   successfulUserInfoData,
   successfulUserRegionSelectData,
   successfulUserRegionsData,
-  unSuccessfulItemListData,
+  successfulWishlistItemAdd,
+  successfulWishlistItemDelete,
+  successfulWishlistItemsData,
+  unSuccessfulProductItemsData,
   unSuccessfulRefreshAccessToken,
+  unSuccessfulSignInData,
   unSuccessfulSignUpData,
-  unsuccessfulSignInData,
-  unsuccessfulUserInfoData,
+  unSuccessfulUserInfoData,
 } from "./data";
 
 const isAuthorized = (req: RestRequest) => {
@@ -33,12 +36,12 @@ export default [
     if (email === "d@d.com" && password === "hello123!") {
       return res(ctx.status(200), ctx.json(successfulSignInData));
     }
-    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+    return res(ctx.status(401), ctx.json(unSuccessfulSignInData));
   }),
 
   rest.get("/api/auth/oauth/kakao?code=blah", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(successfulSignInData));
-    return res(ctx.status(401), ctx.json(unsuccessfulSignInData));
+    return res(ctx.status(401), ctx.json(unSuccessfulSignInData));
   }),
 
   rest.delete("/api/auth", async (_, res, ctx) => {
@@ -52,7 +55,7 @@ export default [
 
   rest.get("/api/users/info", async (req, res, ctx) => {
     if (!isAuthorized(req)) {
-      return res(ctx.status(400), ctx.json(unsuccessfulUserInfoData));
+      return res(ctx.status(400), ctx.json(unSuccessfulUserInfoData));
     }
     return res(ctx.status(200), ctx.json(successfulUserInfoData));
   }),
@@ -68,10 +71,38 @@ export default [
   rest.get(
     "/api/items?region=1&category=1&page=0&size=10",
     async (_, res, ctx) => {
-      return res(ctx.status(200), ctx.json(successfulItemListData));
-      return res(ctx.status(400), ctx.json(unSuccessfulItemListData));
+      return res(ctx.status(200), ctx.json(successfulProductItemsData));
+      return res(ctx.status(400), ctx.json(unSuccessfulProductItemsData));
     }
   ),
+
+  rest.get("/api/items/:id", (req, res, ctx) => {
+    const { id } = req.params;
+
+    const item = successfulProductItemsData.data.items.find(
+      (product) => product.id === Number(id)
+    );
+
+    if (item) {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          ...successfulProductItemsData,
+          data: item,
+        })
+      );
+    } else {
+      return res(
+        ctx.status(404),
+        ctx.json({
+          code: 404,
+          status: "Not Found",
+          message: "상품을 찾을 수 없습니다",
+          data: null,
+        })
+      );
+    }
+  }),
 
   rest.get("/api/users/regions", async (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(successfulUserRegionsData));
@@ -92,31 +123,22 @@ export default [
     return res(ctx.status(200), ctx.json(updatedRegions));
   }),
 
-  rest.get("/api/items/:id", (req, res, ctx) => {
-    const { id } = req.params;
-
-    const item = successfulProductItemData.data.find(
-      (product) => product.id === Number(id)
-    );
-
-    if (item) {
-      return res(
-        ctx.status(200),
-        ctx.json({
-          ...successfulProductItemData,
-          data: item,
-        })
-      );
-    } else {
-      return res(
-        ctx.status(404),
-        ctx.json({
-          code: 404,
-          status: "Not Found",
-          message: "상품을 찾을 수 없습니다",
-          data: null,
-        })
-      );
+  rest.get(
+    "/api/users/transactions?status=1,3&page=0&size=0",
+    (_, res, ctx) => {
+      return res(ctx.status(200), ctx.json(successfulTransactionItemsData));
     }
+  ),
+
+  rest.get("/api/users/wishlist?category=1&page=0&size=0", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulWishlistItemsData));
+  }),
+
+  rest.post("/api/users/wishlist/:itemId", (_, res, ctx) => {
+    return res(ctx.status(201), ctx.json(successfulWishlistItemAdd));
+  }),
+
+  rest.delete("/api/users/wishlist/:itemId", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(successfulWishlistItemDelete));
   }),
 ];
