@@ -5,17 +5,18 @@ import mapIcon from "@assets/icon/map-pin-filled.svg";
 import AppBar from "@components/AppBar";
 import CategoryModal from "@components/Category/CategoryModal";
 import Button from "@components/common/Button/Button";
-import { Tag } from "@components/common/Tag/Tag";
+import { Tag, TagType } from "@components/common/Tag/Tag";
 import useDraggable from "@hooks/useDraggable";
 import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
+import { checkForChanges } from "@utils/objectDifferences";
 import { formatAsNumber, formatAsPrice } from "@utils/stringFormatters";
 import useRandomCategories from "@utils/useRandomCategories";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
 import useProductItemEditMutation from "api/queries/useProductItemEditMutation";
 import { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
@@ -34,6 +35,12 @@ export default function EditProductItemPage() {
   const [pictureList, setPictureList] = useState<{ id: number; url: string }[]>(
     productItemDetails?.images ?? []
   );
+  // const [currentCategoryId, setCurrentCategoryId] = useState(
+  //   productItemDetails?.category
+  // ); // ! id로 가져오면 무슨 카테고리인지 알 수가 없음
+  // const [currentRegionId, setCurrentRegionId] = useState(
+  //   productItemDetails?.regionId
+  // ); // ! id로 가져오면 무슨 동네인지 알 수가 없음
 
   const { value: titleInputValue, onChange: onTitleInputChange } = useText({
     initialValue: productItemDetails?.title,
@@ -44,6 +51,17 @@ export default function EditProductItemPage() {
   const { value: priceInputValue, onChange: onChangeForPrice } = useText({
     initialValue: String(productItemDetails?.price),
   });
+
+  const initialValues = useRef({
+    title: titleInputValue,
+    content: contentInputValue,
+    price: priceInputValue,
+    pictureList: [...pictureList],
+    // categoryId: currentCategoryId,
+    // regionId: currentRegionId,
+  });
+
+  const [isValueChanged, setIsValueChanged] = useState(false);
 
   const requestData = {
     title: titleInputValue,
@@ -74,6 +92,19 @@ export default function EditProductItemPage() {
     error: imageFileError,
     onChange: onProductPictureChange,
   } = useImageInput({ sizeLimit: 2000000 });
+
+  useEffect(() => {
+    const currentValues = {
+      title: titleInputValue,
+      content: contentInputValue,
+      price: priceInputValue,
+      pictureList: [...pictureList],
+      // categoryId: currentCategoryId,
+      // regionId: currentRegionId,
+    };
+
+    setIsValueChanged(checkForChanges(initialValues.current, currentValues));
+  }, [titleInputValue, contentInputValue, priceInputValue, pictureList]);
 
   useEffect(() => {
     setSelectedTag(selectedCategory);
@@ -113,8 +144,9 @@ export default function EditProductItemPage() {
     setSelectedCategory(itemTitle);
   };
 
-  const onSelectTag = (tagTitle: string) => {
-    setSelectedTag(tagTitle);
+  const onSelectTag = (tag: TagType) => {
+    setSelectedTag(tag.title);
+    // setCurrentCategoryId(String(tag.id));
   };
 
   const onPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,23 +164,13 @@ export default function EditProductItemPage() {
   };
 
   const onDeletePicture = (pictureId: number) => {
-    setPictureFileList((prevList) =>
-      prevList.filter((picture) => picture.lastModified !== pictureId)
+    setPictureList((prevList) =>
+      prevList.filter((picture) => picture.id !== pictureId)
     );
   };
 
   const onPost = async () => {
     try {
-      const requestData = {
-        title: titleInputValue,
-        price: Number(formatAsNumber(priceInputValue)),
-        content: contentInputValue,
-        imageIds: pictureList.map((picture) => picture.id),
-        categoryId: 1,
-        regionId: 1,
-      };
-      console.log(requestData);
-
       const res = await putProductItemMutateAsync();
 
       console.log(res);
@@ -161,38 +183,12 @@ export default function EditProductItemPage() {
     }
   };
 
-  // const requestData = {
-  //   title: titleInputValue,
-  //   price: Number(formatAsNumber(priceInputValue)),
-  //   content: contentInputValue,
-  //   imageIds: pictureFileList.map((picture) => Number(picture.lastModified)),
-  //   categoryId: 1,
-  //   regionId: 1,
-  // };
-
-  // function hasChanged(
-  //   initialValues: ProductItemDetails,
-  //   requestValues: PostProductItemBody
-  // ) {
-  //   if (initialValues.title !== requestValues.title) return true;
-  //   if (initialValues.price !== requestValues.price) return true;
-  //   if (initialValues.content !== requestValues.content) return true;
-  //   return false;
-  // }
-  // ! 보내는 데이터랑 받는 데이터 구조가 달라서 처음 받은 데이터랑 비교할 떄 어려움을 겪음 api 데이터 구조 얘기해봐야할듯
-
   const isValid =
     titleInputValue.length > 0 &&
     contentInputValue.length > 0 &&
     pictureList.length > 0 &&
-    pictureList.length <= 10;
-
-  console.log(
-    titleInputValue.length > 0,
-    contentInputValue.length > 0,
-    pictureList.length,
-    isValid
-  );
+    pictureList.length <= 10 &&
+    isValueChanged;
 
   if (isLoading) return <div>로딩중</div>;
 

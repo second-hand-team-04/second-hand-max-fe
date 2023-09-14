@@ -5,20 +5,27 @@ import heartIcon from "@assets/icon/heart.svg";
 import AppBar from "@components/AppBar";
 
 import { defaultThumbnail } from "@components/Product/ProductItem";
+import { Alert } from "@components/common/Alert";
 import Button from "@components/common/Button/Button";
 import { SelectItem } from "@components/common/SelectInput";
 import useOutsideClick from "@hooks/useOutsideClick";
 import { formatAsPrice } from "@utils/stringFormatters";
+import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
+import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 
 export default function ProductItemPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-
+  const { mutateAsync: deleteProductMutation } = useProductItemDeleteMutation(
+    Number(id)
+  );
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
 
   const { data: productItemDetails, isLoading } = useProductItemDetailsQuery(
     Number(id)
@@ -37,10 +44,90 @@ export default function ProductItemPage() {
     setIsSelectOpen(false);
   }
 
+  const openDeleteAlert = () => {
+    setIsDeleteAlertOpen(true);
+  };
+
+  const closeDeleteAlert = () => {
+    setIsDeleteAlertOpen(false);
+  };
+
+  const deleteProductItem = async (id: number): Promise<void> => {
+    try {
+      const res = await deleteProductMutation(id);
+      if (res.code === 200) {
+        toast.success("등록한 상품이 삭제되었습니다.");
+        navigate(-1);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
+    }
+    closeDeleteAlert();
+  };
+
   if (isLoading && !productItemDetails) return <div>로딩중</div>;
+
+  const DeleteAlertTitle = styled.p`
+    color: ${({ theme: { color } }) => color.neutral.textStrong};
+    font: ${({ theme: { font } }) => font.displayStrong16};
+    height: 24px;
+  `;
+
+  const AlertBody = styled.div`
+    padding: 24px 32px;
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+  `;
+
+  const AlertButtonContainer = styled.div`
+    width: 100%;
+    height: 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 32px;
+
+    > button {
+      font: ${({ theme: { font } }) => font.displayDefault16};
+      > span {
+        color: ${({ theme: { color } }) => color.system.warning};
+      }
+    }
+  `;
 
   return (
     <StyledProductItemPage>
+      {isDeleteAlertOpen ? (
+        <Alert>
+          <AlertBody>
+            <DeleteAlertTitle>
+              등록한 상품을 정말로 삭제하시겠어요?
+            </DeleteAlertTitle>
+          </AlertBody>
+          <AlertBody>
+            <AlertButtonContainer>
+              <Button
+                style={{ textAlign: "center", padding: 0 }}
+                onClick={closeDeleteAlert}
+                variant="plain">
+                취소
+              </Button>
+              <Button
+                style={{ padding: 0 }}
+                onClick={() => {
+                  deleteProductItem(Number(id));
+                }}
+                variant="plain">
+                <span>삭제</span>
+              </Button>
+            </AlertButtonContainer>
+          </AlertBody>
+        </Alert>
+      ) : null}
       <ProductItemHeader>
         <ButtonContainer onClick={goPrevPage}>
           <Button style={{ padding: 0 }} variant="plain">
@@ -49,8 +136,11 @@ export default function ProductItemPage() {
           <span>뒤로</span>
         </ButtonContainer>
         <SelectContainer ref={containerRef}>
-          <Button onClick={toggleSelectModal} variant="plain">
-            <img style={{ position: "absolute" }} src={dotsIcon} alt="dots" />
+          <Button
+            onClick={toggleSelectModal}
+            style={{ padding: 0 }}
+            variant="plain">
+            <img src={dotsIcon} alt="dots" />
             {isSelectOpen ? (
               <SelectList>
                 <SelectItem
@@ -61,9 +151,7 @@ export default function ProductItemPage() {
                   게시글 수정
                 </SelectItem>
                 <SelectItem
-                  onClick={() => {
-                    console.log("셀렉아이템");
-                  }}
+                  onClick={openDeleteAlert}
                   item={{ id: 0, title: "삭제" }}>
                   <DeleteText>삭제</DeleteText>
                 </SelectItem>
@@ -249,6 +337,7 @@ const ProductItemHeader = styled.div`
   height: 56px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   position: absolute;
 
   > button {
@@ -309,6 +398,12 @@ const SelectList = styled.ul`
 `;
 
 const SelectContainer = styled.div`
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   > button {
     > img {
       filter: ${({ theme: { filter } }) => filter.accentText};
