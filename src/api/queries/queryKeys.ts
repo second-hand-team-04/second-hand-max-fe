@@ -39,6 +39,9 @@ export const productItemsKeys = createQueryKeys("productItems", {
   edit: (itemId: number) => ({
     queryKey: [itemId],
   }),
+  delete: (itemId: number) => ({
+    queryKey: [itemId],
+  }),
 });
 
 export const queryKeys = mergeQueryKeys(

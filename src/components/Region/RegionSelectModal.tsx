@@ -46,7 +46,7 @@ export default function RegionSelectModal({
     try {
       const res = await deleteUserRegion(itemId);
 
-      if (res.status === 204) {
+      if (res.code === 204) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.region.userRegions.queryKey,
         });

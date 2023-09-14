@@ -74,3 +74,8 @@ export const putProductItem = async (id: number, body: ProductItemBody) => {
   const res = await fetcher.put<Response<null>>(`/items/${id}`, body);
   return res.data;
 };
+
+export const deleteProductItem = async (id: number) => {
+  const res = await fetcher.delete<Response<null>>(`/items/${id}`);
+  return res.data;
+};
