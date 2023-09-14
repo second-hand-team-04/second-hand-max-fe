@@ -1,4 +1,4 @@
-import useViewportIntersection from "@hooks/useIntersection";
+import useIntersection from "@hooks/useIntersection";
 import { MouseEvent, ReactNode, RefObject, useRef, useState } from "react";
 import { styled } from "styled-components";
 
@@ -16,10 +16,7 @@ export default function Dropdown({
   const dropdownRef = useRef<HTMLUListElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
-  const intersectingSide = useViewportIntersection(
-    dropdownRef,
-    boundaryElementRef
-  );
+  const intersectingSide = useIntersection(dropdownRef, boundaryElementRef);
 
   const onToggleIsOpen = (e: MouseEvent) => {
     e.stopPropagation();
