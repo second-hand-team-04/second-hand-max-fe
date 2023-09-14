@@ -135,7 +135,11 @@ export default function ProductItemPage() {
       <ImageSlider>
         {productItemDetails && productItemDetails.images.length > 0 ? (
           productItemDetails.images.map((image) => (
-            <ProductImage key={image.id} src={image.url} alt="상품 이미지" />
+            <ProductImage
+              key={image.id}
+              src={image.imageUrl}
+              alt="상품 이미지"
+            />
           ))
         ) : (
           <ProductImage src={defaultThumbnail} alt="기본 이미지" />
@@ -144,7 +148,7 @@ export default function ProductItemPage() {
       <ProductInfo>
         <SellerInfo>
           <h3>판매자 정보</h3>
-          <span>{productItemDetails?.sellerId}</span>
+          <span>{productItemDetails?.seller.nickname}</span>
           {/* TODO: sller. nickname으로 바꿔야함 */}
         </SellerInfo>
         <StatusTab>
