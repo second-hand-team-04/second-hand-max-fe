@@ -7,6 +7,7 @@ import {
   successfulSignInData,
   successfulSignOutData,
   successfulSignUpData,
+  successfulTransactionItemsData,
   successfulUserInfoData,
   successfulUserRegionSelectData,
   successfulUserRegionsData,
@@ -121,6 +122,13 @@ export default [
     );
     return res(ctx.status(200), ctx.json(updatedRegions));
   }),
+
+  rest.get(
+    "/api/users/transactions?status=1,3&page=0&size=0",
+    (_, res, ctx) => {
+      return res(ctx.status(200), ctx.json(successfulTransactionItemsData));
+    }
+  ),
 
   rest.get("/api/users/wishlist?category=1&page=0&size=0", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(successfulWishlistItemsData));
