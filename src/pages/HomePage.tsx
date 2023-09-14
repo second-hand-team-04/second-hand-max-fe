@@ -34,21 +34,7 @@ export default function HomePage() {
     regionId: selectedRegion.id,
     categoryId: selectedCategory.id,
   });
-  const { data: userRegions } =
-    // const { data: userRegions, isSuccess: isSuccessUserRegions } =
-    useUserRegionsQuery();
-
-  // useEffect(() => {
-  //   if (isSuccessUserRegions) {
-  //     const userSelectedRegionId = userRegions.selectedId;
-  //     const userSelectedRegion = userRegions.regions.find(
-  //       (region) => region.id === userSelectedRegionId
-  //     );
-  //     if (userSelectedRegion) {
-  //       onChangeSelectedRegion(userSelectedRegion);
-  //     }
-  //   }
-  // }, [isSuccessUserRegions, onChangeSelectedRegion, userRegions]);
+  const { data: userRegions } = useUserRegionsQuery();
 
   // TODO
   // const [searchParams] = useSearchParams();
@@ -82,7 +68,9 @@ export default function HomePage() {
         <div style={{ flexGrow: 1 }}>
           <SelectInput
             name="선택된 동네"
-            value={selectedRegion ? keepLastRegion(selectedRegion.title) : ""}
+            value={
+              selectedRegion.title ? keepLastRegion(selectedRegion.title) : ""
+            }
             onChange={onChangeSelectedRegion}>
             {userRegions &&
               userRegions.regions.map((region: RegionType) => (
