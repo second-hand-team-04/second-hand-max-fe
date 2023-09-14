@@ -91,3 +91,11 @@ export const deleteProductItem = async (id: number) => {
   const res = await fetcher.delete<Response<null>>(`items/${id}`);
   return res.data;
 };
+
+export const postImage = async (body: FormData) => {
+  const res = await fetcher.post<Response<{ id: number; imageUrl: string }>>(
+    "/images",
+    body
+  );
+  return res.data;
+};

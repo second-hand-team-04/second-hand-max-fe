@@ -1,4 +1,13 @@
-import { ReactNode, createContext, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import queryKeys from "api/queries/queryKeys";
+import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 type FilterType = {
   id: number;
@@ -22,6 +31,11 @@ export function ProductItemsFiltersProvider({
 }: {
   children: ReactNode;
 }) {
+  const queryClient = useQueryClient();
+
+  const { data: userRegions, isSuccess: isSuccessUserRegions } =
+    useUserRegionsQuery();
+
   const [selectedRegion, setSelectedRegion] = useState({
     id: 1,
     title: "역삼1동",
@@ -31,17 +45,32 @@ export function ProductItemsFiltersProvider({
     title: "전체보기",
   });
 
-  const onChangeSelectedRegion = (newRegion: FilterType) => {
-    setSelectedRegion(newRegion);
-  };
+  const onChangeSelectedRegion = useCallback(
+    (newRegion: FilterType) => {
+      setSelectedRegion(newRegion);
+      queryClient.invalidateQueries(queryKeys.region.userRegions().queryKey);
+    },
+    [queryClient]
+  );
 
   const onChangeSelectedCategory = (newSelectedCategory: {
     id: number;
     title: string;
   }) => {
-    console.log(newSelectedCategory);
     setSelectedCategory(newSelectedCategory);
   };
+
+  useEffect(() => {
+    if (isSuccessUserRegions) {
+      const userSelectedRegionId = userRegions.selectedId;
+      const userSelectedRegion = userRegions.regions.find(
+        (region) => region.id === userSelectedRegionId
+      );
+      if (userSelectedRegion) {
+        onChangeSelectedRegion(userSelectedRegion);
+      }
+    }
+  }, [isSuccessUserRegions, onChangeSelectedRegion, userRegions]);
 
   return (
     <ProductItemsFiltersContext.Provider

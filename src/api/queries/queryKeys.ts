@@ -43,6 +43,9 @@ export const productItemsKeys = createQueryKeys("productItems", {
   delete: (itemId: number) => ({
     queryKey: [itemId],
   }),
+  image: () => ({
+    queryKey: ["image"],
+  }),
 });
 
 export const transactionKeys = createQueryKeys("transactions", {

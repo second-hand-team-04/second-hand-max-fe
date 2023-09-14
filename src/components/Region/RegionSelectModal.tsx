@@ -40,7 +40,12 @@ export default function RegionSelectModal({
   const selectedOneRegion = userRegionList.length === 1;
 
   // TODO : useMutation으로 변경
-  const onRegionDelete = async (itemId: number) => {
+  const onRegionDelete = async (
+    itemId: number,
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+
     if (selectedOneRegion) {
       toast.error("동네는 최소 1개이상 선택해야해요.");
       return;
@@ -49,7 +54,7 @@ export default function RegionSelectModal({
     try {
       const res = await deleteUserRegion(itemId);
 
-      if (res.code === 204) {
+      if (res.code === 200) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.region.userRegions().queryKey,
         });
@@ -69,8 +74,7 @@ export default function RegionSelectModal({
   const selectRegion = async (region: RegionType) => {
     try {
       const res = await userRegionMutate(region.id);
-
-      if (res.code === 204) {
+      if (res.code === 200) {
         onChangeSelectedRegion(region);
       }
     } catch (error) {
@@ -114,7 +118,7 @@ export default function RegionSelectModal({
               onClick={() => selectRegion(item)}>
               <RegionButtonText>{keepLastRegion(item.title)}</RegionButtonText>
               <CircleXFilled
-                onClick={() => onRegionDelete(item.id)}
+                onClick={(e) => onRegionDelete(item.id, e)}
                 src={circleXFilled}
                 alt="close"
               />

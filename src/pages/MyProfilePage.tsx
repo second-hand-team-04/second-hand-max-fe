@@ -29,6 +29,7 @@ export default function MyProfilePage() {
     error: nicknameError,
     onChange: onNicknameChange,
   } = useText({
+    initialValue: userInfo?.nickname,
     validators: [validateNickname],
   });
 
@@ -126,8 +127,7 @@ export default function MyProfilePage() {
             <UserNameLabel>
               <UserNameEditInput
                 type="text"
-                placeholder={userInfo?.nickname}
-                value={nickname ? nickname : userInfo?.nickname}
+                value={nickname}
                 onChange={onNicknameChange}
                 required
               />

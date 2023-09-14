@@ -12,7 +12,7 @@ import { keepLastRegion } from "@utils/stringFormatters";
 import useProductItemsInfiniteQuery from "api/queries/useProductItemsInfiniteQuery";
 import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
 import { RegionType } from "api/region";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Routes from "router/Routes";
 import { styled } from "styled-components";
@@ -34,20 +34,7 @@ export default function HomePage() {
     regionId: selectedRegion.id,
     categoryId: selectedCategory.id,
   });
-  const { data: userRegions, isSuccess: isSuccessUserRegions } =
-    useUserRegionsQuery();
-
-  useEffect(() => {
-    if (isSuccessUserRegions) {
-      const userSelectedRegionId = userRegions.selectedId;
-      const userSelectedRegion = userRegions.regions.find(
-        (region) => region.id === userSelectedRegionId
-      );
-      if (userSelectedRegion) {
-        onChangeSelectedRegion(userSelectedRegion);
-      }
-    }
-  }, [isSuccessUserRegions, onChangeSelectedRegion, userRegions]);
+  const { data: userRegions } = useUserRegionsQuery();
 
   // TODO
   // const [searchParams] = useSearchParams();
@@ -81,7 +68,9 @@ export default function HomePage() {
         <div style={{ flexGrow: 1 }}>
           <SelectInput
             name="선택된 동네"
-            value={selectedRegion ? keepLastRegion(selectedRegion.title) : ""}
+            value={
+              selectedRegion.title ? keepLastRegion(selectedRegion.title) : ""
+            }
             onChange={onChangeSelectedRegion}>
             {userRegions &&
               userRegions.regions.map((region: RegionType) => (
