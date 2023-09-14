@@ -1,7 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import queryKeys from "api/queries/queryKeys";
 import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
-import { ReactNode, createContext, useEffect, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 type FilterType = {
   id: number;
@@ -39,10 +45,13 @@ export function ProductItemsFiltersProvider({
     title: "전체보기",
   });
 
-  const onChangeSelectedRegion = (newRegion: FilterType) => {
-    setSelectedRegion(newRegion);
-    queryClient.invalidateQueries(queryKeys.region.userRegions().queryKey);
-  };
+  const onChangeSelectedRegion = useCallback(
+    (newRegion: FilterType) => {
+      setSelectedRegion(newRegion);
+      queryClient.invalidateQueries(queryKeys.region.userRegions().queryKey);
+    },
+    [queryClient]
+  );
 
   const onChangeSelectedCategory = (newSelectedCategory: {
     id: number;
@@ -61,7 +70,7 @@ export function ProductItemsFiltersProvider({
         onChangeSelectedRegion(userSelectedRegion);
       }
     }
-  }, [isSuccessUserRegions, userRegions]);
+  }, [isSuccessUserRegions, onChangeSelectedRegion, userRegions]);
 
   return (
     <ProductItemsFiltersContext.Provider

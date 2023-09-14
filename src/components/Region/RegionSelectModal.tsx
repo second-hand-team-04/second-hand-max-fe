@@ -74,7 +74,6 @@ export default function RegionSelectModal({
   const selectRegion = async (region: RegionType) => {
     try {
       const res = await userRegionMutate(region.id);
-      console.log(res);
       if (res.code === 200) {
         onChangeSelectedRegion(region);
       }
