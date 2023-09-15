@@ -37,10 +37,13 @@ export default function EditProductItemPage() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // const [isSelectOpen, setIsSelectOpen] = useState(false);
-
   const { data: productItemDetails } = useProductItemDetailsQuery(Number(id));
 
+  const { mutate: productItemEditMutate } = useProductItemEditMutation(
+    Number(id)
+  );
+
+  // const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
   const [pictureList, setPictureList] = useState<PictureType[]>(
@@ -79,7 +82,7 @@ export default function EditProductItemPage() {
 
   const [isValueChanged, setIsValueChanged] = useState(false);
 
-  const requestData = {
+  const updatedData = {
     title: titleInputValue,
     price: Number(formatAsNumber(priceInputValue)),
     content: contentInputValue,
@@ -87,11 +90,6 @@ export default function EditProductItemPage() {
     categoryId: selectedCategoryData.id,
     regionId: selectedRegion.id,
   };
-
-  const { mutateAsync: putProductItemMutateAsync } = useProductItemEditMutation(
-    Number(id),
-    requestData
-  );
 
   const { data: categories, isLoading } = useCategoriesQuery();
   const { tagCategories, selectedCategory, setSelectedCategory } =
@@ -222,18 +220,8 @@ export default function EditProductItemPage() {
     );
   };
 
-  const onPost = async () => {
-    try {
-      const res = await putProductItemMutateAsync();
-
-      console.log(res);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
-    }
+  const onUpdatedProductSubmit = async () => {
+    productItemEditMutate(updatedData);
   };
 
   const isValid =
@@ -264,7 +252,9 @@ export default function EditProductItemPage() {
         </Button>
         <TitleArea style={{ flexGrow: "1" }}>내 물건 팔기</TitleArea>
         <Button style={{ width: "62px" }} variant="plain">
-          <CompleteButtonText onClick={onPost} $isValid={isValid}>
+          <CompleteButtonText
+            onClick={onUpdatedProductSubmit}
+            $isValid={isValid}>
             완료
           </CompleteButtonText>
         </Button>
