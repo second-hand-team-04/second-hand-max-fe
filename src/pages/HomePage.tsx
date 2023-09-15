@@ -94,7 +94,7 @@ export default function HomePage() {
       <ProductItemArea>
         {isLoadingProductItems && <div>로딩중...</div>}
         <InfiniteScrollList
-          style={{ padding: "50px 0 64px 0" }}
+          style={{ padding: "56px 0 64px 0" }}
           onEndReached={() =>
             !isFetchingProductItems && fetchMoreProductItems()
           }>

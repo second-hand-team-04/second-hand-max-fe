@@ -1,4 +1,4 @@
-import logo from "@assets/images/logo.jpeg";
+import logo from "@assets/images/logo.png";
 import Button from "@components/common/Button/Button";
 import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";

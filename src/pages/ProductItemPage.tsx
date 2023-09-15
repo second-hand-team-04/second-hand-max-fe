@@ -3,13 +3,13 @@ import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import dotsIcon from "@assets/icon/dots.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import AppBar from "@components/AppBar";
-
 import { defaultThumbnail } from "@components/Product/ProductItem";
 import { Alert } from "@components/common/Alert";
 import Button from "@components/common/Button/Button";
 import { SelectItem } from "@components/common/SelectInput";
 import useOutsideClick from "@hooks/useOutsideClick";
 import { formatAsPrice } from "@utils/stringFormatters";
+import { convertPastTimestamp } from "@utils/time";
 import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
 import { AxiosError } from "axios";
@@ -100,101 +100,115 @@ export default function ProductItemPage() {
           </AlertBody>
         </Alert>
       ) : null}
-      <ProductItemHeader>
-        <ButtonContainer onClick={goPrevPage}>
-          <Button style={{ padding: 0 }} variant="plain">
-            <img src={chevronLeftIcon} alt="뒤로가기" />
-          </Button>
-          <span>뒤로</span>
-        </ButtonContainer>
-        <SelectContainer ref={containerRef}>
-          <Button
-            onClick={toggleSelectModal}
-            style={{ padding: 0 }}
-            variant="plain">
-            <img src={dotsIcon} alt="dots" />
-            {isSelectOpen ? (
-              <SelectList>
-                <SelectItem
-                  onClick={() => {
-                    navigate(`/product/${id}/edit`);
-                  }}
-                  item={{ id: 0, title: "게시글 수정하기" }}>
-                  게시글 수정
-                </SelectItem>
-                <SelectItem
-                  onClick={openDeleteAlert}
-                  item={{ id: 0, title: "삭제" }}>
-                  <DeleteText>삭제</DeleteText>
-                </SelectItem>
-              </SelectList>
-            ) : null}
-          </Button>
-        </SelectContainer>
-      </ProductItemHeader>
-      <ImageSlider>
-        {productItemDetails && productItemDetails.images.length > 0 ? (
-          productItemDetails.images.map((image) => (
-            <ProductImage
-              key={image.id}
-              src={image.imageUrl}
-              alt="상품 이미지"
-            />
-          ))
-        ) : (
-          <ProductImage src={defaultThumbnail} alt="기본 이미지" />
-        )}
-      </ImageSlider>
-      <ProductInfo>
-        <SellerInfo>
-          <h3>판매자 정보</h3>
-          <span>{productItemDetails?.seller.nickname}</span>
-          {/* TODO: sller. nickname으로 바꿔야함 */}
-        </SellerInfo>
-        <StatusTab>
-          <span>{productItemDetails?.status}</span>
-          <img src={chevronDownIcon} alt="펼치기" />
-        </StatusTab>
-        <TextInfoArea>
-          <TextInfoHeader>
-            <h1>{productItemDetails?.title}</h1>
-            <span>
-              {productItemDetails?.category} ・ {productItemDetails?.updatedAt}
-            </span>
-          </TextInfoHeader>
-          <p>{productItemDetails?.content}</p>
-          <span>
-            채팅 {productItemDetails?.numChat} 관심{" "}
-            {productItemDetails?.numLikes} 조회 {productItemDetails?.numViews}
-          </span>
-        </TextInfoArea>
-        <AppBar padding="16px" height="64px" isTop={false}>
-          <Button variant="plain">
-            <img src={heartIcon} alt="찜하기" />
-          </Button>
-          <span>{formatAsPrice(String(productItemDetails?.price))}</span>
-          <Button
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              width: "115px",
-              height: "32px",
-              padding: 0,
-              marginLeft: "auto",
-            }}
-            variant="contained">
-            대화 중인 채팅방
-          </Button>
+      <Wrapper>
+        <AppBar padding="8px 0" height="56px" isTop={true} isTransparent={true}>
+          <ButtonContainer onClick={goPrevPage}>
+            <Button style={{ padding: 0 }} variant="plain">
+              <img src={chevronLeftIcon} alt="뒤로가기" />
+            </Button>
+            <span>뒤로</span>
+          </ButtonContainer>
+
+          {/* TODO: Dropdown 활용 */}
+          {/* PS: 삭제 옵션은 DropdownItem variant="danger" 사용 */}
+          <SelectContainer ref={containerRef}>
+            <Button
+              onClick={toggleSelectModal}
+              style={{ padding: 0 }}
+              variant="plain">
+              <img src={dotsIcon} alt="dots" />
+              {isSelectOpen ? (
+                <SelectList>
+                  <SelectItem
+                    onClick={() => {
+                      navigate(`/product/${id}/edit`);
+                    }}
+                    item={{ id: 0, title: "게시글 수정하기" }}>
+                    게시글 수정
+                  </SelectItem>
+                  <SelectItem
+                    onClick={openDeleteAlert}
+                    item={{ id: 0, title: "삭제" }}>
+                    <DeleteText>삭제</DeleteText>
+                  </SelectItem>
+                </SelectList>
+              ) : null}
+            </Button>
+          </SelectContainer>
         </AppBar>
-      </ProductInfo>
+        <ImageSlider>
+          {productItemDetails && productItemDetails.images.length > 0 ? (
+            productItemDetails.images.map((image) => (
+              <ProductImage
+                key={image.id}
+                src={image.imageUrl}
+                alt="상품 이미지"
+              />
+            ))
+          ) : (
+            <ProductImage src={defaultThumbnail} alt="기본 이미지" />
+          )}
+        </ImageSlider>
+        <ProductInfo>
+          <SellerInfo>
+            <h3>판매자 정보</h3>
+            <span>{productItemDetails?.seller.nickname}</span>
+            {/* TODO: seller.nickname으로 바꿔야함 */}
+          </SellerInfo>
+          {/* TODO: Dropdown으로 구현 */}
+          <StatusTab>
+            <span>{productItemDetails?.status}</span>
+            <img src={chevronDownIcon} alt="펼치기" />
+          </StatusTab>
+
+          <TextInfoArea>
+            <TextInfoHeader>
+              <h1>{productItemDetails?.title}</h1>
+              <span>
+                {productItemDetails?.category} ・{" "}
+                {convertPastTimestamp(productItemDetails?.updatedAt ?? "")}
+              </span>
+            </TextInfoHeader>
+            <p>{productItemDetails?.content}</p>
+            <span>
+              채팅 {productItemDetails?.numChat} 관심{" "}
+              {productItemDetails?.numLikes} 조회 {productItemDetails?.numViews}
+            </span>
+          </TextInfoArea>
+        </ProductInfo>
+      </Wrapper>
+      <AppBar padding="16px" height="64px" isTop={false}>
+        <Button variant="plain">
+          <img src={heartIcon} alt="찜하기" />
+        </Button>
+        <NumLikesText>
+          {formatAsPrice(String(productItemDetails?.numLikes))}
+        </NumLikesText>
+        <Button
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            width: "115px",
+            height: "32px",
+            padding: 0,
+            marginLeft: "auto",
+          }}
+          variant="contained">
+          대화 중인 채팅방
+        </Button>
+      </AppBar>
     </StyledProductItemPage>
   );
 }
 
-const DeleteAlertTitle = styled.p`
-  color: ${({ theme: { color } }) => color.neutral.textStrong};
-  font: ${({ theme: { font } }) => font.displayStrong16};
-  height: 24px;
+const StyledProductItemPage = styled.div`
+  width: inherit;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 `;
 
 const AlertBody = styled.div`
@@ -219,59 +233,113 @@ const AlertButtonContainer = styled.div`
   }
 `;
 
+const Wrapper = styled.div`
+  width: inherit;
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  width: 86px;
+  height: 40px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  cursor: pointer;
+
+  > button {
+    width: 24px;
+    height: 24px;
+    > img {
+      filter: ${({ theme: { filter } }) => filter.accentText};
+    }
+  }
+
+  > span {
+    width: 46px;
+    height: 24px;
+    padding: 0 8px;
+    font: ${({ theme: { font } }) => font.displayStrong16};
+    color: ${({ theme: { color } }) => color.accent.text};
+  }
+`;
+
+const SelectContainer = styled.div`
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  > button {
+    > img {
+      filter: ${({ theme: { filter } }) => filter.accentText};
+    }
+  }
+`;
+
+const SelectList = styled.ul`
+  width: 240px;
+  position: absolute;
+  top: 48px;
+  right: 16px;
+  background-color: ${({ theme: { color } }) => color.white};
+  border-radius: 12px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+`;
+
+const DeleteAlertTitle = styled.p`
+  color: ${({ theme: { color } }) => color.neutral.textStrong};
+  font: ${({ theme: { font } }) => font.displayStrong16};
+  height: 24px;
+`;
+
 const ProductImage = styled.img`
   width: 393px;
   height: 491px;
   object-fit: cover;
 `;
 
-const DeleteText = styled.span`
-  color: ${({ theme: { color } }) => color.system.warning};
-`;
-
-const TextInfoHeader = styled.div`
-  width: 363px;
+const ImageSlider = styled.div`
   display: flex;
-  flex-direction: column;
-
-  gap: 8px;
-
-  > h1 {
-    width: 100%;
-    height: 32px;
-    font: ${({ theme: { font } }) => font.displayStrong20};
-    color: ${({ theme: { color } }) => color.neutral.textStrong};
-  }
-
-  > span {
-    width: 100%;
-    height: 16px;
-    font: ${({ theme: { font } }) => font.displayDefault12};
-    color: ${({ theme: { color } }) => color.neutral.textWeak};
-  }
+  width: 393px;
+  height: 491px;
 `;
 
-const TextInfoArea = styled.div`
-  margin-top: 16px;
-  width: 363px;
-  height: 304px;
+const ProductInfo = styled.div`
+  width: 393px;
+  padding: 16px 16px 96px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  position: relative;
+  background: ${({ theme: { color } }) => color.neutral.background};
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
-  > p {
+const SellerInfo = styled.div`
+  width: 361px;
+  height: 56px;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 12px;
+
+  background: ${({ theme: { color } }) => color.neutral.backgroundWeak};
+  > h3 {
     font: ${({ theme: { font } }) => font.displayDefault16};
     color: ${({ theme: { color } }) => color.neutral.text};
-    width: 100%;
-    height: 200px;
   }
 
   > span {
-    width: 100%;
-    height: 16px;
-    font: ${({ theme: { font } }) => font.displayDefault12};
-    color: ${({ theme: { color } }) => color.neutral.textWeak};
+    font: ${({ theme: { font } }) => font.displayStrong16};
+    color: ${({ theme: { color } }) => color.neutral.textStrong};
   }
 `;
 
@@ -301,117 +369,55 @@ const StatusTab = styled.div`
   }
 `;
 
-const StyledProductItemPage = styled.div`
-  width: 393px;
-  height: 1025px;
+const TextInfoArea = styled.div`
+  margin-top: 16px;
+  width: 363px;
+  height: 304px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  position: relative;
-`;
+  gap: 16px;
 
-const ButtonContainer = styled.div`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 86px;
-  height: 40px;
-  padding: 8px;
-
-  > button {
-    width: 24px;
-    height: 24px;
-    > img {
-      filter: ${({ theme: { filter } }) => filter.accentText};
-    }
-  }
-
-  > span {
-    width: 46px;
-    height: 24px;
-    padding: 0 8px;
-    font: ${({ theme: { font } }) => font.displayStrong16};
-    color: ${({ theme: { color } }) => color.accent.text};
-  }
-`;
-
-const ProductItemHeader = styled.div`
-  width: 393px;
-  height: 56px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: absolute;
-
-  > button {
-    width: 40px;
-    height: 40px;
-
-    > img {
-      filter: ${({ theme: { filter } }) => filter.accentText};
-    }
-  }
-`;
-
-const ImageSlider = styled.div`
-  display: flex;
-  width: 393px;
-  height: 491px;
-`;
-
-const ProductInfo = styled.div`
-  position: relative;
-  width: 393px;
-  height: 534px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 16px 0 16px;
-  background: ${({ theme: { color } }) => color.neutral.background};
-`;
-
-const SellerInfo = styled.div`
-  width: 361px;
-  height: 56px;
-  display: flex;
-  justify-content: space-between;
-  padding: 16px;
-  border-radius: 12px;
-
-  background: ${({ theme: { color } }) => color.neutral.backgroundWeak};
-  > h3 {
+  > p {
     font: ${({ theme: { font } }) => font.displayDefault16};
     color: ${({ theme: { color } }) => color.neutral.text};
+    width: 100%;
+    height: 200px;
   }
 
   > span {
-    font: ${({ theme: { font } }) => font.displayStrong16};
+    width: 100%;
+    height: 16px;
+    font: ${({ theme: { font } }) => font.displayDefault12};
+    color: ${({ theme: { color } }) => color.neutral.textWeak};
+  }
+`;
+
+const TextInfoHeader = styled.div`
+  width: 363px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  > h1 {
+    width: 100%;
+    height: 32px;
+    font: ${({ theme: { font } }) => font.displayStrong20};
     color: ${({ theme: { color } }) => color.neutral.textStrong};
   }
-`;
 
-const SelectList = styled.ul`
-  width: 240px;
-  position: absolute;
-  top: 48px;
-  right: 16px;
-  background-color: ${({ theme: { color } }) => color.white};
-  border-radius: 12px;
-  box-shadow: 0px 4px 4px 0px #00000040;
-`;
-
-const SelectContainer = styled.div`
-  width: 40px;
-  height: 40px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  > button {
-    > img {
-      filter: ${({ theme: { filter } }) => filter.accentText};
-    }
+  > span {
+    width: 100%;
+    height: 16px;
+    font: ${({ theme: { font } }) => font.displayDefault12};
+    color: ${({ theme: { color } }) => color.neutral.textWeak};
   }
+`;
+
+const NumLikesText = styled.span`
+  font: ${({ theme: { font } }) => font.displayDefault16};
+`;
+
+const DeleteText = styled.span`
+  color: ${({ theme: { color } }) => color.system.warning};
 `;

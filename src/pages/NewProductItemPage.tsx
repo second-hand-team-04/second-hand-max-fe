@@ -25,6 +25,7 @@ import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext"
 import { fetcher } from "api/fetcher";
 import { PictureType } from "api/productItem";
 import useProductItemMutation from "api/queries/useProductItemMutation";
+import Routes from "router/Routes";
 
 export default function NewProductItemPage() {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ export default function NewProductItemPage() {
   //   onChange: onProductPictureChange,
   // } = useImageInput({ sizeLimit: 2000000 });
 
-  const { selectedRegion, selectedCategory: selectedCategoryData } = useContext(
+  const { selectedRegion, onChangeSelectedCategory } = useContext(
     ProductItemsFiltersContext
   );
 
@@ -153,18 +154,32 @@ export default function NewProductItemPage() {
   };
 
   const onPost = async () => {
+    if (!categories) return;
+
+    const selectedCategory = categories.find(
+      (category) => category.title === selectedTag
+    );
+
+    if (selectedCategory === undefined) {
+      toast.error("카테고리가 선택되지 않았습니다.");
+      return;
+    }
+
+    onChangeSelectedCategory(selectedCategory);
+
     try {
       const requestData = {
         title: titleInputValue,
         price: Number(formatAsNumber(priceInputValue)),
         content: contentInputValue,
         imageIds: pictureList.map((picture) => Number(picture.id)),
-        categoryId: selectedCategoryData.id,
+        categoryId: selectedCategory.id,
         regionId: selectedRegion.id,
       };
 
       const res = await postProductItemMutateAsync(requestData);
 
+      navigate(Routes.HOME);
       console.log(res);
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -178,7 +193,6 @@ export default function NewProductItemPage() {
   const isValid =
     titleInputValue.length > 0 &&
     contentInputValue.length > 0 &&
-    pictureList.length > 0 &&
     pictureList.length <= 10;
 
   if (isLoading) return <div>로딩중</div>;

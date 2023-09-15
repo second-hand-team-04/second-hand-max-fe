@@ -2,7 +2,8 @@ import dotsIcon from "@assets/icon/dots.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import messageIcon from "@assets/icon/message.svg";
 import { Dropdown, DropdownItem } from "@components/common/Dropdown";
-import { formatAsPrice } from "@utils/stringFormatters";
+import { formatAsPrice, keepLastRegion } from "@utils/stringFormatters";
+import { convertPastTimestamp } from "@utils/time";
 import { ProductItemType } from "api/productItem";
 import useProductItemStatusEditMutation from "api/queries/useProductItemStatusEditMutation";
 import useUserInfoQuery from "api/queries/useUserInfoQuery";
@@ -53,7 +54,9 @@ export default function ProductItem({ item }: Props) {
 
   return (
     <StyledProductItem onClick={onClickProductItem} ref={productItemRef}>
-      <ProductItemThumbnail src={item.thumbnailUrl || defaultThumbnail} />
+      <div>
+        <ProductItemThumbnail src={item.thumbnailUrl || defaultThumbnail} />
+      </div>
       <ProductItemContent>
         <Information>
           <ContentHeader>
@@ -71,7 +74,8 @@ export default function ProductItem({ item }: Props) {
             )}
           </ContentHeader>
           <RegionAndTime>
-            {item.region}・{item.updatedAt}
+            {keepLastRegion(item.region)}・
+            {convertPastTimestamp(item.updatedAt)}
           </RegionAndTime>
           <BadgeAndPrice>
             {item.status && <Badge>{item.status}</Badge>}
@@ -98,7 +102,7 @@ export default function ProductItem({ item }: Props) {
 }
 
 const StyledProductItem = styled.li`
-  width: 100%;
+  width: inherit;
   height: 152px;
   padding: 16px 0;
   display: flex;
@@ -112,6 +116,7 @@ const ProductItemThumbnail = styled.img`
   height: 120px;
   border: 1px solid ${({ theme: { color } }) => color.neutral.border};
   border-radius: 8px;
+  object-fit: cover;
 `;
 
 const ProductItemContent = styled.div`
