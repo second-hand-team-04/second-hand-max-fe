@@ -2,7 +2,8 @@ import dotsIcon from "@assets/icon/dots.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import messageIcon from "@assets/icon/message.svg";
 import { Dropdown, DropdownItem } from "@components/common/Dropdown";
-import { formatAsPrice } from "@utils/stringFormatters";
+import { formatAsPrice, keepLastRegion } from "@utils/stringFormatters";
+import { convertPastTimestamp } from "@utils/time";
 import { ProductItemType } from "api/productItem";
 import useProductItemStatusEditMutation from "api/queries/useProductItemStatusEditMutation";
 import useUserInfoQuery from "api/queries/useUserInfoQuery";
@@ -71,7 +72,8 @@ export default function ProductItem({ item }: Props) {
             )}
           </ContentHeader>
           <RegionAndTime>
-            {item.region}・{item.updatedAt}
+            {keepLastRegion(item.region)}・
+            {convertPastTimestamp(item.updatedAt)}
           </RegionAndTime>
           <BadgeAndPrice>
             {item.status && <Badge>{item.status}</Badge>}
