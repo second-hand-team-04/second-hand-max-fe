@@ -54,7 +54,9 @@ export default function ProductItem({ item }: Props) {
 
   return (
     <StyledProductItem onClick={onClickProductItem} ref={productItemRef}>
-      <ProductItemThumbnail src={item.thumbnailUrl || defaultThumbnail} />
+      <div>
+        <ProductItemThumbnail src={item.thumbnailUrl || defaultThumbnail} />
+      </div>
       <ProductItemContent>
         <Information>
           <ContentHeader>
@@ -100,7 +102,7 @@ export default function ProductItem({ item }: Props) {
 }
 
 const StyledProductItem = styled.li`
-  width: 100%;
+  width: inherit;
   height: 152px;
   padding: 16px 0;
   display: flex;
@@ -114,6 +116,7 @@ const ProductItemThumbnail = styled.img`
   height: 120px;
   border: 1px solid ${({ theme: { color } }) => color.neutral.border};
   border-radius: 8px;
+  object-fit: cover;
 `;
 
 const ProductItemContent = styled.div`
