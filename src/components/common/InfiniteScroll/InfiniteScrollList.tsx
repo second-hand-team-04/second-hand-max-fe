@@ -19,9 +19,7 @@ export default function InfiniteScrollList({
     if (!scrollListNode) return;
 
     const handleScroll = () => {
-      const scrollHeight = scrollListNode.scrollHeight;
-      const scrollTop = scrollListNode.scrollTop;
-      const clientHeight = scrollListNode.clientHeight;
+      const { scrollHeight, scrollTop, clientHeight } = scrollListNode;
 
       const isBottom = Math.floor(scrollHeight - scrollTop) === clientHeight;
 
