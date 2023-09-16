@@ -1,5 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
-import queryKeys from "api/queries/queryKeys";
+import useUserRegionMutation from "api/queries/useUserRegionMutation";
 import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
 import {
   ReactNode,
@@ -31,10 +30,9 @@ export function ProductItemsFiltersProvider({
 }: {
   children: ReactNode;
 }) {
-  const queryClient = useQueryClient();
-
   const { data: userRegions, isSuccess: isSuccessUserRegions } =
     useUserRegionsQuery();
+  const { mutateAsync: userUserRegionMutateAsync } = useUserRegionMutation();
 
   const [selectedRegion, setSelectedRegion] = useState({
     id: 1,
@@ -46,11 +44,13 @@ export function ProductItemsFiltersProvider({
   });
 
   const onChangeSelectedRegion = useCallback(
-    (newRegion: FilterType) => {
-      setSelectedRegion(newRegion);
-      queryClient.invalidateQueries(queryKeys.region.userRegions().queryKey);
+    async (newRegion: FilterType) => {
+      const res = await userUserRegionMutateAsync(newRegion.id);
+      if (res.code === 200) {
+        setSelectedRegion(newRegion);
+      }
     },
-    [queryClient]
+    [userUserRegionMutateAsync]
   );
 
   const onChangeSelectedCategory = (newSelectedCategory: {
@@ -67,7 +67,7 @@ export function ProductItemsFiltersProvider({
         (region) => region.id === userSelectedRegionId
       );
       if (userSelectedRegion) {
-        onChangeSelectedRegion(userSelectedRegion);
+        setSelectedRegion(userSelectedRegion);
       }
     }
   }, [isSuccessUserRegions, onChangeSelectedRegion, userRegions]);

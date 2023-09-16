@@ -8,7 +8,6 @@ import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext"
 import { useQueryClient } from "@tanstack/react-query";
 import { keepLastRegion } from "@utils/stringFormatters";
 import queryKeys from "api/queries/queryKeys";
-import useUserRegionMutation from "api/queries/useUserRegionMutation";
 import { RegionType, deleteUserRegion } from "api/region";
 import { AxiosError } from "axios";
 import { useContext } from "react";
@@ -34,8 +33,6 @@ export default function RegionSelectModal({
   const { selectedRegion, onChangeSelectedRegion } = useContext(
     ProductItemsFiltersContext
   );
-
-  const { mutateAsync: userRegionMutate } = useUserRegionMutation();
 
   const selectedOneRegion = userRegionList.length === 1;
 
@@ -71,19 +68,8 @@ export default function RegionSelectModal({
     }
   };
 
-  const selectRegion = async (region: RegionType) => {
-    try {
-      const res = await userRegionMutate(region.id);
-      if (res.code === 200) {
-        onChangeSelectedRegion(region);
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
-    }
+  const onRegionSelect = async (region: RegionType) => {
+    onChangeSelectedRegion(region);
   };
 
   return (
@@ -115,7 +101,7 @@ export default function RegionSelectModal({
                   : 1,
               }}
               key={index}
-              onClick={() => selectRegion(item)}>
+              onClick={() => onRegionSelect(item)}>
               <RegionButtonText>{keepLastRegion(item.title)}</RegionButtonText>
               <CircleXFilled
                 onClick={(e) => onRegionDelete(item.id, e)}
