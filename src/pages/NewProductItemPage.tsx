@@ -6,6 +6,7 @@ import AppBar from "@components/AppBar";
 import CategoryModal from "@components/Category/CategoryModal";
 import Button from "@components/common/Button/Button";
 import { Tag } from "@components/common/Tag/Tag";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import useDraggable from "@hooks/useDraggable";
 import useText from "@hooks/useText";
 import {
@@ -14,56 +15,50 @@ import {
   keepLastRegion,
 } from "@utils/stringFormatters";
 import useRandomCategories from "@utils/useRandomCategories";
+import { CategoryType } from "api/category";
+import { fetcher } from "api/fetcher";
+import { PictureType } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import useNewProductItemMutation from "api/queries/useNewProductItemMutation";
 import { AxiosError } from "axios";
-import React, { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, MouseEvent, useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
-import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
-import { fetcher } from "api/fetcher";
-import { PictureType } from "api/productItem";
-import useProductItemMutation from "api/queries/useProductItemMutation";
-import Routes from "router/Routes";
-
 export default function NewProductItemPage() {
   const navigate = useNavigate();
 
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [isPictureHover, setIsPictureHover] = useState(false);
+  const { selectedRegion, onChangeSelectedCategory } = useContext(
+    ProductItemsFiltersContext
+  );
+
+  const { data: categoryList, isLoading } = useCategoriesQuery();
+
   const [pictureList, setPictureList] = useState<PictureType[]>([]);
-
-  const { mutateAsync: postProductItemMutateAsync } = useProductItemMutation();
-
   const { value: titleInputValue, onChange: onTitleInputChange } = useText();
   const { value: contentInputValue, onChange: onContentInputChange } =
     useText();
-  const { value: priceInputValue, onChange: onChangeForPrice } = useText();
+  const { value: priceInputValue, onChange: onPriceChange } = useText();
+  const { categoryTags, selectedCategoryTag, setSelectedCategoryTag } =
+    useRandomCategories({ categoryList: categoryList ?? [] });
 
-  const { data: categories, isLoading } = useCategoriesQuery();
-  // ! TODO: 태그관련한 카테고리 이름들 바꿔주기
-  const { tagCategories, selectedCategory, setSelectedCategory } =
-    useRandomCategories({ categoryList: categories ?? [] });
-  const [selectedTag, setSelectedTag] = useState(selectedCategory);
+  const { mutate: newProductItemMutate } = useNewProductItemMutation({
+    regionId: selectedRegion.id,
+    categoryId: selectedCategoryTag.id,
+  });
 
-  const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
-    useDraggable();
   // const {
   //   imageFile: productPictureImage,
   //   error: imageFileError,
   //   onChange: onProductPictureChange,
   // } = useImageInput({ sizeLimit: 2000000 });
 
-  const { selectedRegion, onChangeSelectedCategory } = useContext(
-    ProductItemsFiltersContext
-  );
+  const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
+    useDraggable();
 
-  // const { mutateAsync: useImageUploadMutate } = useProductItemMutation();
-
-  useEffect(() => {
-    setSelectedTag(selectedCategory);
-  }, [selectedCategory]);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isPictureHover, setIsPictureHover] = useState(false);
 
   // useEffect(() => {
   //   if (productPictureImage) {
@@ -125,22 +120,25 @@ export default function NewProductItemPage() {
     setIsCategoryOpen(false);
   };
 
-  const onCategoryItemSelect = (itemTitle: string) => {
-    setSelectedCategory(itemTitle);
+  const onCategoryItemSelect = (category: CategoryType) => {
+    setSelectedCategoryTag(category);
   };
 
-  const onSelectTag = (tagTitle: string) => {
-    setSelectedTag(tagTitle);
+  const onSelectCategoryTag = (category: CategoryType) => {
+    setSelectedCategoryTag(category);
   };
 
-  const onPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onPriceInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 12) return;
 
-    onChangeForPrice(e);
+    onPriceChange(e);
   };
 
-  const onAddPicture = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (pictureList.length >= 10) return;
+  const onAddPicture = (e: MouseEvent<HTMLButtonElement>) => {
+    if (pictureList.length >= 10) {
+      toast.error("이미지는 10개 이하이여야 합니다");
+      return;
+    }
     const inputFile = e.currentTarget.querySelector('input[type="file"]');
     if (inputFile as HTMLInputElement) {
       (inputFile as HTMLInputElement).click();
@@ -153,11 +151,11 @@ export default function NewProductItemPage() {
     );
   };
 
-  const onPost = async () => {
-    if (!categories) return;
+  const onPostNewProduct = async () => {
+    if (!categoryList) return;
 
-    const selectedCategory = categories.find(
-      (category) => category.title === selectedTag
+    const selectedCategory = categoryList.find(
+      (category) => category.title === selectedCategoryTag.title
     );
 
     if (selectedCategory === undefined) {
@@ -167,27 +165,16 @@ export default function NewProductItemPage() {
 
     onChangeSelectedCategory(selectedCategory);
 
-    try {
-      const requestData = {
-        title: titleInputValue,
-        price: Number(formatAsNumber(priceInputValue)),
-        content: contentInputValue,
-        imageIds: pictureList.map((picture) => Number(picture.id)),
-        categoryId: selectedCategory.id,
-        regionId: selectedRegion.id,
-      };
+    const requestData = {
+      title: titleInputValue,
+      price: Number(formatAsNumber(priceInputValue)),
+      content: contentInputValue,
+      imageIds: pictureList.map((picture) => Number(picture.id)),
+      categoryId: selectedCategory.id,
+      regionId: selectedRegion.id,
+    };
 
-      const res = await postProductItemMutateAsync(requestData);
-
-      navigate(Routes.HOME);
-      console.log(res);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
-    }
+    newProductItemMutate(requestData);
   };
 
   const isValid =
@@ -195,14 +182,15 @@ export default function NewProductItemPage() {
     contentInputValue.length > 0 &&
     pictureList.length <= 10;
 
+  // TODO
   if (isLoading) return <div>로딩중</div>;
 
   return (
     <StyledNewProductPage>
       {isCategoryOpen ? (
         <CategoryModal
-          categoryList={categories ?? []}
-          currentSelectedCategory={selectedCategory}
+          categoryList={categoryList ?? []}
+          currentSelectedCategory={selectedCategoryTag}
           onCategoryModalClose={onCategoryClose}
           onCategoryItemSelect={onCategoryItemSelect}
         />
@@ -216,7 +204,7 @@ export default function NewProductItemPage() {
         </Button>
         <TitleArea style={{ flexGrow: "1" }}>내 물건 팔기</TitleArea>
         <Button style={{ width: "62px" }} variant="plain">
-          <CompleteButtonText onClick={onPost} $isValid={isValid}>
+          <CompleteButtonText onClick={onPostNewProduct} $isValid={isValid}>
             완료
           </CompleteButtonText>
         </Button>
@@ -278,13 +266,13 @@ export default function NewProductItemPage() {
             {titleInputValue.length > 0 && (
               <CategoryArea>
                 <TagArea>
-                  {tagCategories.map(
+                  {categoryTags.map(
                     (tag: { id: number; title: string; imageUrl: string }) => (
                       <Tag
                         key={tag.id}
                         title={tag.title}
-                        isSelected={selectedTag === tag.title}
-                        onClick={() => onSelectTag(tag.title)}
+                        isSelected={selectedCategoryTag.title === tag.title}
+                        onClick={() => onSelectCategoryTag(tag)}
                       />
                     )
                   )}

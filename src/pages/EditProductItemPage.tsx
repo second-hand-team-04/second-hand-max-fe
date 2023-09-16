@@ -16,6 +16,7 @@ import {
   keepLastRegion,
 } from "@utils/stringFormatters";
 import useRandomCategories from "@utils/useRandomCategories";
+import { CategoryType } from "api/category";
 import { fetcher } from "api/fetcher";
 import { PictureType } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
@@ -92,12 +93,13 @@ export default function EditProductItemPage() {
   };
 
   const { data: categories, isLoading } = useCategoriesQuery();
-  const { tagCategories, selectedCategory, setSelectedCategory } =
+  const { categoryTags, selectedCategoryTag, setSelectedCategoryTag } =
     useRandomCategories({
       categoryList: categories ?? [],
-      fixedCategory: productItemDetails ? productItemDetails?.category : "",
+      fixedCategoryTitle: productItemDetails
+        ? productItemDetails?.category
+        : "",
     });
-  const [selectedTag, setSelectedTag] = useState(productItemDetails?.category);
 
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
     useDraggable();
@@ -119,10 +121,6 @@ export default function EditProductItemPage() {
 
     setIsValueChanged(checkForChanges(initialValues.current, currentValues));
   }, [titleInputValue, contentInputValue, priceInputValue, pictureList]);
-
-  useEffect(() => {
-    setSelectedTag(selectedCategory);
-  }, [selectedCategory]);
 
   // useEffect(() => {
   //   if (productPictureImage) {
@@ -154,13 +152,8 @@ export default function EditProductItemPage() {
     setIsCategoryOpen(false);
   };
 
-  const onCategoryItemSelect = (itemTitle: string) => {
-    setSelectedCategory(itemTitle);
-  };
-
-  const onSelectTag = (tagTitle: string) => {
-    setSelectedTag(tagTitle);
-    // setCurrentCategoryId(String(tag.id));
+  const onCategoryItemSelect = (category: CategoryType) => {
+    setSelectedCategoryTag(category);
   };
 
   const onPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,6 +224,7 @@ export default function EditProductItemPage() {
     pictureList.length <= 10 &&
     isValueChanged;
 
+  // TODO
   if (isLoading) return <div>로딩중</div>;
 
   return (
@@ -238,7 +232,7 @@ export default function EditProductItemPage() {
       {isCategoryOpen ? (
         <CategoryModal
           categoryList={categories ?? []}
-          currentSelectedCategory={selectedCategory}
+          currentSelectedCategory={selectedCategoryTag}
           onCategoryModalClose={onCategoryClose}
           onCategoryItemSelect={onCategoryItemSelect}
         />
@@ -318,13 +312,13 @@ export default function EditProductItemPage() {
             {titleInputValue.length > 0 && (
               <CategoryArea>
                 <TagArea>
-                  {tagCategories.map(
+                  {categoryTags.map(
                     (tag: { id: number; title: string; imageUrl: string }) => (
                       <Tag
                         key={tag.id}
                         title={tag.title}
-                        isSelected={selectedTag === tag.title}
-                        onClick={() => onSelectTag(tag.title)}
+                        isSelected={selectedCategoryTag.title === tag.title}
+                        onClick={() => onCategoryItemSelect(tag)}
                       />
                     )
                   )}

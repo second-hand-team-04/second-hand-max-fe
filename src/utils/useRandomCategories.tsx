@@ -3,31 +3,42 @@ import { useEffect, useState } from "react";
 
 type Props = {
   categoryList: CategoryType[] | [];
-  fixedCategory?: string;
+  fixedCategoryTitle?: string;
 };
 
 export default function useRandomCategories({
   categoryList,
-  fixedCategory,
+  fixedCategoryTitle,
 }: Props) {
-  const [tagCategories, setTagCategories] = useState<CategoryType[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState(fixedCategory || "");
+  const [categoryTags, setCategoryTags] = useState<CategoryType[]>([]);
+
+  const fixedCategory = categoryList.find(
+    (category) => category.title === fixedCategoryTitle
+  );
+  const [selectedCategoryTag, setSelectedCategoryTag] = useState<CategoryType>(
+    fixedCategory || {
+      id: 0,
+      title: "",
+      imageUrl: "",
+    }
+  );
 
   useEffect(() => {
     if (categoryList.length === 0) return;
 
     const remainingCategories = categoryList.slice(1);
-    if (!selectedCategory) {
+    if (selectedCategoryTag.id === 0) {
       const finalThreeCategories = getRandomSubarray(remainingCategories, 3);
-      setTagCategories(finalThreeCategories);
-      setSelectedCategory(finalThreeCategories[0].title);
+      console.log("finalThreeCategories:", finalThreeCategories);
+      setCategoryTags(finalThreeCategories);
+      setSelectedCategoryTag(finalThreeCategories[0]);
       return;
     }
     const filteredList = remainingCategories.filter(
-      (category) => category.title !== selectedCategory
+      (category) => category.title !== selectedCategoryTag.title
     );
     const selectedCategoryObject = remainingCategories.find(
-      (category) => category.title === selectedCategory
+      (category) => category.title === selectedCategoryTag.title
     );
 
     if (!selectedCategoryObject) return;
@@ -38,16 +49,13 @@ export default function useRandomCategories({
       ...twoRandomCategories,
     ];
 
-    setTagCategories(finalThreeCategories);
-  }, [selectedCategory, categoryList, fixedCategory]);
+    setCategoryTags(finalThreeCategories);
+  }, [selectedCategoryTag, categoryList]);
 
-  return { tagCategories, selectedCategory, setSelectedCategory };
+  return { categoryTags, selectedCategoryTag, setSelectedCategoryTag };
 }
 
-function getRandomSubarray(
-  arr: { id: number; title: string; imageUrl: string }[],
-  n: number
-) {
+function getRandomSubarray<T>(arr: Array<T>, n: number) {
   const shuffled = arr.slice();
 
   for (let i = shuffled.length - 1; i > 0; i--) {
