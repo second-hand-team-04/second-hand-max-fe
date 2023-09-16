@@ -307,6 +307,21 @@ const ImageSlider = styled.div`
   display: flex;
   width: 393px;
   height: 491px;
+
+  &::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.24) 0%,
+      rgba(0, 0, 0, 0.138832) 9.16%,
+      rgba(0, 0, 0, 0) 26.27%
+    );
+  }
 `;
 
 const ProductInfo = styled.div`
