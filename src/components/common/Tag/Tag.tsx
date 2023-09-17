@@ -1,19 +1,15 @@
 import { styled } from "styled-components";
 
-export function Tag({
-  children,
-  tag,
-  isSelected,
-  onClick,
-}: {
-  children: React.ReactNode;
-  tag: { id: number; title: string; imageUrl: string };
+export type TagType = {
+  title: string;
   isSelected: boolean;
-  onClick?: (tagTitle: string) => void;
-}) {
+  onClick: () => void;
+};
+
+export function Tag({ title, isSelected, onClick }: TagType) {
   return (
-    <StyledTag onClick={() => onClick?.(tag.title)} $isSelected={isSelected}>
-      {children}
+    <StyledTag onClick={onClick} $isSelected={isSelected}>
+      {title}
     </StyledTag>
   );
 }

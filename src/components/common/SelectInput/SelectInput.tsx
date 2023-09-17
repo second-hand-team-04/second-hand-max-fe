@@ -1,6 +1,7 @@
-import { MouseEvent, ReactNode, useState } from "react";
-import chevronUp from "@assets/icon/chevron-up.svg";
 import chevronDown from "@assets/icon/chevron-down.svg";
+import chevronUp from "@assets/icon/chevron-up.svg";
+import useOutsideClick from "@hooks/useOutsideClick";
+import { MouseEvent, ReactNode, useState } from "react";
 import { styled } from "styled-components";
 import { Item } from "./selectInputProps";
 
@@ -19,6 +20,8 @@ export default function SelectInput({
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const containerRef = useOutsideClick(onOutsideClickClose);
+
   const onToggleIsOpen = () => {
     setIsOpen((prev) => !prev);
   };
@@ -31,8 +34,12 @@ export default function SelectInput({
     setIsOpen(false);
   };
 
+  function onOutsideClickClose() {
+    setIsOpen(false);
+  }
+
   return (
-    <StyledSelectInput>
+    <StyledSelectInput ref={containerRef}>
       <SelectButton {...{ type: "button", onClick: onToggleIsOpen }}>
         <SelectValue>{value}</SelectValue>
         <img src={isOpen ? chevronUp : chevronDown} alt={name} />

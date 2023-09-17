@@ -1,41 +1,48 @@
-import xIcon from "@assets/icon/x.svg";
 import circleXFilled from "@assets/icon/circle-x-filled.svg";
 import plus from "@assets/icon/plus.svg";
-import { ModalHeader, ModalTitle } from "@components/common/Modal/ModalStyles";
+import xIcon from "@assets/icon/x.svg";
+import Button from "@components/common/Button/Button";
 import Modal from "@components/common/Modal/Modal";
+import { ModalHeader, ModalTitle } from "@components/common/Modal/ModalStyles";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { keepLastRegion } from "@utils/stringFormatters";
+import queryKeys from "api/queries/queryKeys";
+import { RegionType, deleteUserRegion } from "api/region";
+import { AxiosError } from "axios";
+import { useContext } from "react";
+import { toast } from "react-hot-toast";
 import { styled } from "styled-components";
 import { ButtonsContainer } from "./RegionModal";
-import Button from "@components/common/Button/Button";
-import { RegionType, deleteUserRegion } from "api/region";
-import { useQueryClient } from "@tanstack/react-query";
-import queryKeys from "api/queries/queryKeys";
-import { toast } from "react-hot-toast";
-import { AxiosError } from "axios";
-import { keepLastRegion } from "@utils/stringFormatters";
 
 type Props = {
+  userRegionList: RegionType[];
   isRegionAddModal: boolean;
-  onRegionModalClose: () => void;
+  closeRegionModal: () => void;
   onOpenRegionSelectModal: () => void;
-  selectedRegionList: RegionType[];
-  selectMyRegion: (region: RegionType) => void;
-  selectedRegion: RegionType;
 };
 
 export default function RegionSelectModal({
+  userRegionList,
   isRegionAddModal,
-  onRegionModalClose,
+  closeRegionModal,
   onOpenRegionSelectModal,
-  selectedRegionList,
-  selectMyRegion,
-  selectedRegion,
 }: Props) {
   const queryClient = useQueryClient();
 
-  const selectedOneRegion = selectedRegionList.length === 1;
+  const { selectedRegion, onChangeSelectedRegion } = useContext(
+    ProductItemsFiltersContext
+  );
 
-  // TODO : useMutation으로 변경해야함
-  const onRegionDelete = async (itemId: number) => {
+  const selectedOneRegion = userRegionList.length === 1;
+
+  // TODO : useMutation으로 변경
+  const onRegionDelete = async (
+    itemId: number,
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+
     if (selectedOneRegion) {
       toast.error("동네는 최소 1개이상 선택해야해요.");
       return;
@@ -46,9 +53,11 @@ export default function RegionSelectModal({
 
       if (res.code === 200) {
         queryClient.invalidateQueries({
-          queryKey: queryKeys.region.userRegions.queryKey,
+          queryKey: queryKeys.region.userRegions().queryKey,
         });
         toast.success("선택한 동네가 삭제되었어요.");
+      } else {
+        throw Error("동네 삭제에 실패했어요.");
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -59,14 +68,18 @@ export default function RegionSelectModal({
     }
   };
 
+  const onRegionSelect = async (region: RegionType) => {
+    onChangeSelectedRegion(region);
+  };
+
   return (
-    <Modal onClose={() => {}}>
+    <Modal onClose={closeRegionModal}>
       <ModalHeader $isRegionAddModal={isRegionAddModal}>
         <ModalTitle>동네 설정</ModalTitle>
         <Button
           style={{ padding: "12px", width: "48px", height: "48px" }}
           variant="plain"
-          onClick={onRegionModalClose}>
+          onClick={closeRegionModal}>
           <img src={xIcon} alt="close" />
         </Button>
       </ModalHeader>
@@ -77,17 +90,21 @@ export default function RegionSelectModal({
           {"최대 2개까지 설정 가능해요."}
         </ContentNotice>
         <ButtonsContainer>
-          {selectedRegionList.map((item, index) => (
+          {userRegionList.map((item, index) => (
             <Button
               style={{
                 flexDirection: "row",
-                opacity: selectedRegion.id === item.id ? 1 : 0.3,
+                opacity: selectedRegion.id
+                  ? selectedRegion.id === item.id
+                    ? 1
+                    : 0.3
+                  : 1,
               }}
               key={index}
-              onClick={() => selectMyRegion(item)}>
+              onClick={() => onRegionSelect(item)}>
               <RegionButtonText>{keepLastRegion(item.title)}</RegionButtonText>
               <CircleXFilled
-                onClick={() => onRegionDelete(item.id)}
+                onClick={(e) => onRegionDelete(item.id, e)}
                 src={circleXFilled}
                 alt="close"
               />

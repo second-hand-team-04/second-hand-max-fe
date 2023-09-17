@@ -1,15 +1,7 @@
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
 import { User } from "api/user";
+import { Navigate, Outlet } from "react-router-dom";
+import Routes from "./Routes";
 
 export default function PublicOnlyRoute({ user }: { user: User | undefined }) {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate]);
-
-  return <Outlet />;
+  return user ? <Navigate to={Routes.HOME} /> : <Outlet />;
 }

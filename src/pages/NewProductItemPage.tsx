@@ -1,56 +1,107 @@
-import AppBar from "@components/AppBar";
 import cameraIcon from "@assets/icon/camera.svg";
-import mapIcon from "@assets/icon/map-pin-filled.svg";
-import circleXIcon from "@assets/icon/circle-x-filled.svg";
 import chevronRightIcon from "@assets/icon/chevron-right.svg";
-import Button from "@components/common/Button/Button";
-import { styled } from "styled-components";
-import useDraggable from "@hooks/useDraggable";
-import React, { useEffect, useState } from "react";
-import { Tag } from "@components/common/Tag/Tag";
+import circleXIcon from "@assets/icon/circle-x-filled.svg";
+import mapIcon from "@assets/icon/map-pin-filled.svg";
+import AppBar from "@components/AppBar";
 import CategoryModal from "@components/Category/CategoryModal";
-import useCategory from "@utils/useCategory";
-import { useNavigate } from "react-router-dom";
-import useImageInput from "@hooks/useImageInput";
-import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import Button from "@components/common/Button/Button";
+import { Tag } from "@components/common/Tag/Tag";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
+import useDraggable from "@hooks/useDraggable";
 import useText from "@hooks/useText";
-import { formatAsPrice } from "@utils/stringFormatters";
+import {
+  formatAsNumber,
+  formatAsPrice,
+  keepLastRegion,
+} from "@utils/stringFormatters";
+import useRandomCategories from "@utils/useRandomCategories";
+import { CategoryType } from "api/category";
+import { fetcher } from "api/fetcher";
+import { PictureType } from "api/productItem";
+import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import useNewProductItemMutation from "api/queries/useNewProductItemMutation";
+import { AxiosError } from "axios";
+import { ChangeEvent, MouseEvent, useContext, useState } from "react";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { styled } from "styled-components";
 
-export default function NewProductPage() {
+export default function NewProductItemPage() {
   const navigate = useNavigate();
 
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [isPictureHover, setIsPictureHover] = useState(false);
-  const [pictureList, setPictureList] = useState<File[]>([]);
+  const { selectedRegion, onChangeSelectedCategory } = useContext(
+    ProductItemsFiltersContext
+  );
 
+  const { data: categoryList, isLoading } = useCategoriesQuery();
+
+  const [pictureList, setPictureList] = useState<PictureType[]>([]);
   const { value: titleInputValue, onChange: onTitleInputChange } = useText();
   const { value: contentInputValue, onChange: onContentInputChange } =
     useText();
-  const { value: priceInputValue, onChange: onChangeForPrice } = useText();
+  const { value: priceInputValue, onChange: onPriceChange } = useText();
+  const { categoryTags, selectedCategoryTag, setSelectedCategoryTag } =
+    useRandomCategories({ categoryList: categoryList ?? [] });
 
-  const { data: categories, isLoading } = useCategoriesQuery();
-  const { tagCategories, selectedCategory, setSelectedCategory } = useCategory(
-    categories ?? []
-  );
-  const [selectedTag, setSelectedTag] = useState(selectedCategory);
+  const { mutate: newProductItemMutate } = useNewProductItemMutation({
+    regionId: selectedRegion.id,
+    categoryId: selectedCategoryTag.id,
+  });
+
+  // const {
+  //   imageFile: productPictureImage,
+  //   error: imageFileError,
+  //   onChange: onProductPictureChange,
+  // } = useImageInput({ sizeLimit: 2000000 });
 
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
     useDraggable();
-  const {
-    imageFile: productPictureImage,
-    error: imageFileError,
-    onChange: onProductPictureChange,
-  } = useImageInput({ sizeLimit: 2000000 });
 
-  useEffect(() => {
-    setSelectedTag(selectedCategory);
-  }, [selectedCategory]);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isPictureHover, setIsPictureHover] = useState(false);
 
-  useEffect(() => {
-    if (productPictureImage) {
-      setPictureList((prevList) => [...prevList, productPictureImage]);
+  // useEffect(() => {
+  //   if (productPictureImage) {
+  //     // setPictureList((prevList) => [...prevList, productPictureImage]);
+  //   }
+  // }, [productPictureImage]);
+
+  const onImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      const files = e.target.files;
+
+      if (!files) return;
+
+      const newImageFile = files[0];
+
+      const formData = new FormData();
+      formData.append(
+        "request",
+        new Blob([JSON.stringify({ type: "item" })], {
+          type: "application/json",
+        })
+      );
+
+      formData.append("image", newImageFile);
+
+      const res = await fetcher.post("/images", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.data.code === 200) {
+        const id = res.data.data.id;
+        const imageUrl = res.data.data.imageUrl;
+        setPictureList((prevList) => [...prevList, { id, imageUrl }]);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+        return;
+      }
+      toast.error(String(error));
     }
-  }, [productPictureImage]);
+  };
 
   const onShowScrollBar = () => {
     setIsPictureHover(true);
@@ -69,22 +120,25 @@ export default function NewProductPage() {
     setIsCategoryOpen(false);
   };
 
-  const onCategoryItemSelect = (itemTitle: string) => {
-    setSelectedCategory(itemTitle);
+  const onCategoryItemSelect = (category: CategoryType) => {
+    setSelectedCategoryTag(category);
   };
 
-  const onSelectTag = (tagTitle: string) => {
-    setSelectedTag(tagTitle);
+  const onSelectCategoryTag = (category: CategoryType) => {
+    setSelectedCategoryTag(category);
   };
 
-  const onPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onPriceInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 12) return;
 
-    onChangeForPrice(e);
+    onPriceChange(e);
   };
 
-  const onAddPicture = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (pictureList.length >= 10) return;
+  const onAddPicture = (e: MouseEvent<HTMLButtonElement>) => {
+    if (pictureList.length >= 10) {
+      toast.error("이미지는 10개 이하이여야 합니다");
+      return;
+    }
     const inputFile = e.currentTarget.querySelector('input[type="file"]');
     if (inputFile as HTMLInputElement) {
       (inputFile as HTMLInputElement).click();
@@ -93,36 +147,50 @@ export default function NewProductPage() {
 
   const onDeletePicture = (pictureId: number) => {
     setPictureList((prevList) =>
-      prevList.filter((picture) => picture.lastModified !== pictureId)
+      prevList.filter((picture) => picture.id !== pictureId)
     );
   };
 
-  const onPost = () => {
-    console.log(
-      "Post",
-      pictureList,
-      titleInputValue,
-      selectedTag,
-      priceInputValue || null,
-      contentInputValue,
-      currentRegion
+  const onPostNewProduct = async () => {
+    if (!categoryList) return;
+
+    const selectedCategory = categoryList.find(
+      (category) => category.title === selectedCategoryTag.title
     );
+
+    if (selectedCategory === undefined) {
+      toast.error("카테고리가 선택되지 않았습니다.");
+      return;
+    }
+
+    onChangeSelectedCategory(selectedCategory);
+
+    const requestData = {
+      title: titleInputValue,
+      price: Number(formatAsNumber(priceInputValue)),
+      content: contentInputValue,
+      imageIds: pictureList.map((picture) => Number(picture.id)),
+      categoryId: selectedCategory.id,
+      regionId: selectedRegion.id,
+    };
+
+    newProductItemMutate(requestData);
   };
 
   const isValid =
     titleInputValue.length > 0 &&
     contentInputValue.length > 0 &&
-    pictureList.length > 0 &&
     pictureList.length <= 10;
 
+  // TODO
   if (isLoading) return <div>로딩중</div>;
 
   return (
     <StyledNewProductPage>
       {isCategoryOpen ? (
         <CategoryModal
-          categoryList={categories ?? []}
-          currentSelectedCategory={selectedCategory}
+          categoryList={categoryList ?? []}
+          currentSelectedCategory={selectedCategoryTag}
           onCategoryModalClose={onCategoryClose}
           onCategoryItemSelect={onCategoryItemSelect}
         />
@@ -136,14 +204,14 @@ export default function NewProductPage() {
         </Button>
         <TitleArea style={{ flexGrow: "1" }}>내 물건 팔기</TitleArea>
         <Button style={{ width: "62px" }} variant="plain">
-          <CompleteButtonText onClick={onPost} $isValid={isValid}>
+          <CompleteButtonText onClick={onPostNewProduct} $isValid={isValid}>
             완료
           </CompleteButtonText>
         </Button>
       </AppBar>
       <Main>
         <Container>
-          <ImageInputError>{imageFileError}</ImageInputError>
+          {/* <ImageInputError>{imageFileError}</ImageInputError> */}
           <PictureArea
             ref={scrollContainerRef}
             onMouseDown={onDragStart}
@@ -163,19 +231,18 @@ export default function NewProductPage() {
                       (e.target as HTMLInputElement).value = "";
                     };
                 }}
-                onChange={onProductPictureChange}
+                onChange={onImageUpload}
               />
               <img src={cameraIcon} alt="camera" />
               <PictureCount>{pictureList.length}/10</PictureCount>
             </AddButton>
             {pictureList &&
-              pictureList.map((picture: File) => {
-                const imageUrl = URL.createObjectURL(picture);
+              pictureList.map((picture: PictureType) => {
                 return (
-                  <PictureWrapper key={picture.lastModified}>
-                    <Picture src={imageUrl} alt={picture.name} />
+                  <PictureWrapper key={picture.id}>
+                    <Picture src={picture.imageUrl} alt={String(picture.id)} />
                     <Button
-                      onClick={() => onDeletePicture(picture.lastModified)}
+                      onClick={() => onDeletePicture(picture.id)}
                       variant="plain"
                       style={{
                         zIndex: 10,
@@ -199,15 +266,14 @@ export default function NewProductPage() {
             {titleInputValue.length > 0 && (
               <CategoryArea>
                 <TagArea>
-                  {tagCategories.map(
+                  {categoryTags.map(
                     (tag: { id: number; title: string; imageUrl: string }) => (
                       <Tag
                         key={tag.id}
-                        tag={tag}
-                        isSelected={selectedTag === tag.title}
-                        onClick={onSelectTag}>
-                        {tag.title}
-                      </Tag>
+                        title={tag.title}
+                        isSelected={selectedCategoryTag.title === tag.title}
+                        onClick={() => onSelectCategoryTag(tag)}
+                      />
                     )
                   )}
                 </TagArea>
@@ -246,7 +312,7 @@ export default function NewProductPage() {
             gap: "8px",
           }}>
           <img src={mapIcon} alt="map" />
-          <RegionText>{currentRegion}</RegionText>
+          <RegionText>{keepLastRegion(selectedRegion.title)}</RegionText>
         </Button>
       </AppBar>
     </StyledNewProductPage>
@@ -329,15 +395,15 @@ const ContentArea = styled.textarea`
   }
 `;
 
-const ImageInputError = styled.p`
-  top: 60px;
-  height: 18px;
-  position: absolute;
-  margin-bottom: 2px;
-  font: ${({ theme: { font } }) => font.availableDefault12};
-  font-size: 10px;
-  color: ${({ theme: { color } }) => color.system.warning};
-`;
+// const ImageInputError = styled.p`
+//   top: 60px;
+//   height: 18px;
+//   position: absolute;
+//   margin-bottom: 2px;
+//   font: ${({ theme: { font } }) => font.availableDefault12};
+//   font-size: 10px;
+//   color: ${({ theme: { color } }) => color.system.warning};
+// `;
 
 const PriceInput = styled.input`
   height: 24px;
@@ -450,5 +516,3 @@ const Container = styled.div`
   background: ${({ theme: { color } }) => color.neutral.background};
   // box-sizing: border-box;
 `;
-
-const currentRegion = "역삼1동";

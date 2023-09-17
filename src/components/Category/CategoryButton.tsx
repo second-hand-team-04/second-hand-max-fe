@@ -1,28 +1,37 @@
 import Button from "@components/common/Button/Button";
+import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import { CategoryType } from "api/category/index";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import Routes from "router/Routes";
 import { styled } from "styled-components";
 
 type Props = {
   item: CategoryType;
-  onCategoryButtonClick: (categoryTitle: string) => void;
 };
 
-export default function CategoryButton({ item, onCategoryButtonClick }: Props) {
+export default function CategoryButton({ item }: Props) {
+  const navigate = useNavigate();
+  const { onChangeSelectedCategory } = useContext(ProductItemsFiltersContext);
+
+  const switchCategory = (item: CategoryType) => {
+    onChangeSelectedCategory({ id: item.id, title: item.title });
+    navigate(Routes.HOME);
+  };
   return (
-    <Button
-      variant="plain"
-      style={{
-        width: "80px",
-        height: "68px",
-        gap: "8px",
-        padding: "0",
-      }}
-      onClick={() => onCategoryButtonClick(item.title)}>
+    <StyledCategoryButton variant="plain" onClick={() => switchCategory(item)}>
       <CategoryImage src={item.imageUrl} alt={item.title} />
       <CategoryTitle>{item.title}</CategoryTitle>
-    </Button>
+    </StyledCategoryButton>
   );
 }
+
+const StyledCategoryButton = styled(Button)`
+  width: 80px;
+  height: 68px;
+  gap: 8px;
+  padding: 0;
+`;
 
 const CategoryImage = styled.img`
   width: 44px;

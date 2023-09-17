@@ -13,9 +13,9 @@ import { CategoryType } from "api/category/index";
 
 type Props = {
   categoryList: CategoryType[];
-  currentSelectedCategory: string;
+  currentSelectedCategory: CategoryType;
   onCategoryModalClose: () => void;
-  onCategoryItemSelect: (itemTitle: string) => void;
+  onCategoryItemSelect: (category: CategoryType) => void;
 };
 
 export default function CategoryModal({
@@ -24,8 +24,9 @@ export default function CategoryModal({
   onCategoryModalClose,
   onCategoryItemSelect,
 }: Props) {
-  const onCategoryItemClick = (itemTitle: string) => {
-    onCategoryItemSelect(itemTitle);
+  const onCategoryItemClick = (category: CategoryType) => {
+    onCategoryItemSelect(category);
+    onCategoryModalClose();
   };
 
   return (
@@ -44,7 +45,7 @@ export default function CategoryModal({
                 key: item.id,
                 item,
                 onClick: onCategoryItemClick,
-                isSelected: item.title === currentSelectedCategory,
+                isSelected: item.id === currentSelectedCategory.id,
               }}
             />
           ))}
