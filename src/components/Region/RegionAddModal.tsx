@@ -4,13 +4,9 @@ import Button from "@components/common/Button/Button";
 import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScrollList";
 import Modal from "@components/common/Modal/Modal";
 import { ModalBody, ModalHeader } from "@components/common/Modal/ModalStyles";
-import { useQueryClient } from "@tanstack/react-query";
-import queryKeys from "api/queries/queryKeys";
 import useRegionsInfiniteQuery from "api/queries/useRegionsInfiniteQuery";
-import { postUserRegion } from "api/region";
-import { AxiosError } from "axios";
+import useUserRegionPostMutation from "api/queries/useUserRegionPostMutation";
 import { Fragment, useState } from "react";
-import { toast } from "react-hot-toast";
 import { styled } from "styled-components";
 import RegionItem from "./RegionItem";
 
@@ -25,8 +21,6 @@ export default function RegionAddModal({
   closeRegionModal,
   switchToSelectModal,
 }: Props) {
-  const queryClient = useQueryClient();
-
   const [regionInputValue, setRegionInputValue] = useState<string>("");
 
   const {
@@ -34,34 +28,19 @@ export default function RegionAddModal({
     isFetching: isFetchingRegions,
     fetchNextPage: fetchMoreRegions,
   } = useRegionsInfiniteQuery(regionInputValue);
+  const { mutateAsync: userRegionPostMutateAsync } =
+    useUserRegionPostMutation();
 
   const onRegionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRegionInputValue(e.target.value);
   };
 
-  const onRegionItemClick = async (itemId: number) => {
-    try {
-      // TODO: useMutation으로 변경
-      console.log(itemId);
-      const res = await postUserRegion(itemId);
-      console.log(res);
-
-      // if (res.code === 201) {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.region.userRegions().queryKey,
-      });
+  const onRegionItemClick = async (regionId: number) => {
+    const res = await userRegionPostMutateAsync(regionId);
+    if (res.code === 201) {
       setRegionInputValue("");
-      toast.success("나의 동네로 설정되었어요.");
-      // }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
+      switchToSelectModal();
     }
-
-    switchToSelectModal();
   };
 
   return (

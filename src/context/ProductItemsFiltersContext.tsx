@@ -1,4 +1,4 @@
-import useUserRegionMutation from "api/queries/useUserRegionMutation";
+import useUserRegionPatchMutation from "api/queries/useUserRegionPatchMutation";
 import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
 import {
   ReactNode,
@@ -32,7 +32,8 @@ export function ProductItemsFiltersProvider({
 }) {
   const { data: userRegions, isSuccess: isSuccessUserRegions } =
     useUserRegionsQuery();
-  const { mutateAsync: userUserRegionMutateAsync } = useUserRegionMutation();
+  const { mutateAsync: userUserRegionPatchMutateAsync } =
+    useUserRegionPatchMutation();
 
   const [selectedRegion, setSelectedRegion] = useState({
     id: 1,
@@ -45,12 +46,12 @@ export function ProductItemsFiltersProvider({
 
   const onChangeSelectedRegion = useCallback(
     async (newRegion: FilterType) => {
-      const res = await userUserRegionMutateAsync(newRegion.id);
+      const res = await userUserRegionPatchMutateAsync(newRegion.id);
       if (res.code === 200) {
         setSelectedRegion(newRegion);
       }
     },
-    [userUserRegionMutateAsync]
+    [userUserRegionPatchMutateAsync]
   );
 
   const onChangeSelectedCategory = (newSelectedCategory: {
