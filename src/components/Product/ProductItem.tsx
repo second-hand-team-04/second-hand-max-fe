@@ -159,16 +159,16 @@ const BadgeAndPrice = styled.div`
 `;
 
 const Badge = styled.div`
-  font: ${({ theme: { font } }) => font.displayDefault12};
-  color: ${({ theme: { color } }) => color.accent.text};
-  background: ${({ theme: { color } }) => color.accent.backgroundSecondary};
-  border-radius: 8px;
-  padding: 10px 8px;
+  min-width: 50px;
+  height: 100%;
+  padding-inline: 8px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 22px;
+  background: ${({ theme: { color } }) => color.accent.backgroundSecondary};
+  border-radius: 8px;
+  font: ${({ theme: { font } }) => font.displayDefault12};
+  color: ${({ theme: { color } }) => color.accent.text};
+  line-height: 100%;
 `;
 
 const Price = styled.div`
