@@ -29,7 +29,7 @@ export default function ProductItem({ item }: Props) {
     navigate(`/product/${item.id}`);
   };
 
-  const isUserSeller = userInfo?.id === item.sellerId;
+  const isUserSeller = userInfo?.userId === item.sellerId;
 
   const sellerOptions = [
     {
