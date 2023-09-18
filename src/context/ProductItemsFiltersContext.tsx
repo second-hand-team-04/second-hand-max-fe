@@ -19,7 +19,7 @@ export const ProductItemsFiltersContext = createContext<{
   onChangeSelectedRegion: (newRegion: FilterType) => void;
   onChangeSelectedCategory: (newCategory: FilterType) => void;
 }>({
-  selectedRegion: { id: 1, title: "역삼1동" },
+  selectedRegion: { id: 432, title: "역삼동" },
   selectedCategory: { id: 1, title: "전체보기" },
   onChangeSelectedRegion: () => {},
   onChangeSelectedCategory: () => {},
