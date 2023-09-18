@@ -8,7 +8,7 @@ export default function useProductItemDeleteMutation(id: number) {
     mutationKey: queryKeys.productItems.delete(id).queryKey,
     mutationFn: deleteProductItem,
     onSuccess: () => {
-      toast.success("상품이 삭제되었습니다.");
+      toast.success("상품이 삭제되었습니다");
     },
   });
 }

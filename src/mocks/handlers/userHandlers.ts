@@ -8,7 +8,7 @@ import {
   successfulWishlistItemDelete,
   successfulWishlistItemsData,
   unSuccessfulUserInfoData,
-} from "mocks/data";
+} from "mocks/data/userData";
 import { RestRequest, rest } from "msw";
 
 export default [

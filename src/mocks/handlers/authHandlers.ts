@@ -7,7 +7,7 @@ import {
   unSuccessfulRefreshAccessToken,
   unSuccessfulSignInData,
   unSuccessfulSignUpData,
-} from "mocks/data";
+} from "mocks/data/authData";
 import { rest } from "msw";
 
 export default [

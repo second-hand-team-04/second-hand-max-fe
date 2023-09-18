@@ -8,7 +8,7 @@ export default function useProductItemStatusEditMutation(id: number) {
     mutationKey: queryKeys.productItems.edit(id).queryKey,
     mutationFn: (body: { status: number }) => patchProductItemStatus(id, body),
     onSuccess: () => {
-      toast.success("상품 상태가 수정되었습니다.");
+      toast.success("상품 상태가 수정되었습니다");
     },
   });
 }

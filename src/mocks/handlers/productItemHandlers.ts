@@ -2,7 +2,7 @@ import { HTTPSTATUS } from "api/types";
 import {
   successfulProductItemsData,
   unSuccessfulProductItemsData,
-} from "mocks/data";
+} from "mocks/data/productItemData";
 import { rest } from "msw";
 
 export default [
