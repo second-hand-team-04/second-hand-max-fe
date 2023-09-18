@@ -134,15 +134,15 @@ export default function MyProfilePage() {
             {<TextInputError>{nicknameError}</TextInputError>}
           </>
         ) : (
-          <UserNameLabel>{userInfo?.nickname}</UserNameLabel>
-        )}
-        {!isEditMode && (
-          <Button
-            onClick={onSignOutClick}
-            style={{ marginTop: "40px", width: "329px" }}
-            variant="contained">
-            로그아웃
-          </Button>
+          <>
+            <UserNameLabel>{userInfo?.nickname}</UserNameLabel>
+            <Button
+              onClick={onSignOutClick}
+              style={{ marginTop: "40px", width: "329px" }}
+              variant="contained">
+              로그아웃
+            </Button>
+          </>
         )}
       </ContentArea>
       <NavBar />

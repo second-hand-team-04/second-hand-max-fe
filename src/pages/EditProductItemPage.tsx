@@ -71,10 +71,12 @@ export default function EditProductItemPage() {
       categoryList: categories ?? [],
       prevCategory: initialValues.current.category,
     });
-  const { uploadedImagesList, onImageUpload, onImageDelete } =
-    useUploadedImagesList({
-      existingImages: productItemDetails?.images ?? [],
-    });
+  const {
+    uploadedImagesList,
+    initializeUploadedImagesList,
+    onImageUpload,
+    onImageDelete,
+  } = useUploadedImagesList();
 
   useEffect(() => {
     if (productItemDetails) {
@@ -94,6 +96,7 @@ export default function EditProductItemPage() {
       onPriceInputChange(String(price));
       onCategoryTagSelect(category);
       onContentInputChange(content);
+      initializeUploadedImagesList(images ?? []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productItemDetails]);
@@ -128,10 +131,7 @@ export default function EditProductItemPage() {
       price: Number(formatAsNumber(priceInputValue)),
       content: contentInputValue,
       regionId: selectedRegion.id,
-      imageIds:
-        uploadedImagesList.length > 0
-          ? uploadedImagesList.map((picture) => picture.id)
-          : null,
+      imageIds: uploadedImagesList.map((picture) => picture.id),
     };
 
     productItemEditMutate(updatedData);

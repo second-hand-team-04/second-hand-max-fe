@@ -4,16 +4,16 @@ import { HTTPSTATUS } from "api/types";
 import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
-type Props = {
-  existingImages?: PictureType[];
-};
-
-export default function useUploadedImagesList({ existingImages }: Props) {
+export default function useUploadedImagesList() {
   const { mutateAsync: imageUploadMutateAsync } = useImageUploadMutation();
 
   const [uploadedImagesList, setUploadedImagesList] = useState<PictureType[]>(
-    existingImages ?? []
+    []
   );
+
+  const initializeUploadedImagesList = (existingImages: PictureType[]) => {
+    setUploadedImagesList(existingImages);
+  };
 
   const onImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -51,5 +51,10 @@ export default function useUploadedImagesList({ existingImages }: Props) {
     );
   };
 
-  return { uploadedImagesList, onImageUpload, onImageDelete };
+  return {
+    uploadedImagesList,
+    initializeUploadedImagesList,
+    onImageUpload,
+    onImageDelete,
+  };
 }

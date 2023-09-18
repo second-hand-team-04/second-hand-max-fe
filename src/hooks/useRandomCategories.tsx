@@ -31,18 +31,21 @@ export default function useRandomCategories({
   useEffect(() => {
     if (categoryList.length === 0) return;
 
-    const remainingCategories = categoryList.slice(1).map(({ id, title }) => {
-      return { id, title };
-    });
     if (selectedCategoryTag.id === 0) {
       const finalThreeCategories = getRandomSubarray(
-        remainingCategories,
+        categoryList.slice(1),
         randomCategoriesLength
       );
       setThreeCategoryTags(finalThreeCategories);
       setSelectedCategoryTag(finalThreeCategories[0]);
-      return;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryList, randomCategoriesLength]);
+
+  useEffect(() => {
+    if (categoryList.length === 0 || selectedCategoryTag.id === 0) return;
+
+    const remainingCategories = categoryList.slice(1);
     const filteredList = remainingCategories.filter(
       (category) => category.title !== selectedCategoryTag.title
     );
@@ -63,7 +66,7 @@ export default function useRandomCategories({
     ];
 
     setThreeCategoryTags(finalThreeCategories);
-  }, [selectedCategoryTag, categoryList, randomCategoriesLength]);
+  }, [categoryList, randomCategoriesLength, selectedCategoryTag]);
 
   return {
     threeCategoryTags,
