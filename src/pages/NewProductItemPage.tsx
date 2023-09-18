@@ -10,17 +10,16 @@ import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext"
 import useDraggable from "@hooks/useDraggable";
 import useRandomCategories, { CategoryTag } from "@hooks/useRandomCategories";
 import useText from "@hooks/useText";
+import useUploadedImagesList from "@hooks/useUploadedImagesList";
 import {
   formatAsNumber,
   formatAsPrice,
   keepLastRegion,
 } from "@utils/stringFormatters";
-import { fetcher } from "api/fetcher";
 import { PictureType } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import useNewProductItemMutation from "api/queries/useNewProductItemMutation";
-import { AxiosError } from "axios";
-import { ChangeEvent, MouseEvent, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
@@ -34,13 +33,15 @@ export default function NewProductItemPage() {
 
   const { data: categoryList, isLoading } = useCategoriesQuery();
 
-  const [pictureList, setPictureList] = useState<PictureType[]>([]);
   const { value: titleInputValue, onChange: onTitleInputChange } = useText();
   const { value: contentInputValue, onChange: onContentInputChange } =
     useText();
   const { value: priceInputValue, onChange: onPriceInputChange } = useText();
   const { threeCategoryTags, selectedCategoryTag, onCategoryTagSelect } =
     useRandomCategories({ categoryList: categoryList ?? [] });
+
+  const { uploadedImagesList, onImageUpload, onImageDelete } =
+    useUploadedImagesList({});
 
   const { mutate: newProductItemMutate } = useNewProductItemMutation({
     regionId: selectedRegion.id,
@@ -52,43 +53,6 @@ export default function NewProductItemPage() {
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
-
-  const onImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const files = e.target.files;
-
-      if (!files) return;
-
-      const newImageFile = files[0];
-
-      const formData = new FormData();
-      formData.append(
-        "request",
-        new Blob([JSON.stringify({ type: "item" })], {
-          type: "application/json",
-        })
-      );
-
-      formData.append("image", newImageFile);
-
-      const res = await fetcher.post("/images", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (res.data.code === 200) {
-        const id = res.data.data.id;
-        const imageUrl = res.data.data.imageUrl;
-        setPictureList((prevList) => [...prevList, { id, imageUrl }]);
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
-    }
-  };
 
   const onShowScrollBar = () => {
     setIsPictureHover(true);
@@ -105,23 +69,6 @@ export default function NewProductItemPage() {
 
   const onCategoryClose = () => {
     setIsCategoryOpen(false);
-  };
-
-  const onAddPicture = (e: MouseEvent<HTMLButtonElement>) => {
-    if (pictureList.length >= 10) {
-      toast.error("이미지는 10개 이하이여야 합니다");
-      return;
-    }
-    const inputFile = e.currentTarget.querySelector('input[type="file"]');
-    if (inputFile as HTMLInputElement) {
-      (inputFile as HTMLInputElement).click();
-    }
-  };
-
-  const onDeletePicture = (pictureId: number) => {
-    setPictureList((prevList) =>
-      prevList.filter((picture) => picture.id !== pictureId)
-    );
   };
 
   const onPostNewProduct = async () => {
@@ -142,7 +89,7 @@ export default function NewProductItemPage() {
       title: titleInputValue,
       price: Number(formatAsNumber(priceInputValue)),
       content: contentInputValue,
-      imageIds: pictureList.map((picture) => Number(picture.id)),
+      imageIds: uploadedImagesList.map((picture) => Number(picture.id)),
       categoryId: selectedCategory.id,
       regionId: selectedRegion.id,
     };
@@ -153,7 +100,7 @@ export default function NewProductItemPage() {
   const isValid =
     titleInputValue.length > 0 &&
     contentInputValue.length > 0 &&
-    pictureList.length <= 10;
+    uploadedImagesList.length <= 10;
 
   // TODO
   if (isLoading) return <div>로딩중</div>;
@@ -184,7 +131,6 @@ export default function NewProductItemPage() {
       </AppBar>
       <Main>
         <Container>
-          {/* <ImageInputError>{imageFileError}</ImageInputError> */}
           <PictureArea
             ref={scrollContainerRef}
             onMouseDown={onDragStart}
@@ -193,29 +139,23 @@ export default function NewProductItemPage() {
             onMouseLeave={onDragSlideEnd}
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
-            <AddButton onClick={onAddPicture}>
+            <AddButton>
               <input
                 type="file"
                 accept="image/*"
                 style={{ display: "none" }}
-                ref={(input) => {
-                  if (input)
-                    input.onclick = (e) => {
-                      (e.target as HTMLInputElement).value = "";
-                    };
-                }}
                 onChange={onImageUpload}
               />
               <img src={cameraIcon} alt="camera" />
-              <PictureCount>{pictureList.length}/10</PictureCount>
+              <PictureCount>{uploadedImagesList.length}/10</PictureCount>
             </AddButton>
-            {pictureList &&
-              pictureList.map((picture: PictureType) => {
+            {uploadedImagesList &&
+              uploadedImagesList.map((picture: PictureType) => {
                 return (
                   <PictureWrapper key={picture.id}>
                     <Picture src={picture.imageUrl} alt={String(picture.id)} />
                     <Button
-                      onClick={() => onDeletePicture(picture.id)}
+                      onClick={() => onImageDelete(picture.id)}
                       variant="plain"
                       style={{
                         zIndex: 10,

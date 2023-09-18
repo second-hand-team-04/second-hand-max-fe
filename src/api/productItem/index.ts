@@ -93,10 +93,15 @@ export const deleteProductItem = async (id: number) => {
   return res.data;
 };
 
-export const postImage = async (body: FormData) => {
+export const postImageToS3 = async (body: FormData) => {
   const res = await fetcher.post<Response<{ id: number; imageUrl: string }>>(
     "/images",
-    body
+    body,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   return res.data;
 };
