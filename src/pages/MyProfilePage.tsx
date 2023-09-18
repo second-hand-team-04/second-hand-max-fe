@@ -4,20 +4,14 @@ import NavBar from "@components/NavBar/NavBar";
 import Button from "@components/common/Button/Button";
 import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
-import { useQueryClient } from "@tanstack/react-query";
 import { validateNickname } from "@utils/textValidators";
-import queryKeys from "api/queries/queryKeys";
 import useSignOutMutation from "api/queries/useSignOutMutation";
 import useUserInfoMutation from "api/queries/useUserInfoMutation";
 import useUserInfoQuery from "api/queries/useUserInfoQuery";
-import { AxiosError } from "axios";
-import { useState } from "react";
-import { toast } from "react-hot-toast";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
 export default function MyProfilePage() {
-  const queryClient = useQueryClient();
-
   const [isEditMode, setIsEditMode] = useState(false);
 
   const { data: userInfo } = useUserInfoQuery();
@@ -39,11 +33,22 @@ export default function MyProfilePage() {
     onChange: onProfilePictureChange,
   } = useImageInput({ sizeLimit: 2000000 });
 
-  const profileImageUrl = profilePictureImage
-    ? URL.createObjectURL(profilePictureImage)
-    : userInfo?.imageUrl
-    ? userInfo.imageUrl
-    : "";
+  const [profileImageObjectUrl, setProfileImageObjectUrl] = useState("");
+
+  useEffect(() => {
+    setProfileImageObjectUrl(
+      profilePictureImage
+        ? URL.createObjectURL(profilePictureImage)
+        : userInfo?.imageUrl
+        ? userInfo.imageUrl
+        : ""
+    );
+
+    return () => {
+      URL.revokeObjectURL(profileImageObjectUrl);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profilePictureImage, userInfo?.imageUrl]);
 
   const switchEditMode = () => {
     setIsEditMode(!isEditMode);
@@ -54,38 +59,26 @@ export default function MyProfilePage() {
   };
 
   const completeEditProfile = async () => {
-    try {
-      const formData = new FormData();
-      const isImageChanged = !!profilePictureImage;
+    const formData = new FormData();
+    const isImageChanged = !!profilePictureImage;
 
-      const requestData = {
-        nickname: nickname,
-        isImageChanged: isImageChanged,
-      };
-      formData.append(
-        "request",
-        new Blob([JSON.stringify(requestData)], { type: "application/json" })
-      );
-
-      if (profilePictureImage) {
-        formData.append("image", profilePictureImage);
-      }
-
-      const res = await userInfoMutateAsync(formData);
-
-      if (res.code === 200) {
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.user.info().queryKey,
-        });
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
+    const requestData = {
+      nickname: nickname,
+      isImageChanged: isImageChanged,
+    };
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(requestData)], { type: "application/json" })
+    );
+    if (profilePictureImage) {
+      formData.append("image", profilePictureImage);
     }
-    switchEditMode();
+
+    const res = await userInfoMutateAsync(formData);
+
+    if (res.code === 200) {
+      switchEditMode();
+    }
   };
 
   return (
@@ -112,15 +105,20 @@ export default function MyProfilePage() {
       <ContentArea>
         <ProfilePictureLabel
           htmlFor="profilePictureInput"
-          $pictureURL={profileImageUrl}>
-          <ProfilePictureInput
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            name="profilePicture"
-            id="profilePictureInput"
-            onChange={onProfilePictureChange}
-          />
-          <CameraIcon src={cameraIcon} alt="사진 등록" />
+          $isEditMode={isEditMode}
+          $pictureURL={profileImageObjectUrl}>
+          {isEditMode && (
+            <>
+              <ProfilePictureInput
+                type="file"
+                accept=".jpg, .jpeg, .png"
+                name="profilePicture"
+                id="profilePictureInput"
+                onChange={onProfilePictureChange}
+              />
+              <CameraIcon src={cameraIcon} alt="사진 등록" />
+            </>
+          )}
         </ProfilePictureLabel>
         {isEditMode ? (
           <>
@@ -191,7 +189,10 @@ const AppBarTitle = styled.p`
   text-align: center;
 `;
 
-const ProfilePictureLabel = styled.label<{ $pictureURL: string }>`
+const ProfilePictureLabel = styled.label<{
+  $isEditMode: boolean;
+  $pictureURL: string;
+}>`
   width: 80px;
   height: 80px;
   position: relative;
@@ -201,7 +202,7 @@ const ProfilePictureLabel = styled.label<{ $pictureURL: string }>`
   border-radius: 50%;
   border: ${({ theme: { color } }) => `1px solid ${color.neutral.border}`};
   overflow: hidden;
-  cursor: pointer;
+  cursor: ${({ $isEditMode }) => ($isEditMode ? "pointer" : "default")};
 `;
 
 const ProfilePictureInput = styled.input`

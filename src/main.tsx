@@ -34,7 +34,11 @@ const queryClient = new QueryClient({
     },
   }),
   mutationCache: new MutationCache({
-    onError: (error) => {
+    onError: (error, _, __, mutation) => {
+      if (mutation.meta?.errorMessage) {
+        toast.error(mutation.meta.errorMessage as string);
+        return;
+      }
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message);
         return;
