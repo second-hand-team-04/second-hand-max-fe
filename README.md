@@ -165,3 +165,7 @@ const categoryA: CategoryType = {
 
 arr.push(categoryA); // Error
 ```
+
+### `URL.createObjectURL()`
+
+https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static#memory_management
