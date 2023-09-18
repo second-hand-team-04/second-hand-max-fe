@@ -7,6 +7,11 @@ export default function useUserInfoQuery() {
     queryKey: queryKeys.user.info().queryKey,
     queryFn: getUserInfo,
     retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     select: (res) => res.data,
+    meta: {
+      errorMessage: "로그인을 먼저 해주세요",
+    },
   });
 }

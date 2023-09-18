@@ -12,7 +12,7 @@ type SignInData = {
 };
 
 export type User = {
-  id: number;
+  userId: number;
   nickname: string;
   imageUrl: string;
 };

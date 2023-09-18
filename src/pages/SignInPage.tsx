@@ -7,16 +7,12 @@ import useText from "@hooks/useText";
 import { validateEmail } from "@utils/textValidators";
 import useOAuthSignInMutation from "api/queries/useOAuthSignInMutation";
 import useSignInMutation from "api/queries/useSignInMutation";
+import { CLIENT_URL } from "config";
 import { WindowContext } from "context/WindowContext";
 import { FormEvent, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";
 import { styled } from "styled-components";
-
-const CLIENT_URL =
-  process.env.NODE_ENV === "production"
-    ? import.meta.env.VITE_CLIENT_URL_PROD
-    : import.meta.env.VITE_CLIENT_URL_DEV;
 
 export default function SignInPage() {
   const navigate = useNavigate();

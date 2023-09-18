@@ -21,7 +21,12 @@ if (process.env.NODE_ENV === "development") {
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
-    onError: (error) => {
+    onError: (error, query) => {
+      if (query.meta?.errorMessage) {
+        toast.error(query.meta.errorMessage as string);
+        return;
+      }
+
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message);
         return;
