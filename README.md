@@ -114,3 +114,54 @@ fetcher.interceptors.response.use(
 
 - `EditProductItemPage`
   - 비동기 데이터를 이용한 input 초기값 설정을 `useEffect`를 사용하고 있음.
+
+### TypeScript Type
+
+#### Example 1
+
+```ts
+type CategoryType = {
+  id: number;
+  title: string;
+  imageUrl: string;
+};
+
+type CategoryTag = {
+  id: number;
+  title: string;
+};
+
+const arr: CategoryTag[] = [];
+
+const categoryA: CategoryType = {
+  id: 1,
+  title: "a",
+  imageUrl: "blah",
+};
+
+arr.push(categoryA); // No Error
+```
+
+#### Example 2
+
+```ts
+type CategoryType = {
+  id: number;
+  title: string;
+};
+
+type CategoryTag = {
+  id: number;
+  title: string;
+  imageUrl: string;
+};
+
+const arr: CategoryTag[] = [];
+
+const categoryA: CategoryType = {
+  id: 1,
+  title: "a",
+};
+
+arr.push(categoryA); // Error
+```
