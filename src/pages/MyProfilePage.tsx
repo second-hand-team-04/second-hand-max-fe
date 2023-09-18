@@ -218,7 +218,6 @@ const CameraIcon = styled.img`
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   filter: ${({ theme: { filter } }) => filter.accentText};
-  z-index: 1;
 `;
 
 const ImageInputError = styled.p`

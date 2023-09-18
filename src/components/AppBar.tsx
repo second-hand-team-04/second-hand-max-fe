@@ -1,3 +1,4 @@
+import { zAppBar } from "@styles/constants/zIndex";
 import { ReactNode } from "react";
 import { styled } from "styled-components";
 
@@ -59,5 +60,5 @@ const StyledAppBar = styled.div<{
     $isBlur ? backdropFilter.blur : ""};
   top: ${({ $isTop }) => ($isTop ? "0" : "auto")};
   bottom: ${({ $isTop }) => ($isTop ? "auto" : "0")};
-  z-index: 1;
+  z-index: ${zAppBar};
 `;
