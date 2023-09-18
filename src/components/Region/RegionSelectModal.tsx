@@ -94,11 +94,8 @@ export default function RegionSelectModal({
             <Button
               style={{
                 flexDirection: "row",
-                opacity: selectedRegion.id
-                  ? selectedRegion.id === item.id
-                    ? 1
-                    : 0.3
-                  : 1,
+                opacity:
+                  !selectedRegion.id || selectedRegion.id === item.id ? 1 : 0.3,
               }}
               key={index}
               onClick={() => onRegionSelect(item)}>
