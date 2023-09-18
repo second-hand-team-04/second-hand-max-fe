@@ -26,7 +26,6 @@ const queryClient = new QueryClient({
         toast.error(query.meta.errorMessage as string);
         return;
       }
-
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message);
         return;

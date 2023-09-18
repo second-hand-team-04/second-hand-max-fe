@@ -1,17 +1,19 @@
 import { CategoryType } from "api/category/index";
 import { useEffect, useState } from "react";
-import { getRandomSubarray } from "./getRandomSubarray";
+import { getRandomSubarray } from "../utils/getRandomSubarray";
 
 export type CategoryTag = Pick<CategoryType, "id" | "title">;
 
 type Props = {
-  categoryList: CategoryType[] | [];
+  categoryList: CategoryType[];
   prevCategory?: CategoryTag;
+  randomCategoriesLength?: number;
 };
 
 export default function useRandomCategories({
   categoryList,
   prevCategory,
+  randomCategoriesLength = 3,
 }: Props) {
   const [threeCategoryTags, setThreeCategoryTags] = useState<CategoryTag[]>([]);
 
@@ -29,9 +31,14 @@ export default function useRandomCategories({
   useEffect(() => {
     if (categoryList.length === 0) return;
 
-    const remainingCategories = categoryList.slice(1);
+    const remainingCategories = categoryList.slice(1).map(({ id, title }) => {
+      return { id, title };
+    });
     if (selectedCategoryTag.id === 0) {
-      const finalThreeCategories = getRandomSubarray(remainingCategories, 3);
+      const finalThreeCategories = getRandomSubarray(
+        remainingCategories,
+        randomCategoriesLength
+      );
       setThreeCategoryTags(finalThreeCategories);
       setSelectedCategoryTag(finalThreeCategories[0]);
       return;
@@ -46,14 +53,17 @@ export default function useRandomCategories({
 
     if (!selectedCategoryObject) return;
 
-    const twoRandomCategories = getRandomSubarray(filteredList, 2);
+    const twoRandomCategories = getRandomSubarray(
+      filteredList,
+      randomCategoriesLength - 1
+    );
     const finalThreeCategories = [
       selectedCategoryObject,
       ...twoRandomCategories,
     ];
 
     setThreeCategoryTags(finalThreeCategories);
-  }, [selectedCategoryTag, categoryList]);
+  }, [selectedCategoryTag, categoryList, randomCategoriesLength]);
 
   return {
     threeCategoryTags,

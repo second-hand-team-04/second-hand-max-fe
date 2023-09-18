@@ -9,10 +9,11 @@ import {
 import CategoryItem from "./CategoryItem";
 
 import Modal from "@components/common/Modal/Modal";
-import { CategoryTag } from "@utils/useRandomCategories";
+import { CategoryTag } from "@hooks/useRandomCategories";
+import { CategoryType } from "api/category";
 
 type Props = {
-  categoryList: CategoryTag[];
+  categoryList: CategoryType[];
   currentSelectedCategory: CategoryTag;
   onCategoryModalClose: () => void;
   onCategoryItemSelect: (category: CategoryTag) => void;
@@ -39,13 +40,13 @@ export default function CategoryModal({
       </ModalHeader>
       <ModalBody>
         <ModalList>
-          {categoryList.slice(1).map((item) => (
+          {categoryList.slice(1).map(({ id, title }) => (
             <CategoryItem
               {...{
-                key: item.id,
-                item,
+                key: id,
+                item: { id, title },
                 onClick: onCategoryItemClick,
-                isSelected: item.id === currentSelectedCategory.id,
+                isSelected: id === currentSelectedCategory.id,
               }}
             />
           ))}

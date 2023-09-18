@@ -1,5 +1,5 @@
 import { ModalListItem } from "@components/common/Modal/ModalStyles";
-import { CategoryTag } from "@utils/useRandomCategories";
+import { CategoryTag } from "@hooks/useRandomCategories";
 
 type Props = {
   item: CategoryTag;

@@ -8,13 +8,13 @@ import Button from "@components/common/Button/Button";
 import { Tag } from "@components/common/Tag/Tag";
 import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import useDraggable from "@hooks/useDraggable";
+import useRandomCategories, { CategoryTag } from "@hooks/useRandomCategories";
 import useText from "@hooks/useText";
 import {
   formatAsNumber,
   formatAsPrice,
   keepLastRegion,
 } from "@utils/stringFormatters";
-import useRandomCategories, { CategoryTag } from "@utils/useRandomCategories";
 import { fetcher } from "api/fetcher";
 import { PictureType } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";

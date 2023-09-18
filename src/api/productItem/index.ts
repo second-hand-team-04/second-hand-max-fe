@@ -40,7 +40,7 @@ export type ProductItemBody = {
   title: string;
   price: number | null;
   content: string;
-  imageIds: number[];
+  imageIds: number[] | null;
   categoryId: number;
   regionId: number;
 };

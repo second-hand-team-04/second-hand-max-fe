@@ -8,14 +8,14 @@ import Button from "@components/common/Button/Button";
 import { Tag } from "@components/common/Tag/Tag";
 import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import useDraggable from "@hooks/useDraggable";
+import useRandomCategories, { CategoryTag } from "@hooks/useRandomCategories";
 import useText from "@hooks/useText";
-import { checkForChanges } from "@utils/objectDifferences";
+import { areDifferent } from "@utils/objectDifferences";
 import {
   formatAsNumber,
   formatAsPrice,
   keepLastRegion,
 } from "@utils/stringFormatters";
-import useRandomCategories, { CategoryTag } from "@utils/useRandomCategories";
 import { fetcher } from "api/fetcher";
 import { PictureType, ProductItemDetails } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
@@ -186,7 +186,8 @@ export default function EditProductItemPage() {
       price: Number(formatAsNumber(priceInputValue)),
       content: contentInputValue,
       regionId: selectedRegion.id,
-      imageIds: imagesList.map((picture) => picture.id),
+      imageIds:
+        imagesList.length > 0 ? imagesList.map((picture) => picture.id) : null,
     };
 
     productItemEditMutate(updatedData);
@@ -195,9 +196,8 @@ export default function EditProductItemPage() {
   const isValid =
     titleInputValue.length > 0 &&
     contentInputValue.length > 0 &&
-    imagesList.length > 0 &&
     imagesList.length <= 10 &&
-    checkForChanges(initialValues.current, {
+    areDifferent(initialValues.current, {
       title: titleInputValue,
       category: selectedCategoryTag,
       price: Number(priceInputValue),
@@ -227,12 +227,12 @@ export default function EditProductItemPage() {
           <CloseButtonText>닫기</CloseButtonText>
         </Button>
         <TitleArea style={{ flexGrow: "1" }}>내 물건 팔기</TitleArea>
-        <Button style={{ width: "62px" }} variant="plain">
-          <CompleteButtonText
-            onClick={onUpdatedProductSubmit}
-            $isValid={isValid}>
-            완료
-          </CompleteButtonText>
+        <Button
+          style={{ width: "62px" }}
+          variant="plain"
+          disabled={!isValid}
+          onClick={onUpdatedProductSubmit}>
+          <CompleteButtonText $isValid={isValid}>완료</CompleteButtonText>
         </Button>
       </AppBar>
       <Main>
