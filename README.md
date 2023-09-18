@@ -105,3 +105,7 @@ fetcher.interceptors.response.use(
   - 예상치 못한 다른 에러 또한 보여짐.
 
 #### V2
+
+- 동일하게 `QueryCache`에서 일괄적으로 error를 핸들링하고, 특정 상황에서는 `query.meta.errorMessage`를 활용.
+  - Ex: `useUserInfoQuery`의 "AccessToken이 유효하지 않습니다" -> "로그인을 먼저 해주세요".
+- 
