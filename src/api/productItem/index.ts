@@ -33,7 +33,7 @@ export type ProductItemDetails = {
   numLikes: number;
   numViews: number;
   isWishlisted: boolean;
-  images: PictureType[];
+  images: PictureType[] | null;
 };
 
 export type ProductItemBody = {

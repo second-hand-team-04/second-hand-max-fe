@@ -137,7 +137,7 @@ export default function ProductItemPage() {
           </SelectContainer>
         </AppBar>
         <ImageSlider>
-          {productItemDetails && productItemDetails.images.length > 0 ? (
+          {productItemDetails && productItemDetails.images ? (
             productItemDetails.images.map((image) => (
               <ProductImage
                 key={image.id}
