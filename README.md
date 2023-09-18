@@ -108,4 +108,9 @@ fetcher.interceptors.response.use(
 
 - 동일하게 `QueryCache`에서 일괄적으로 error를 핸들링하고, 특정 상황에서는 `query.meta.errorMessage`를 활용.
   - Ex: `useUserInfoQuery`의 "AccessToken이 유효하지 않습니다" -> "로그인을 먼저 해주세요".
-- 
+-
+
+### 비동기로 받아온 데이터로 초기값 복사 및 state 초기화
+
+- `EditProductItemPage`
+  - 비동기 데이터를 이용한 input 초기값 설정을 `useEffect`를 사용하고 있음.
