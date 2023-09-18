@@ -14,8 +14,7 @@ import {
   formatAsPrice,
   keepLastRegion,
 } from "@utils/stringFormatters";
-import useRandomCategories from "@utils/useRandomCategories";
-import { CategoryType } from "api/category";
+import useRandomCategories, { CategoryTag } from "@utils/useRandomCategories";
 import { fetcher } from "api/fetcher";
 import { PictureType } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
@@ -39,8 +38,8 @@ export default function NewProductItemPage() {
   const { value: titleInputValue, onChange: onTitleInputChange } = useText();
   const { value: contentInputValue, onChange: onContentInputChange } =
     useText();
-  const { value: priceInputValue, onChange: onPriceChange } = useText();
-  const { categoryTags, selectedCategoryTag, setSelectedCategoryTag } =
+  const { value: priceInputValue, onChange: onPriceInputChange } = useText();
+  const { threeCategoryTags, selectedCategoryTag, onCategoryTagSelect } =
     useRandomCategories({ categoryList: categoryList ?? [] });
 
   const { mutate: newProductItemMutate } = useNewProductItemMutation({
@@ -48,23 +47,11 @@ export default function NewProductItemPage() {
     categoryId: selectedCategoryTag.id,
   });
 
-  // const {
-  //   imageFile: productPictureImage,
-  //   error: imageFileError,
-  //   onChange: onProductPictureChange,
-  // } = useImageInput({ sizeLimit: 2000000 });
-
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
     useDraggable();
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
-
-  // useEffect(() => {
-  //   if (productPictureImage) {
-  //     // setPictureList((prevList) => [...prevList, productPictureImage]);
-  //   }
-  // }, [productPictureImage]);
 
   const onImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
@@ -118,20 +105,6 @@ export default function NewProductItemPage() {
 
   const onCategoryClose = () => {
     setIsCategoryOpen(false);
-  };
-
-  const onCategoryItemSelect = (category: CategoryType) => {
-    setSelectedCategoryTag(category);
-  };
-
-  const onSelectCategoryTag = (category: CategoryType) => {
-    setSelectedCategoryTag(category);
-  };
-
-  const onPriceInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length > 12) return;
-
-    onPriceChange(e);
   };
 
   const onAddPicture = (e: MouseEvent<HTMLButtonElement>) => {
@@ -192,7 +165,7 @@ export default function NewProductItemPage() {
           categoryList={categoryList ?? []}
           currentSelectedCategory={selectedCategoryTag}
           onCategoryModalClose={onCategoryClose}
-          onCategoryItemSelect={onCategoryItemSelect}
+          onCategoryItemSelect={onCategoryTagSelect}
         />
       ) : null}
       <AppBar>
@@ -259,28 +232,26 @@ export default function NewProductItemPage() {
           </PictureArea>
           <InputArea>
             <TitleInput
-              onChange={onTitleInputChange}
               type="text"
               placeholder="내용을 입력하세요"
+              onChange={(e) => onTitleInputChange(e.target.value.trim())}
             />
             {titleInputValue.length > 0 && (
               <CategoryArea>
                 <TagArea>
-                  {categoryTags.map(
-                    (tag: { id: number; title: string; imageUrl: string }) => (
-                      <Tag
-                        key={tag.id}
-                        title={tag.title}
-                        isSelected={selectedCategoryTag.title === tag.title}
-                        onClick={() => onSelectCategoryTag(tag)}
-                      />
-                    )
-                  )}
+                  {threeCategoryTags.map((tag: CategoryTag) => (
+                    <Tag
+                      key={tag.id}
+                      title={tag.title}
+                      isSelected={selectedCategoryTag.title === tag.title}
+                      onClick={() => onCategoryTagSelect(tag)}
+                    />
+                  ))}
                 </TagArea>
                 <Button
-                  onClick={onCategoryOpen}
                   variant="plain"
-                  style={{ padding: "0" }}>
+                  style={{ padding: "0" }}
+                  onClick={onCategoryOpen}>
                   <img src={chevronRightIcon} alt="chevronRightIcon" />
                 </Button>
               </CategoryArea>
@@ -289,15 +260,15 @@ export default function NewProductItemPage() {
           <InputArea>
             <WonSymbol>₩</WonSymbol>
             <PriceInput
-              value={formatAsPrice(priceInputValue) || ""}
-              onChange={onPriceInputChange}
               type="text"
               placeholder="가격(선택사항)"
+              value={formatAsPrice(priceInputValue) || ""}
+              onChange={(e) => onPriceInputChange(e.target.value.trim())}
             />
           </InputArea>
           <ContentArea
-            onChange={onContentInputChange}
             placeholder="역삼 1동에 올릴 게시물 내용을 작성해주세요.(판매금지 물품은 게시가 제한될 수 있어요.)"
+            onChange={(e) => onContentInputChange(e.target.value.trim())}
           />
         </Container>
       </Main>

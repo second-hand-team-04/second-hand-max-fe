@@ -9,13 +9,13 @@ import {
 import CategoryItem from "./CategoryItem";
 
 import Modal from "@components/common/Modal/Modal";
-import { CategoryType } from "api/category/index";
+import { CategoryTag } from "@utils/useRandomCategories";
 
 type Props = {
-  categoryList: CategoryType[];
-  currentSelectedCategory: CategoryType;
+  categoryList: CategoryTag[];
+  currentSelectedCategory: CategoryTag;
   onCategoryModalClose: () => void;
-  onCategoryItemSelect: (category: CategoryType) => void;
+  onCategoryItemSelect: (category: CategoryTag) => void;
 };
 
 export default function CategoryModal({
@@ -24,7 +24,7 @@ export default function CategoryModal({
   onCategoryModalClose,
   onCategoryItemSelect,
 }: Props) {
-  const onCategoryItemClick = (category: CategoryType) => {
+  const onCategoryItemClick = (category: CategoryTag) => {
     onCategoryItemSelect(category);
     onCategoryModalClose();
   };

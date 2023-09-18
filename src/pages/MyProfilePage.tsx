@@ -128,7 +128,7 @@ export default function MyProfilePage() {
               <UserNameEditInput
                 type="text"
                 value={nickname}
-                onChange={onNicknameChange}
+                onChange={(e) => onNicknameChange(e.target.value.trim())}
                 required
               />
             </UserNameLabel>

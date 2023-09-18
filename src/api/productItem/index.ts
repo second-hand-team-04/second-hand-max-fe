@@ -24,7 +24,7 @@ export type ProductItemDetails = {
   content: string;
   updatedAt: string;
   price: number;
-  category: string;
+  category: { id: number; title: string };
   seller: {
     id: number;
     nickname: string;

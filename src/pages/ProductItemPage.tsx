@@ -21,15 +21,16 @@ import { styled } from "styled-components";
 export default function ProductItemPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const { data: productItemDetails, isLoading: isLoadingProductItemdetails } =
+    useProductItemDetailsQuery(Number(id));
   const { mutateAsync: deleteProductMutation } = useProductItemDeleteMutation(
     Number(id)
   );
+
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
 
-  const { data: productItemDetails, isLoading } = useProductItemDetailsQuery(
-    Number(id)
-  );
   const containerRef = useOutsideClick<HTMLDivElement>(closeSelectModal);
 
   const toggleSelectModal = () => {
@@ -69,7 +70,9 @@ export default function ProductItemPage() {
     closeDeleteAlert();
   };
 
-  if (isLoading && !productItemDetails) return <div>로딩중</div>;
+  // TODO: 내부에서 loader 띄우기
+  if (isLoadingProductItemdetails && !productItemDetails)
+    return <div>로딩중</div>;
 
   return (
     <StyledProductItemPage>
@@ -165,7 +168,7 @@ export default function ProductItemPage() {
             <TextInfoHeader>
               <h1>{productItemDetails?.title}</h1>
               <span>
-                {productItemDetails?.category} ・{" "}
+                {productItemDetails?.category.title} ・{" "}
                 {convertPastTimestamp(productItemDetails?.updatedAt ?? "")}
               </span>
             </TextInfoHeader>
