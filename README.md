@@ -115,9 +115,17 @@ fetcher.interceptors.response.use(
 - `EditProductItemPage`
   - 비동기 데이터를 이용한 input 초기값 설정을 `useEffect`를 사용하고 있음.
 
-### TypeScript Type
+### TypeScript Type System
+
+- TypeScript is a _structural type system_.
+  - Structural Type System: when comparing types, only the members on the type is taken into account.
+    - i.e. TS checks whether an object type has at least the required properties and their corresponding types, rather than an exact match of the properties.
+  - cf. Nominal Type System
+    - Two types that have been created cannot be assigned to each other.
 
 #### Example 1
+
+##### TypeScript (Structural Typing)
 
 ```ts
 type CategoryType = {
@@ -142,7 +150,35 @@ const categoryA: CategoryType = {
 arr.push(categoryA); // No Error
 ```
 
+##### Swift (Nominal Typing)
+
+```swift
+struct CategoryType {
+    var id: Int
+    var title: String
+    var imageUrl: String
+}
+
+struct CategoryTag {
+    var id: Int
+    var title: String
+}
+
+var arr: [CategoryTag] = []
+
+let categoryA = CategoryType(
+    id: 1,
+    title: "a",
+    imageUrl: "blah"
+)
+
+// PS: Swift throws an error even if `CategoryType` and `CategoryTag` have the same properties.
+arr.append(categoryA) // Error
+```
+
 #### Example 2
+
+##### TypeScript (Structural Typing)
 
 ```ts
 type CategoryType = {
