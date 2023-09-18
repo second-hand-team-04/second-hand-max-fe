@@ -1,3 +1,4 @@
+import { HTTPSTATUS } from "api/types";
 import { rest } from "msw";
 import { successfulAllRegionsData, successfulCategoriesData } from "./data";
 import authHandlers from "./handlers/authHandlers";
@@ -10,10 +11,16 @@ export default [
   ...productItemHandlers,
 
   rest.get("/api/categories", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(successfulCategoriesData));
+    return res(
+      ctx.status(HTTPSTATUS.success),
+      ctx.json(successfulCategoriesData)
+    );
   }),
 
   rest.get("/api/regions", async (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(successfulAllRegionsData));
+    return res(
+      ctx.status(HTTPSTATUS.success),
+      ctx.json(successfulAllRegionsData)
+    );
   }),
 ];

@@ -1,5 +1,6 @@
 import { PictureType } from "api/productItem";
 import useImageUploadMutation from "api/queries/useImageUploadMutation";
+import { HTTPSTATUS } from "api/types";
 import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -38,7 +39,7 @@ export default function useUploadedImagesList({ existingImages }: Props) {
 
     const res = await imageUploadMutateAsync(formData);
 
-    if (res.code === 200) {
+    if (res.code === HTTPSTATUS.success) {
       const imageObj = res.data;
       setUploadedImagesList((prevList) => [...prevList, imageObj]);
     }

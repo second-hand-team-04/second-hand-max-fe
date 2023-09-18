@@ -6,6 +6,7 @@ import Modal from "@components/common/Modal/Modal";
 import { ModalBody, ModalHeader } from "@components/common/Modal/ModalStyles";
 import useRegionsInfiniteQuery from "api/queries/useRegionsInfiniteQuery";
 import useUserRegionPostMutation from "api/queries/useUserRegionPostMutation";
+import { HTTPSTATUS } from "api/types";
 import { Fragment, useState } from "react";
 import { styled } from "styled-components";
 import RegionItem from "./RegionItem";
@@ -37,7 +38,7 @@ export default function RegionAddModal({
 
   const onRegionItemClick = async (regionId: number) => {
     const res = await userRegionPostMutateAsync(regionId);
-    if (res.code === 201) {
+    if (res.code === HTTPSTATUS.created) {
       setRegionInputValue("");
       switchToSelectModal();
     }

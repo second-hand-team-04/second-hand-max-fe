@@ -79,7 +79,7 @@ export default function NewProductItemPage() {
     );
 
     if (selectedCategory === undefined) {
-      toast.error("카테고리가 선택되지 않았습니다.");
+      toast.error("카테고리가 선택되지 않았습니다");
       return;
     }
 

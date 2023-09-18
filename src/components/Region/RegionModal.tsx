@@ -18,7 +18,7 @@ export default function RegionModal({
 
   const onOpenRegionSelectModal = () => {
     if (userRegionList.length === 2) {
-      toast.error("동네는 최대 2개까지 설정 가능해요.");
+      toast.error("동네는 최대 2개까지 설정 가능해요");
       return;
     }
     setIsRegionAddModal(true);

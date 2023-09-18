@@ -9,6 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { keepLastRegion } from "@utils/stringFormatters";
 import queryKeys from "api/queries/queryKeys";
 import { RegionType, deleteUserRegion } from "api/region";
+import { HTTPSTATUS } from "api/types";
 import { AxiosError } from "axios";
 import { useContext } from "react";
 import { toast } from "react-hot-toast";
@@ -44,20 +45,20 @@ export default function RegionSelectModal({
     e.stopPropagation();
 
     if (selectedOneRegion) {
-      toast.error("동네는 최소 1개이상 선택해야해요.");
+      toast.error("동네는 최소 1개이상 선택해야해요");
       return;
     }
 
     try {
       const res = await deleteUserRegion(itemId);
 
-      if (res.code === 200) {
+      if (res.code === HTTPSTATUS.success) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.region.userRegions().queryKey,
         });
-        toast.success("선택한 동네가 삭제되었어요.");
+        toast.success("선택한 동네가 삭제되었어요");
       } else {
-        throw Error("동네 삭제에 실패했어요.");
+        throw Error("동네 삭제에 실패했어요");
       }
     } catch (error) {
       if (error instanceof AxiosError) {

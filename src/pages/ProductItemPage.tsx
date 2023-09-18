@@ -12,6 +12,7 @@ import { formatAsPrice } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
 import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
+import { HTTPSTATUS } from "api/types";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -56,8 +57,8 @@ export default function ProductItemPage() {
   const deleteProductItem = async (id: number): Promise<void> => {
     try {
       const res = await deleteProductMutation(id);
-      if (res.code === 200) {
-        toast.success("등록한 상품이 삭제되었습니다.");
+      if (res.code === HTTPSTATUS.success) {
+        toast.success("등록한 상품이 삭제되었습니다");
         navigate(-1);
       }
     } catch (error) {

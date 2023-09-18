@@ -1,5 +1,6 @@
 import useUserRegionPatchMutation from "api/queries/useUserRegionPatchMutation";
 import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
+import { HTTPSTATUS } from "api/types";
 import {
   ReactNode,
   createContext,
@@ -47,7 +48,7 @@ export function ProductItemsFiltersProvider({
   const onChangeSelectedRegion = useCallback(
     async (newRegion: FilterType) => {
       const res = await userUserRegionPatchMutateAsync(newRegion.id);
-      if (res.code === 200) {
+      if (res.code === HTTPSTATUS.success) {
         setSelectedRegion(newRegion);
       }
     },

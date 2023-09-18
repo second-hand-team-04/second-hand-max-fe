@@ -8,6 +8,7 @@ import { validateNickname } from "@utils/textValidators";
 import useSignOutMutation from "api/queries/useSignOutMutation";
 import useUserInfoMutation from "api/queries/useUserInfoMutation";
 import useUserInfoQuery from "api/queries/useUserInfoQuery";
+import { HTTPSTATUS } from "api/types";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
@@ -76,7 +77,7 @@ export default function MyProfilePage() {
 
     const res = await userInfoMutateAsync(formData);
 
-    if (res.code === 200) {
+    if (res.code === HTTPSTATUS.success) {
       switchEditMode();
     }
   };

@@ -1,5 +1,7 @@
+import { HTTPSTATUS } from "api/types";
+
 export const successfulSignInData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "로그인을 성공했습니다",
   data: {
@@ -14,35 +16,35 @@ export const successfulSignInData = {
 };
 
 export const unSuccessfulSignInData = {
-  code: 401,
+  code: HTTPSTATUS.unAuthorized,
   status: "Unauthenticated",
   message: "이메일 또는 비밀번호가 일치하지 않습니다",
   data: null,
 };
 
 export const successfulSignUpData = {
-  code: 201,
+  code: HTTPSTATUS.created,
   status: "OK",
   message: "회원가입을 성공했습니다",
   data: null,
 };
 
 export const unSuccessfulSignUpData = {
-  code: 400,
+  code: HTTPSTATUS.badRequest,
   status: "Bad Request",
   message: "회원가입을 실패했습니다",
   data: null,
 };
 
 export const successfulSignOutData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "로그아웃을 성공했습니다",
   data: null,
 };
 
 export const successfulRefreshAccessToken = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "Access Token 발급을 성공했습니다",
   data: {
@@ -51,14 +53,14 @@ export const successfulRefreshAccessToken = {
 };
 
 export const unSuccessfulRefreshAccessToken = {
-  code: 401,
+  code: HTTPSTATUS.unAuthorized,
   status: "Bad Request",
   message: "Access Token 발급을 실패했습니다",
   data: null,
 };
 
 export const successfulUserInfoData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "사용자 정보 조회를 성공하였습니다",
   data: {
@@ -70,14 +72,14 @@ export const successfulUserInfoData = {
 };
 
 export const unSuccessfulUserInfoData = {
-  code: 400,
+  code: HTTPSTATUS.badRequest,
   status: "Bad Request",
   message: "사용자 정보 조회를 실패했습니다",
   data: null,
 };
 
 export const successfulCategoriesData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "카테고리 목록 조회를 성공하였습니다",
   data: [
@@ -159,7 +161,7 @@ export const successfulCategoriesData = {
 };
 
 export const successfulAllRegionsData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "나의 동네 목록 조회를 성공하였습니다",
   data: {
@@ -185,7 +187,7 @@ export const successfulAllRegionsData = {
 };
 
 export const successfulUserRegionsData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "나의 동네 목록 조회를 성공하였습니다",
   data: {
@@ -198,7 +200,7 @@ export const successfulUserRegionsData = {
 };
 
 export const successfulUserRegionSelectData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "나의 동네 목록 조회를 성공하였습니다",
   data: [
@@ -208,7 +210,7 @@ export const successfulUserRegionSelectData = {
 };
 
 export const successfulProductItemsData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "상품 목록 조회를 성공하였습니다",
   data: {
@@ -404,14 +406,14 @@ export const successfulProductItemsData = {
 };
 
 export const unSuccessfulProductItemsData = {
-  code: 400,
+  code: HTTPSTATUS.badRequest,
   status: "Bad Request",
   message: "상품 목록 조회를 실패하였습니다",
   data: null,
 };
 
 export const successfulTransactionItemsData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "판매내역 조회를 성공하였습니다",
   data: {
@@ -473,7 +475,7 @@ export const successfulTransactionItemsData = {
 };
 
 export const successfulWishlistItemsData = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "관심목록 조회를 성공하였습니다",
   data: {
@@ -535,14 +537,14 @@ export const successfulWishlistItemsData = {
 };
 
 export const successfulWishlistItemAdd = {
-  code: 201,
+  code: HTTPSTATUS.created,
   status: "Created",
   message: "관심목록 추가를 성공하였습니다",
   data: null,
 };
 
 export const successfulWishlistItemDelete = {
-  code: 200,
+  code: HTTPSTATUS.success,
   status: "OK",
   message: "관심목록 삭제를 성공하였습니다",
   data: null,
