@@ -9,17 +9,24 @@ import { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 
 export default function MyWishListPage() {
+  const [selectedWishlistItemCategoryId, setSelectedWishlistItemCategoryId] =
+    useState(1);
+
   const {
     data: wishlistItems,
     isFetching: isFetchingWishlistItems,
     isFetched: isFetchedWishlistItems,
     fetchNextPage: fetchMoreWishlistItems,
-  } = useWishlistItemsInfiniteQuery({ categoryId: 1 });
+  } = useWishlistItemsInfiniteQuery({
+    categoryId: selectedWishlistItemCategoryId,
+  });
   const [wishlistItemCategoryTags, setWishlistItemCategoryTags] = useState<
     CategoryTag[]
   >([]);
-  const [selectedWishlistItemCategoryId, setSelectedWishlistItemCategoryId] =
-    useState(1);
+
+  const onSelectWishlistItemCategory = (categoryId: number) => {
+    setSelectedWishlistItemCategoryId(categoryId);
+  };
 
   useEffect(() => {
     if (isFetchedWishlistItems && wishlistItems) {
@@ -30,13 +37,9 @@ export default function MyWishListPage() {
         },
         []
       );
-      setWishlistItemCategoryTags(categoryTags);
+      setWishlistItemCategoryTags([{ id: 1, title: "전체" }, ...categoryTags]);
     }
   }, [isFetchedWishlistItems, wishlistItems]);
-
-  const onSelectWishlistItemCategory = (id: number) => {
-    setSelectedWishlistItemCategoryId(id);
-  };
 
   return (
     <StyledMyWishListPage>
