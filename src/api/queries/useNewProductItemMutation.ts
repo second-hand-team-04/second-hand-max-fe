@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postProductItem } from "api/productItem";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import Routes from "router/Routes";
 import queryKeys from "./queryKeys";
 
 export default function useNewProductItemMutation(filters: {
@@ -15,12 +14,14 @@ export default function useNewProductItemMutation(filters: {
   return useMutation({
     mutationKey: queryKeys.productItems.register().queryKey,
     mutationFn: postProductItem,
-    onSuccess: () => {
+    onSuccess: (res) => {
       toast.success("상품이 등록되었습니다");
       queryClient.invalidateQueries(
         queryKeys.productItems.list(filters).queryKey
       );
-      navigate(Routes.HOME);
+
+      console.log(res.data.id);
+      navigate(`/product/${res.data.id}`);
     },
   });
 }

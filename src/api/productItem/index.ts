@@ -71,7 +71,7 @@ export const getProductItemDetails = async (id: number) => {
 };
 
 export const postProductItem = async (body: ProductItemBody) => {
-  const res = await fetcher.post<Response<null>>("/items", body);
+  const res = await fetcher.post<Response<{ id: number }>>("/items", body);
   return res.data;
 };
 

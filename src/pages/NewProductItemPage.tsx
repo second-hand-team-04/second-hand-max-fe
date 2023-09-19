@@ -41,7 +41,7 @@ export default function NewProductItemPage() {
     useRandomCategories({ categoryList: categoryList ?? [] });
 
   const { uploadedImagesList, onImageUpload, onImageDelete } =
-    useUploadedImagesList({});
+    useUploadedImagesList();
 
   const { mutate: newProductItemMutate } = useNewProductItemMutation({
     regionId: selectedRegion.id,
@@ -140,12 +140,22 @@ export default function NewProductItemPage() {
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
             <AddButton>
-              <input
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={onImageUpload}
-              />
+              <label style={{ position: "absolute" }}>
+                <input
+                  onClick={() => {
+                    console.log("click");
+                  }}
+                  type="file"
+                  accept="image/*"
+                  style={{
+                    visibility: "hidden",
+                    width: "inherit",
+                    height: "inherit",
+                    zIndex: "999",
+                  }}
+                  onChange={onImageUpload}
+                />
+              </label>
               <img src={cameraIcon} alt="camera" />
               <PictureCount>{uploadedImagesList.length}/10</PictureCount>
             </AddButton>
@@ -370,6 +380,7 @@ const Picture = styled.img`
   height: 80px;
   border: 0.8px solid ${({ theme: { color } }) => color.neutral.border};
   border-radius: 16px;
+  cursor: grab;
 `;
 const StyledNewProductPage = styled.div`
   width: 393px;

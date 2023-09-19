@@ -4,11 +4,11 @@ import dotsIcon from "@assets/icon/dots.svg";
 import filledHeartIcon from "@assets/icon/heart-filled.svg";
 import emptyHeartIcon from "@assets/icon/heart.svg";
 import AppBar from "@components/AppBar";
+import DeleteAlert from "@components/DeleteAlert";
+
 import { defaultThumbnail } from "@components/Product/ProductItem";
-import { Alert } from "@components/common/Alert";
 import Button from "@components/common/Button/Button";
-import { SelectItem } from "@components/common/SelectInput";
-import useOutsideClick from "@hooks/useOutsideClick";
+import { Dropdown, DropdownItem } from "@components/common/Dropdown";
 import { formatAsPrice } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
 import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
@@ -16,13 +16,14 @@ import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQue
 import useWishlistItemAddMutation from "api/queries/useWishlistItemAddMutation";
 import useWishlistItemRemoveMutation from "api/queries/useWishlistItemRemoveMutation";
 import { HTTPSTATUS } from "api/types";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 
 export default function ProductItemPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const productItemPageRef = useRef(null);
 
   const { data: productItemDetails, isLoading: isLoadingProductItemdetails } =
     useProductItemDetailsQuery(Number(id));
@@ -35,22 +36,11 @@ export default function ProductItemPage() {
     Number(id)
   );
 
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-
-  const containerRef = useOutsideClick<HTMLDivElement>(closeSelectModal);
-
-  const toggleSelectModal = () => {
-    setIsSelectOpen((prev) => !prev);
-  };
 
   const goPrevPage = () => {
     navigate(-1);
   };
-
-  function closeSelectModal() {
-    setIsSelectOpen(false);
-  }
 
   const openDeleteAlert = () => {
     setIsDeleteAlertOpen(true);
@@ -82,33 +72,13 @@ export default function ProductItemPage() {
     return <div>로딩중</div>;
 
   return (
-    <StyledProductItemPage>
+    <StyledProductItemPage ref={productItemPageRef}>
       {isDeleteAlertOpen ? (
-        <Alert>
-          <AlertBody>
-            <DeleteAlertTitle>
-              등록한 상품을 정말로 삭제하시겠어요?
-            </DeleteAlertTitle>
-          </AlertBody>
-          <AlertBody>
-            <AlertButtonContainer>
-              <Button
-                style={{ textAlign: "center", padding: 0 }}
-                onClick={closeDeleteAlert}
-                variant="plain">
-                취소
-              </Button>
-              <Button
-                style={{ padding: 0 }}
-                onClick={() => {
-                  deleteProductItem(Number(id));
-                }}
-                variant="plain">
-                <span>삭제</span>
-              </Button>
-            </AlertButtonContainer>
-          </AlertBody>
-        </Alert>
+        <DeleteAlert
+          isOpen={isDeleteAlertOpen}
+          onClose={closeDeleteAlert}
+          onDelete={() => deleteProductItem(Number(id))}
+        />
       ) : null}
       <Wrapper>
         <AppBar padding="8px 0" height="56px" isTop={true} isTransparent={true}>
@@ -118,33 +88,23 @@ export default function ProductItemPage() {
             </Button>
             <span>뒤로</span>
           </ButtonContainer>
-
-          {/* TODO: Dropdown 활용 */}
-          {/* PS: 삭제 옵션은 DropdownItem variant="danger" 사용 */}
-          <SelectContainer ref={containerRef}>
-            <Button
-              onClick={toggleSelectModal}
-              style={{ padding: 0 }}
-              variant="plain">
-              <img src={dotsIcon} alt="dots" />
-              {isSelectOpen ? (
-                <SelectList>
-                  <SelectItem
-                    onClick={() => {
-                      navigate(`/product/${id}/edit`);
-                    }}
-                    item={{ id: 0, title: "게시글 수정하기" }}>
-                    게시글 수정
-                  </SelectItem>
-                  <SelectItem
-                    onClick={openDeleteAlert}
-                    item={{ id: 0, title: "삭제" }}>
-                    <DeleteText>삭제</DeleteText>
-                  </SelectItem>
-                </SelectList>
-              ) : null}
-            </Button>
-          </SelectContainer>
+          <Dropdown
+            buttonContent={
+              <Button style={{ width: "40px", height: "40px" }} variant="plain">
+                <HeaderImage src={dotsIcon} alt="dots" />
+              </Button>
+            }
+            boundaryElementRef={productItemPageRef}>
+            <DropdownItem
+              onClick={() => {
+                navigate(`/product/${id}/edit`);
+              }}>
+              게시글 수정
+            </DropdownItem>
+            <DropdownItem onClick={openDeleteAlert} variant="danger">
+              <DeleteText>삭제</DeleteText>
+            </DropdownItem>
+          </Dropdown>
         </AppBar>
         <ImageSlider>
           {productItemDetails && productItemDetails.images ? (
@@ -188,7 +148,6 @@ export default function ProductItemPage() {
         </ProductInfo>
       </Wrapper>
       <AppBar padding="16px" height="64px" isTop={false}>
-        {/* TODO: 찜하기 toggle */}
         <Button variant="plain" onClick={onToggleWishlisted}>
           {productItemDetails?.isLiked ? (
             <img src={filledHeartIcon} alt="찜하기" />
@@ -226,28 +185,6 @@ const StyledProductItemPage = styled.div`
   position: relative;
 `;
 
-const AlertBody = styled.div`
-  padding: 24px 32px;
-  width: 100%;
-  display: flex;
-  box-sizing: border-box;
-`;
-
-const AlertButtonContainer = styled.div`
-  width: 100%;
-  height: 24px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 32px;
-
-  > button {
-    font: ${({ theme: { font } }) => font.displayDefault16};
-    > span {
-      color: ${({ theme: { color } }) => color.system.warning};
-    }
-  }
-`;
-
 const Wrapper = styled.div`
   width: inherit;
   overflow: scroll;
@@ -282,34 +219,8 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const SelectContainer = styled.div`
-  width: 40px;
-  height: 40px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  > button {
-    > img {
-      filter: ${({ theme: { filter } }) => filter.accentText};
-    }
-  }
-`;
-
-const SelectList = styled.ul`
-  width: 240px;
-  position: absolute;
-  top: 48px;
-  right: 16px;
-  background-color: ${({ theme: { color } }) => color.white};
-  border-radius: 12px;
-  box-shadow: 0px 4px 4px 0px #00000040;
-`;
-
-const DeleteAlertTitle = styled.p`
-  color: ${({ theme: { color } }) => color.neutral.textStrong};
-  font: ${({ theme: { font } }) => font.displayStrong16};
-  height: 24px;
+const HeaderImage = styled.img`
+  filter: ${({ theme: { filter } }) => filter.accentText};
 `;
 
 const ProductImage = styled.img`
