@@ -20,7 +20,6 @@ export default function useNewProductItemMutation(filters: {
         queryKeys.productItems.list(filters).queryKey
       );
 
-      console.log(res.data.id);
       navigate(`/product/${res.data.id}`);
     },
   });
