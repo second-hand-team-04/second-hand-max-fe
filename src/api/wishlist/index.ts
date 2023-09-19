@@ -1,17 +1,13 @@
 import { fetcher } from "api/fetcher";
+import { ProductItemType } from "api/productItem";
 import { Response } from "api/types";
 
 type WishlistItemType = {
-  id: number;
-  title: string;
-  region: string;
-  status: string;
-  thumbnailUrl: string;
-  updatedAt: string;
-  price: number;
-  numChat: number;
-  numLikes: number;
-};
+  category: {
+    id: number;
+    title: string;
+  };
+} & ProductItemType;
 
 type WishlistItemsData = {
   hasMore: boolean;
