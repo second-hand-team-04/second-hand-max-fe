@@ -18,5 +18,6 @@ export default function useWishlistItemsInfiniteQuery(filters: {
         : undefined;
       return nextPageParam;
     },
+    cacheTime: 0,
   });
 }

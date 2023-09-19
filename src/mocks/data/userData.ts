@@ -52,7 +52,7 @@ export const successfulTransactionItemsData = {
       {
         id: 1,
         title: "잎사귀 포스터",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터를 팝니다. 사실분들께 저렴하게 양도합니다. 포스터 상태는 아주 좋습니다.",
@@ -84,7 +84,7 @@ export const successfulTransactionItemsData = {
       {
         id: 2,
         title: "잎사귀 포스터2",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터2를 판매합니다. 포스터는 신제품이며, 저렴한 가격에 드립니다.",
@@ -114,7 +114,7 @@ export const successfulWishlistItemsData = {
       {
         id: 1,
         title: "잎사귀 포스터",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터를 팝니다. 사실분들께 저렴하게 양도합니다. 포스터 상태는 아주 좋습니다.",
@@ -146,7 +146,7 @@ export const successfulWishlistItemsData = {
       {
         id: 2,
         title: "잎사귀 포스터2",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터2를 판매합니다. 포스터는 신제품이며, 저렴한 가격에 드립니다.",

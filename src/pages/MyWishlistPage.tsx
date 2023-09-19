@@ -23,15 +23,14 @@ export default function MyWishListPage() {
 
   useEffect(() => {
     if (isFetchedWishlistItems && wishlistItems) {
-      const categories = wishlistItems.pages.reduce(
+      const categoryTags = wishlistItems.pages.reduce(
         (acc: CategoryTag[], group) => {
-          console.log("group data:", group.data);
           const groupCategories = group.data.items.map((item) => item.category);
           return [...acc, ...groupCategories];
         },
         []
       );
-      setWishlistItemCategoryTags(categories);
+      setWishlistItemCategoryTags(categoryTags);
     }
   }, [isFetchedWishlistItems, wishlistItems]);
 
