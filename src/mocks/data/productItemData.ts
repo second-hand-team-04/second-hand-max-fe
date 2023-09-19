@@ -10,7 +10,7 @@ export const successfulProductItemsData = {
       {
         id: 1,
         title: "잎사귀 포스터",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터를 팝니다. 사실분들께 저렴하게 양도합니다. 포스터 상태는 아주 좋습니다.",
@@ -42,7 +42,7 @@ export const successfulProductItemsData = {
       {
         id: 2,
         title: "잎사귀 포스터2",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터2를 판매합니다. 포스터는 신제품이며, 저렴한 가격에 드립니다.",
@@ -61,7 +61,7 @@ export const successfulProductItemsData = {
       {
         id: 3,
         title: "잎사귀 포스터3",
-        region: "역삼1동",
+        region: "역삼동",
         status: "판매중",
         content:
           "잎사귀 포스터3 판매합니다. 포스터의 상태가 매우 좋으며, 높은 인기를 얻고 있습니다.",
@@ -80,7 +80,7 @@ export const successfulProductItemsData = {
       {
         id: 4,
         title: "잎사귀 포스터4",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터4를 저렴한 가격에 양도합니다. 포스터 상태는 매우 좋습니다.",
@@ -112,7 +112,7 @@ export const successfulProductItemsData = {
       {
         id: 5,
         title: "잎사귀 포스터5",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터5 판매합니다. 포스터는 아주 저렴한 가격에 양도합니다. 빠른 연락 부탁드립니다.",
@@ -144,7 +144,7 @@ export const successfulProductItemsData = {
       {
         id: 6,
         title: "잎사귀 포스터6",
-        region: "역삼1동",
+        region: "역삼동",
         status: "판매중",
         content:
           "잔여 포스터6 판매합니다. 포스터 상태가 아주 좋으며, 많은 관심을 받고 있습니다.",
@@ -176,7 +176,7 @@ export const successfulProductItemsData = {
       {
         id: 7,
         title: "잎사귀 포스터7",
-        region: "역삼1동",
+        region: "역삼동",
         status: "예약중",
         content:
           "잔여 포스터7를 판매합니다. 포스터는 아직 사용하지 않은 신제품입니다. 빠른 예약이 가능합니다.",

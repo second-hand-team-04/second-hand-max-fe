@@ -38,7 +38,7 @@ export function ProductItemsFiltersProvider({
 
   const [selectedRegion, setSelectedRegion] = useState({
     id: 1,
-    title: "역삼1동",
+    title: "역삼동",
   });
   const [selectedCategory, setSelectedCategory] = useState({
     id: 1,

@@ -1,7 +1,8 @@
 import chevronDownIcon from "@assets/icon/chevron-down.svg";
 import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import dotsIcon from "@assets/icon/dots.svg";
-import heartIcon from "@assets/icon/heart.svg";
+import filledHeartIcon from "@assets/icon/heart-filled.svg";
+import emptyHeartIcon from "@assets/icon/heart.svg";
 import AppBar from "@components/AppBar";
 import DeleteAlert from "@components/DeleteAlert";
 
@@ -12,10 +13,10 @@ import { formatAsPrice } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
 import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
+import useWishlistItemAddMutation from "api/queries/useWishlistItemAddMutation";
+import useWishlistItemRemoveMutation from "api/queries/useWishlistItemRemoveMutation";
 import { HTTPSTATUS } from "api/types";
-import { AxiosError } from "axios";
 import { useRef, useState } from "react";
-import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -26,7 +27,12 @@ export default function ProductItemPage() {
 
   const { data: productItemDetails, isLoading: isLoadingProductItemdetails } =
     useProductItemDetailsQuery(Number(id));
-  const { mutateAsync: deleteProductMutation } = useProductItemDeleteMutation(
+  const { mutateAsync: deleteProductMutationAsync } =
+    useProductItemDeleteMutation(Number(id));
+  const { mutate: wishlistItemAddMutate } = useWishlistItemAddMutation(
+    Number(id)
+  );
+  const { mutate: wishlistItemRemoveMutate } = useWishlistItemRemoveMutation(
     Number(id)
   );
 
@@ -44,21 +50,21 @@ export default function ProductItemPage() {
     setIsDeleteAlertOpen(false);
   };
 
-  const deleteProductItem = async (id: number): Promise<void> => {
-    try {
-      const res = await deleteProductMutation(id);
-      if (res.code === HTTPSTATUS.success) {
-        toast.success("등록한 상품이 삭제되었습니다");
-        navigate(-1);
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
+  const onToggleWishlisted = () => {
+    if (!productItemDetails) return;
+
+    if (productItemDetails.isLiked) {
+      wishlistItemRemoveMutate();
+    } else {
+      wishlistItemAddMutate();
     }
-    closeDeleteAlert();
+  };
+
+  const deleteProductItem = async (id: number): Promise<void> => {
+    const res = await deleteProductMutationAsync(id);
+    if (res.code === HTTPSTATUS.success) {
+      closeDeleteAlert();
+    }
   };
 
   // TODO: 내부에서 loader 띄우기
@@ -142,8 +148,12 @@ export default function ProductItemPage() {
         </ProductInfo>
       </Wrapper>
       <AppBar padding="16px" height="64px" isTop={false}>
-        <Button variant="plain">
-          <img src={heartIcon} alt="찜하기" />
+        <Button variant="plain" onClick={onToggleWishlisted}>
+          {productItemDetails?.isLiked ? (
+            <img src={filledHeartIcon} alt="찜하기" />
+          ) : (
+            <img src={emptyHeartIcon} alt="찜하기" />
+          )}
         </Button>
         <NumLikesText>
           {formatAsPrice(String(productItemDetails?.numLikes))}

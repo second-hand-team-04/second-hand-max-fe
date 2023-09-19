@@ -32,7 +32,7 @@ export type ProductItemDetails = {
   numChat: number;
   numLikes: number;
   numViews: number;
-  isWishlisted: boolean;
+  isLiked: boolean;
   images: PictureType[] | null;
 };
 
