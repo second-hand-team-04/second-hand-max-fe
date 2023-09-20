@@ -140,11 +140,8 @@ export default function NewProductItemPage() {
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
             <AddButton>
-              <label style={{ position: "absolute" }}>
+              <label style={{ cursor: "pointer", position: "absolute" }}>
                 <input
-                  onClick={() => {
-                    console.log("click");
-                  }}
                   type="file"
                   accept="image/*"
                   style={{

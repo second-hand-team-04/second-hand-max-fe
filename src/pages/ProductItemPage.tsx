@@ -73,13 +73,11 @@ export default function ProductItemPage() {
 
   return (
     <StyledProductItemPage ref={productItemPageRef}>
-      {isDeleteAlertOpen ? (
-        <DeleteAlert
-          isOpen={isDeleteAlertOpen}
-          onClose={closeDeleteAlert}
-          onDelete={() => deleteProductItem(Number(id))}
-        />
-      ) : null}
+      <DeleteAlert
+        isOpen={isDeleteAlertOpen}
+        onClose={closeDeleteAlert}
+        onDelete={() => deleteProductItem(Number(id))}
+      />
       <Wrapper>
         <AppBar padding="8px 0" height="56px" isTop={true} isTransparent={true}>
           <ButtonContainer onClick={goPrevPage}>
