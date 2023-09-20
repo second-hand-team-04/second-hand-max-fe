@@ -123,7 +123,6 @@ export default function ProductItemPage() {
           <SellerInfo>
             <h3>판매자 정보</h3>
             <span>{productItemDetails?.seller.nickname}</span>
-            {/* TODO: seller.nickname으로 바꿔야함 */}
           </SellerInfo>
           {/* TODO: Dropdown으로 구현 */}
           <StatusTab>
