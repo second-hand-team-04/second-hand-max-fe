@@ -8,7 +8,9 @@ type Props = {
   onDelete: () => void;
 };
 
-export default function DeleteAlert({ onClose, onDelete }: Props) {
+export default function DeleteAlert({ isOpen, onClose, onDelete }: Props) {
+  if (!isOpen) return null;
+
   return (
     <>
       <Alert>
