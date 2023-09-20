@@ -3,9 +3,9 @@ import NavBar from "@components/NavBar/NavBar";
 import ProductItem from "@components/Product/ProductItem";
 import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScrollList";
 import { Tag } from "@components/common/Tag/Tag";
-import { CategoryTag } from "@hooks/useRandomCategories";
+import useWishlistItemsCategoriesQuery from "api/queries/useWishlistItemsCategoriesQuery";
 import useWishlistItemsInfiniteQuery from "api/queries/useWishlistItemsInfiniteQuery";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import styled from "styled-components";
 
 export default function MyWishListPage() {
@@ -15,31 +15,17 @@ export default function MyWishListPage() {
   const {
     data: wishlistItems,
     isFetching: isFetchingWishlistItems,
-    isFetched: isFetchedWishlistItems,
     fetchNextPage: fetchMoreWishlistItems,
   } = useWishlistItemsInfiniteQuery({
     categoryId: selectedWishlistItemCategoryId,
   });
-  const [wishlistItemCategoryTags, setWishlistItemCategoryTags] = useState<
-    CategoryTag[]
-  >([]);
+  const { data: wishlistItemsCategories } = useWishlistItemsCategoriesQuery();
+
+  console.log("wishlistItemsCategories:", wishlistItemsCategories);
 
   const onSelectWishlistItemCategory = (categoryId: number) => {
     setSelectedWishlistItemCategoryId(categoryId);
   };
-
-  useEffect(() => {
-    if (isFetchedWishlistItems && wishlistItems) {
-      const categoryTags = wishlistItems.pages.reduce(
-        (acc: CategoryTag[], group) => {
-          const groupCategories = group.data.items.map((item) => item.category);
-          return [...acc, ...groupCategories];
-        },
-        []
-      );
-      setWishlistItemCategoryTags([{ id: 1, title: "전체" }, ...categoryTags]);
-    }
-  }, [isFetchedWishlistItems, wishlistItems]);
 
   return (
     <StyledMyWishListPage>
@@ -49,14 +35,15 @@ export default function MyWishListPage() {
 
       <Wrapper>
         <TagArea>
-          {wishlistItemCategoryTags.map((tag) => (
-            <Tag
-              key={tag.id}
-              title={tag.title}
-              isSelected={selectedWishlistItemCategoryId === tag.id}
-              onClick={() => onSelectWishlistItemCategory(tag.id)}
-            />
-          ))}
+          {wishlistItemsCategories &&
+            wishlistItemsCategories.categories.map((tag) => (
+              <Tag
+                key={tag.id}
+                title={tag.title}
+                isSelected={selectedWishlistItemCategoryId === tag.id}
+                onClick={() => onSelectWishlistItemCategory(tag.id)}
+              />
+            ))}
         </TagArea>
 
         <InfiniteScrollList
