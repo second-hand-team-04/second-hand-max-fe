@@ -1,4 +1,5 @@
 import useIntersection from "@hooks/useIntersection";
+import useOutsideClick from "@hooks/useOutsideClick";
 import { zDropdown } from "@styles/constants/zIndex";
 import { MouseEvent, ReactNode, RefObject, useRef, useState } from "react";
 import { styled } from "styled-components";
@@ -18,6 +19,7 @@ export default function Dropdown({
 
   const [isOpen, setIsOpen] = useState(false);
   const intersectingSide = useIntersection(dropdownRef, boundaryElementRef);
+  const containerRef = useOutsideClick(() => setIsOpen(false));
 
   const onToggleIsOpen = (e: MouseEvent) => {
     e.stopPropagation();
@@ -25,7 +27,7 @@ export default function Dropdown({
   };
 
   return (
-    <StyledDropdown>
+    <StyledDropdown ref={containerRef}>
       <DropdownButtonContainer {...{ type: "button", onClick: onToggleIsOpen }}>
         {buttonContent}
       </DropdownButtonContainer>
