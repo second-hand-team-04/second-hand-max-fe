@@ -1,29 +1,25 @@
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect, useRef } from "react";
 
 export default function useIntersection(
   elementRef: RefObject<Element>,
   boundaryElement?: RefObject<Element>
 ) {
-  const [intersectingSide, setIntersectingSide] = useState<
-    "left" | "right" | null
-  >(null);
+  const intersectingSideRef = useRef<"left" | "right">("left");
 
   const updateEntry = ([entry]: IntersectionObserverEntry[]) => {
     if (entry.isIntersecting) {
       const { left, right } = entry.boundingClientRect;
       if (left <= 0) {
-        setIntersectingSide("left");
+        intersectingSideRef.current = "left";
       } else if (
         right >=
         (boundaryElement?.current?.getBoundingClientRect().right ??
           window.innerWidth)
       ) {
-        setIntersectingSide("right");
+        intersectingSideRef.current = "right";
       }
       return;
     }
-
-    setIntersectingSide(null);
   };
 
   useEffect(() => {
@@ -41,5 +37,5 @@ export default function useIntersection(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRef?.current]);
 
-  return intersectingSide;
+  return intersectingSideRef.current;
 }
