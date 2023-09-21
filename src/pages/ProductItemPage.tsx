@@ -110,7 +110,11 @@ export default function ProductItemPage() {
             <span>뒤로</span>
           </ButtonContainer>
           <Dropdown
-            buttonContent={<HeaderImage src={dotsIcon} alt="dots" />}
+            buttonContent={
+              <Button variant="plain">
+                <DotsImage src={dotsIcon} alt="dots" />
+              </Button>
+            }
             boundaryElementRef={productItemPageRef}>
             <DropdownItem
               onClick={() => {
@@ -140,15 +144,13 @@ export default function ProductItemPage() {
           </SellerInfo>
           {user?.userId === productItemDetails?.seller.id && (
             <StatusTab>
-              <span>{productItemDetails?.status}</span>
               <Dropdown
                 buttonContent={
-                  <Button style={{ padding: 0 }} variant="plain">
-                    <img
-                      style={{ width: "16px", height: "16px" }}
-                      src={chevronDownIcon}
-                      alt="펼치기"
-                    />
+                  <Button
+                    variant="plain"
+                    style={{ padding: "0 16px", flexDirection: "row" }}>
+                    <ProductStatus>{productItemDetails?.status}</ProductStatus>
+                    <ChevronImage src={chevronDownIcon} alt="펼치기" />
                   </Button>
                 }
                 boundaryElementRef={productItemPageRef}>
@@ -249,17 +251,9 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const HeaderImage = styled.img`
+const DotsImage = styled.img`
   filter: ${({ theme: { filter } }) => filter.accentText};
 `;
-
-{
-  /* const ProductImage = styled.img`
-  width: 393px;
-  height: 491px;
-  object-fit: cover;
-`; */
-}
 
 const ImageSliderContainer = styled.div`
   display: flex;
@@ -317,28 +311,27 @@ const SellerInfo = styled.div`
 `;
 
 const StatusTab = styled.div`
-  position: relative;
+  height: 32px;
   margin-top: 14px;
   margin-right: auto;
   display: flex;
-  gap: 4px;
   align-items: center;
-  height: 32px;
-  padding: 0 16px;
+  gap: 4px;
+  position: relative;
   border-radius: 8px;
   border: 1px solid ${({ theme: { color } }) => color.neutral.border};
+`;
 
-  > span {
-    // width: 56px;
-    // height: 16px;
-    font: ${({ theme: { font } }) => font.availableDefault12};
-    color: ${({ theme: { color } }) => color.neutral.textStrong};
-  }
+const ProductStatus = styled.span`
+  width: 56px;
+  font: ${({ theme: { font } }) => font.availableDefault12};
+  color: ${({ theme: { color } }) => color.neutral.textStrong};
+  text-align: left;
+`;
 
-  > img {
-    width: 16px;
-    height: 16px;
-  }
+const ChevronImage = styled.img`
+  width: 16px;
+  height: 16px;
 `;
 
 const TextInfoArea = styled.div`
