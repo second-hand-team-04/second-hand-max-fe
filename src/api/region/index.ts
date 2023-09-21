@@ -6,7 +6,7 @@ export type RegionType = {
   title: string;
 };
 
-type AllRegionsData = {
+type RegionsData = {
   hasMore: boolean;
   regions: RegionType[];
 };
@@ -16,8 +16,16 @@ type UserRegionsData = {
   regions: RegionType[];
 };
 
-export const getAllRegions = async () => {
-  const res = await fetcher.get<Response<AllRegionsData>>("/regions");
+export const getRegions = async ({
+  page = 0,
+  regionTitle,
+}: {
+  page: number;
+  regionTitle?: string;
+}) => {
+  const res = await fetcher.get<Response<RegionsData>>(
+    `/regions?page=${page}&size=20${regionTitle ? `&title=${regionTitle}` : ""}`
+  );
   return res.data;
 };
 

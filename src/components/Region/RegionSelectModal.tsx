@@ -5,12 +5,9 @@ import Button from "@components/common/Button/Button";
 import Modal from "@components/common/Modal/Modal";
 import { ModalHeader, ModalTitle } from "@components/common/Modal/ModalStyles";
 import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
-import { useQueryClient } from "@tanstack/react-query";
 import { keepLastRegion } from "@utils/stringFormatters";
-import queryKeys from "api/queries/queryKeys";
-import useUserRegionMutation from "api/queries/useUserRegionMutation";
-import { RegionType, deleteUserRegion } from "api/region";
-import { AxiosError } from "axios";
+import useUserRegionDeleteMutation from "api/queries/useUserRegionDeleteMutation";
+import { RegionType } from "api/region";
 import { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { styled } from "styled-components";
@@ -29,61 +26,29 @@ export default function RegionSelectModal({
   closeRegionModal,
   onOpenRegionSelectModal,
 }: Props) {
-  const queryClient = useQueryClient();
-
   const { selectedRegion, onChangeSelectedRegion } = useContext(
     ProductItemsFiltersContext
   );
 
-  const { mutateAsync: userRegionMutate } = useUserRegionMutation();
+  const { mutate: userRegionDeleteMutate } = useUserRegionDeleteMutation();
 
-  const selectedOneRegion = userRegionList.length === 1;
-
-  // TODO : useMutation으로 변경
   const onRegionDelete = async (
-    itemId: number,
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
+    itemId: number
   ) => {
     e.stopPropagation();
 
+    const selectedOneRegion = userRegionList.length === 1;
     if (selectedOneRegion) {
-      toast.error("동네는 최소 1개이상 선택해야해요.");
+      toast.error("동네는 최소 1개이상 선택해야해요");
       return;
     }
 
-    try {
-      const res = await deleteUserRegion(itemId);
-
-      if (res.code === 200) {
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.region.userRegions().queryKey,
-        });
-        toast.success("선택한 동네가 삭제되었어요.");
-      } else {
-        throw Error("동네 삭제에 실패했어요.");
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
-    }
+    userRegionDeleteMutate(itemId);
   };
 
-  const selectRegion = async (region: RegionType) => {
-    try {
-      const res = await userRegionMutate(region.id);
-      if (res.code === 200) {
-        onChangeSelectedRegion(region);
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
-    }
+  const onRegionSelect = async (region: RegionType) => {
+    onChangeSelectedRegion(region);
   };
 
   return (
@@ -108,19 +73,16 @@ export default function RegionSelectModal({
             <Button
               style={{
                 flexDirection: "row",
-                opacity: selectedRegion.id
-                  ? selectedRegion.id === item.id
-                    ? 1
-                    : 0.3
-                  : 1,
+                opacity:
+                  !selectedRegion.id || selectedRegion.id === item.id ? 1 : 0.3,
               }}
               key={index}
-              onClick={() => selectRegion(item)}>
+              onClick={() => onRegionSelect(item)}>
               <RegionButtonText>{keepLastRegion(item.title)}</RegionButtonText>
               <CircleXFilled
-                onClick={(e) => onRegionDelete(item.id, e)}
                 src={circleXFilled}
                 alt="close"
+                onClick={(e) => onRegionDelete(e, item.id)}
               />
             </Button>
           ))}

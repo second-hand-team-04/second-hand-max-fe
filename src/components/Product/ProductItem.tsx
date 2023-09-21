@@ -1,13 +1,16 @@
 import dotsIcon from "@assets/icon/dots.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import messageIcon from "@assets/icon/message.svg";
+import DeleteAlert from "@components/DeleteAlert";
 import { Dropdown, DropdownItem } from "@components/common/Dropdown";
 import { formatAsPrice, keepLastRegion } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
 import { ProductItemType } from "api/productItem";
+import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
 import useProductItemStatusEditMutation from "api/queries/useProductItemStatusEditMutation";
 import useUserInfoQuery from "api/queries/useUserInfoQuery";
-import { useRef } from "react";
+import { HTTPSTATUS } from "api/types";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -19,17 +22,30 @@ export default function ProductItem({ item }: Props) {
   const navigate = useNavigate();
   const productItemRef = useRef(null);
 
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
   const { data: userInfo } = useUserInfoQuery();
 
   const { mutate: statusEditMutate } = useProductItemStatusEditMutation(
     item.id
   );
 
+  const { mutateAsync: deleteProductMutationAsync } =
+    useProductItemDeleteMutation(Number(item.id));
+
   const onClickProductItem = () => {
     navigate(`/product/${item.id}`);
   };
 
-  const isUserSeller = userInfo?.id === item.sellerId;
+  const openDeleteAlert = () => {
+    setIsDeleteAlertOpen(true);
+  };
+
+  const closeDeleteAlert = () => {
+    setIsDeleteAlertOpen(false);
+  };
+
+  const isUserSeller = userInfo?.userId === item.sellerId;
 
   const sellerOptions = [
     {
@@ -48,12 +64,24 @@ export default function ProductItem({ item }: Props) {
       variant: "danger",
       item: { id: 0, title: "삭제" },
       // TODO: open confirmation modal
-      onClick: () => {},
+      onClick: () => openDeleteAlert(),
     },
   ];
 
+  const deleteProductItem = async (id: number): Promise<void> => {
+    const res = await deleteProductMutationAsync(id);
+    if (res.code === HTTPSTATUS.success) {
+      closeDeleteAlert();
+    }
+  };
+
   return (
     <StyledProductItem onClick={onClickProductItem} ref={productItemRef}>
+      <DeleteAlert
+        isOpen={isDeleteAlertOpen}
+        onClose={closeDeleteAlert}
+        onDelete={() => deleteProductItem(Number(item.id))}
+      />
       <div>
         <ProductItemThumbnail src={item.thumbnailUrl || defaultThumbnail} />
       </div>
@@ -159,16 +187,16 @@ const BadgeAndPrice = styled.div`
 `;
 
 const Badge = styled.div`
-  font: ${({ theme: { font } }) => font.displayDefault12};
-  color: ${({ theme: { color } }) => color.accent.text};
-  background: ${({ theme: { color } }) => color.accent.backgroundSecondary};
-  border-radius: 8px;
-  padding: 10px 8px;
+  min-width: 50px;
+  height: 100%;
+  padding-inline: 8px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 22px;
+  background: ${({ theme: { color } }) => color.accent.backgroundSecondary};
+  border-radius: 8px;
+  font: ${({ theme: { font } }) => font.displayDefault12};
+  color: ${({ theme: { color } }) => color.accent.text};
+  line-height: 100%;
 `;
 
 const Price = styled.div`

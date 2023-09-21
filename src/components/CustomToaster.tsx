@@ -9,11 +9,12 @@ export default function CustomToaster() {
       position="top-center"
       containerStyle={{
         position: "absolute",
-        top: "150px",
+        top: "70px",
         font: font.displayDefault16,
         color: color.neutral.text,
       }}
       toastOptions={{
+        duration: 2000,
         success: {
           style: {
             color: color.system.success,

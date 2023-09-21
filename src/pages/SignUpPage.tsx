@@ -127,7 +127,7 @@ export default function SignUpPage() {
             name="nickname"
             id="nicknameInput"
             value={nickname}
-            onChange={onNicknameChange}
+            onChange={(e) => onNicknameChange(e.target.value.trim())}
             required
           />
           {<TextInputError>{nicknameError}</TextInputError>}
@@ -140,7 +140,7 @@ export default function SignUpPage() {
             name="email"
             id="emailInput"
             value={email}
-            onChange={onEmailChange}
+            onChange={(e) => onEmailChange(e.target.value.trim())}
             required
           />
           {<TextInputError>{emailError}</TextInputError>}
@@ -153,7 +153,7 @@ export default function SignUpPage() {
             name="password"
             id="passwordInput"
             value={password}
-            onChange={onPasswordChange}
+            onChange={(e) => onPasswordChange(e.target.value.trim())}
             required
           />
           {<TextInputError>{passwordError}</TextInputError>}
@@ -167,7 +167,7 @@ export default function SignUpPage() {
             placeholder="비밀번호 확인"
             id="passwordCheckInput"
             value={passwordConfirm}
-            onChange={onPasswordConfirmChange}
+            onChange={(e) => onPasswordConfirmChange(e.target.value.trim())}
             required
           />
           <TextInputError>
@@ -228,7 +228,6 @@ const CameraIcon = styled.img`
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   filter: ${({ theme: { filter } }) => filter.accentText};
-  z-index: 1;
 `;
 
 const ImageInputError = styled.p`

@@ -1,6 +1,6 @@
-import { useQueryClient } from "@tanstack/react-query";
-import queryKeys from "api/queries/queryKeys";
+import useUserRegionPatchMutation from "api/queries/useUserRegionPatchMutation";
 import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
+import { HTTPSTATUS } from "api/types";
 import {
   ReactNode,
   createContext,
@@ -20,7 +20,7 @@ export const ProductItemsFiltersContext = createContext<{
   onChangeSelectedRegion: (newRegion: FilterType) => void;
   onChangeSelectedCategory: (newCategory: FilterType) => void;
 }>({
-  selectedRegion: { id: 1, title: "역삼1동" },
+  selectedRegion: { id: 432, title: "역삼동" },
   selectedCategory: { id: 1, title: "전체보기" },
   onChangeSelectedRegion: () => {},
   onChangeSelectedCategory: () => {},
@@ -31,14 +31,14 @@ export function ProductItemsFiltersProvider({
 }: {
   children: ReactNode;
 }) {
-  const queryClient = useQueryClient();
-
   const { data: userRegions, isSuccess: isSuccessUserRegions } =
     useUserRegionsQuery();
+  const { mutateAsync: userUserRegionPatchMutateAsync } =
+    useUserRegionPatchMutation();
 
   const [selectedRegion, setSelectedRegion] = useState({
     id: 1,
-    title: "역삼1동",
+    title: "역삼동",
   });
   const [selectedCategory, setSelectedCategory] = useState({
     id: 1,
@@ -46,11 +46,13 @@ export function ProductItemsFiltersProvider({
   });
 
   const onChangeSelectedRegion = useCallback(
-    (newRegion: FilterType) => {
-      setSelectedRegion(newRegion);
-      queryClient.invalidateQueries(queryKeys.region.userRegions().queryKey);
+    async (newRegion: FilterType) => {
+      const res = await userUserRegionPatchMutateAsync(newRegion.id);
+      if (res.code === HTTPSTATUS.success) {
+        setSelectedRegion(newRegion);
+      }
     },
-    [queryClient]
+    [userUserRegionPatchMutateAsync]
   );
 
   const onChangeSelectedCategory = (newSelectedCategory: {
@@ -67,7 +69,7 @@ export function ProductItemsFiltersProvider({
         (region) => region.id === userSelectedRegionId
       );
       if (userSelectedRegion) {
-        onChangeSelectedRegion(userSelectedRegion);
+        setSelectedRegion(userSelectedRegion);
       }
     }
   }, [isSuccessUserRegions, onChangeSelectedRegion, userRegions]);

@@ -1,5 +1,4 @@
 import CustomToaster from "@components/CustomToaster";
-import { ProductItemsFiltersProvider } from "@context/ProductItemsFiltersContext";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
 import useUserInfoQuery from "api/queries/useUserInfoQuery";
@@ -14,12 +13,10 @@ export default function App() {
     <ThemeProvider theme={designSystem}>
       <GlobalStyles />
 
-      <ProductItemsFiltersProvider>
-        <StyledApp>
-          <RouterProvider router={router(user)} />
-          <CustomToaster />
-        </StyledApp>
-      </ProductItemsFiltersProvider>
+      <StyledApp>
+        <RouterProvider router={router(user)} />
+        <CustomToaster />
+      </StyledApp>
     </ThemeProvider>
   );
 }

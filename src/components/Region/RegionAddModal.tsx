@@ -1,19 +1,13 @@
 import chevronLeft from "@assets/icon/chevron-left.svg";
 import xIcon from "@assets/icon/x.svg";
 import Button from "@components/common/Button/Button";
+import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScrollList";
 import Modal from "@components/common/Modal/Modal";
-import {
-  ModalBody,
-  ModalHeader,
-  ModalList,
-} from "@components/common/Modal/ModalStyles";
-import { useQueryClient } from "@tanstack/react-query";
-import queryKeys from "api/queries/queryKeys";
-import useAllRegionsQuery from "api/queries/useAllRegionsQuery";
-import { postUserRegion } from "api/region";
-import { AxiosError } from "axios";
-import { useState } from "react";
-import { toast } from "react-hot-toast";
+import { ModalBody, ModalHeader } from "@components/common/Modal/ModalStyles";
+import useRegionsInfiniteQuery from "api/queries/useRegionsInfiniteQuery";
+import useUserRegionPostMutation from "api/queries/useUserRegionPostMutation";
+import { HTTPSTATUS } from "api/types";
+import { Fragment, useState } from "react";
 import { styled } from "styled-components";
 import RegionItem from "./RegionItem";
 
@@ -28,39 +22,26 @@ export default function RegionAddModal({
   closeRegionModal,
   switchToSelectModal,
 }: Props) {
-  const queryClient = useQueryClient();
-
   const [regionInputValue, setRegionInputValue] = useState<string>("");
 
-  const { data: allRegions } = useAllRegionsQuery();
+  const {
+    data: regions,
+    isFetching: isFetchingRegions,
+    fetchNextPage: fetchMoreRegions,
+  } = useRegionsInfiniteQuery(regionInputValue);
+  const { mutateAsync: userRegionPostMutateAsync } =
+    useUserRegionPostMutation();
 
   const onRegionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRegionInputValue(e.target.value);
   };
 
-  const onRegionItemClick = async (itemId: number) => {
-    try {
-      // TODO: useMutation으로 변경
-      console.log(itemId);
-      const res = await postUserRegion(itemId);
-      console.log(res);
-
-      // if (res.code === 201) {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.region.userRegions().queryKey,
-      });
+  const onRegionItemClick = async (regionId: number) => {
+    const res = await userRegionPostMutateAsync(regionId);
+    if (res.code === HTTPSTATUS.created) {
       setRegionInputValue("");
-      toast.success("나의 동네로 설정되었어요.");
-      // }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
+      switchToSelectModal();
     }
-
-    switchToSelectModal();
   };
 
   return (
@@ -85,18 +66,21 @@ export default function RegionAddModal({
           onChange={onRegionInputChange}
           placeholder="동명(읍, 면)으로 검색(ex. 서초동)"
         />
-        <ModalList>
-          {/* TODO: InfiniteScroll로 변경 */}
-          {allRegions &&
-            allRegions.regions.length > 0 &&
-            allRegions.regions.map((item) => (
-              <RegionItem
-                key={item.id}
-                item={item}
-                onClick={onRegionItemClick}
-              />
+        <RegionsInfiniteScrollList
+          onEndReached={() => !isFetchingRegions && fetchMoreRegions()}>
+          {regions &&
+            regions.pages.map((group, idx) => (
+              <Fragment key={idx}>
+                {group.data.regions?.map((region) => (
+                  <RegionItem
+                    key={region.id}
+                    item={region}
+                    onClick={onRegionItemClick}
+                  />
+                ))}
+              </Fragment>
             ))}
-        </ModalList>
+        </RegionsInfiniteScrollList>
       </ModalBody>
     </Modal>
   );
@@ -116,4 +100,12 @@ const SearchBar = styled.input`
   font: ${({ theme: { font } }) => font.availableDefault16};
   color: ${({ theme: { color } }) => color.neutral.text};
   background: ${({ theme: { color } }) => color.neutral.backgroundBold};
+`;
+
+const RegionsInfiniteScrollList = styled(InfiniteScrollList)`
+  width: 100%;
+  height: 100%;
+  padding: 0px 24px;
+  font: ${({ theme: { font } }) => font.availableDefault16};
+  color: ${({ theme: { color } }) => color.neutral.text};
 `;
