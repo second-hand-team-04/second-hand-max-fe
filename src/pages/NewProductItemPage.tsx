@@ -214,7 +214,7 @@ export default function NewProductItemPage() {
             />
           </InputArea>
           <ContentArea
-            placeholder="역삼 1동에 올릴 게시물 내용을 작성해주세요.(판매금지 물품은 게시가 제한될 수 있어요.)"
+            placeholder="게시물 내용을 작성해주세요.(판매금지 물품은 게시가 제한될 수 있어요.)"
             onChange={(e) => onContentInputChange(e.target.value.trim())}
           />
         </Container>
