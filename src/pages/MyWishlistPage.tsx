@@ -21,8 +21,6 @@ export default function MyWishListPage() {
   });
   const { data: wishlistItemsCategories } = useWishlistItemsCategoriesQuery();
 
-  console.log("wishlistItemsCategories:", wishlistItemsCategories);
-
   const onSelectWishlistItemCategory = (categoryId: number) => {
     setSelectedWishlistItemCategoryId(categoryId);
   };
@@ -92,8 +90,12 @@ const Wrapper = styled.div`
 `;
 
 const TagArea = styled.div`
-  width: inherit;
+  width: 100%;
   margin-bottom: 8px;
   display: flex;
   gap: 4px;
+  overflow-x: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
