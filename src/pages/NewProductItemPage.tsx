@@ -19,7 +19,7 @@ import {
 import { PictureType } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import useNewProductItemMutation from "api/queries/useNewProductItemMutation";
-import { useContext, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
@@ -53,6 +53,15 @@ export default function NewProductItemPage() {
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
+
+  const onPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newVal = e.target.value.trim();
+    if (newVal.length > 11) {
+      onPriceInputChange("999,999,999");
+    } else {
+      onPriceInputChange(newVal);
+    }
+  };
 
   const onShowScrollBar = () => {
     setIsPictureHover(true);
@@ -204,17 +213,17 @@ export default function NewProductItemPage() {
               </CategoryArea>
             )}
           </InputArea>
-          <InputArea>
+          <PriceInputArea>
             <WonSymbol>₩</WonSymbol>
             <PriceInput
               type="text"
-              placeholder="가격(선택사항)"
+              placeholder="가격 (선택사항)"
               value={formatAsPrice(priceInputValue) || ""}
-              onChange={(e) => onPriceInputChange(e.target.value.trim())}
+              onChange={onPriceChange}
             />
-          </InputArea>
+          </PriceInputArea>
           <ContentArea
-            placeholder="게시물 내용을 작성해주세요.(판매금지 물품은 게시가 제한될 수 있어요.)"
+            placeholder="게시물 내용을 작성해주세요 (판매금지 물품은 게시가 제한될 수 있어요)"
             onChange={(e) => onContentInputChange(e.target.value.trim())}
           />
         </Container>
@@ -351,6 +360,10 @@ const InputArea = styled.div`
   color: ${({ theme: { color } }) => color.neutral.textWeak};
   padding-bottom: 16px;
   border-bottom: 0.8px solid ${({ theme: { color } }) => color.neutral.border};
+`;
+
+const PriceInputArea = styled(InputArea)`
+  flex-direction: row;
 `;
 
 const AddButton = styled.button`
