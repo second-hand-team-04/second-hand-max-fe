@@ -27,9 +27,7 @@ import { styled } from "styled-components";
 export default function NewProductItemPage() {
   const navigate = useNavigate();
 
-  const { selectedRegion, onChangeSelectedCategory } = useContext(
-    ProductItemsFiltersContext
-  );
+  const { selectedRegion } = useContext(ProductItemsFiltersContext);
 
   const { data: categoryList, isLoading } = useCategoriesQuery();
 
@@ -91,8 +89,6 @@ export default function NewProductItemPage() {
       toast.error("카테고리가 선택되지 않았습니다");
       return;
     }
-
-    onChangeSelectedCategory(selectedCategory);
 
     const requestData = {
       title: titleInputValue,
