@@ -13,6 +13,8 @@ import { formatAsPrice } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
 import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
+import useProductItemStatusEditMutation from "api/queries/useProductItemStatusEditMutation";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import useWishlistItemAddMutation from "api/queries/useWishlistItemAddMutation";
 import useWishlistItemRemoveMutation from "api/queries/useWishlistItemRemoveMutation";
 import { HTTPSTATUS } from "api/types";
@@ -25,6 +27,8 @@ export default function ProductItemPage() {
   const { id } = useParams();
   const productItemPageRef = useRef(null);
 
+  const { data: user } = useUserInfoQuery();
+
   const { data: productItemDetails, isLoading: isLoadingProductItemdetails } =
     useProductItemDetailsQuery(Number(id));
   const { mutateAsync: deleteProductMutationAsync } =
@@ -36,10 +40,14 @@ export default function ProductItemPage() {
     Number(id)
   );
 
+  const { mutate: statusEditMutate } = useProductItemStatusEditMutation(
+    productItemDetails?.id ?? 0
+  );
+
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
 
   const goPrevPage = () => {
-    navigate(-1);
+    navigate("/");
   };
 
   const openDeleteAlert = () => {
@@ -66,6 +74,21 @@ export default function ProductItemPage() {
       closeDeleteAlert();
     }
   };
+
+  const sellerOptions = [
+    {
+      item: { id: 0, title: "판매중" },
+      onClick: () => statusEditMutate({ status: 1 }),
+    },
+    {
+      item: { id: 0, title: "예약중" },
+      onClick: () => statusEditMutate({ status: 3 }),
+    },
+    {
+      item: { id: 0, title: "판매완료" },
+      onClick: () => statusEditMutate({ status: 2 }),
+    },
+  ];
 
   // TODO: 내부에서 loader 띄우기
   if (isLoadingProductItemdetails && !productItemDetails)
@@ -115,11 +138,28 @@ export default function ProductItemPage() {
             <h3>판매자 정보</h3>
             <span>{productItemDetails?.seller.nickname}</span>
           </SellerInfo>
-          {/* TODO: Dropdown으로 구현 */}
-          <StatusTab>
-            <span>{productItemDetails?.status}</span>
-            <img src={chevronDownIcon} alt="펼치기" />
-          </StatusTab>
+          {user?.userId === productItemDetails?.seller.id && (
+            <StatusTab>
+              <span>{productItemDetails?.status}</span>
+              <Dropdown
+                buttonContent={
+                  <Button style={{ padding: 0 }} variant="plain">
+                    <img
+                      style={{ width: "16px", height: "16px" }}
+                      src={chevronDownIcon}
+                      alt="펼치기"
+                    />
+                  </Button>
+                }
+                boundaryElementRef={productItemPageRef}>
+                {sellerOptions.map(({ item, onClick }, idx) => (
+                  <DropdownItem key={idx} onClick={onClick}>
+                    {item.title}
+                  </DropdownItem>
+                ))}
+              </Dropdown>
+            </StatusTab>
+          )}
 
           <TextInfoArea>
             <TextInfoHeader>
@@ -283,15 +323,14 @@ const StatusTab = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
-  width: 108px;
   height: 32px;
   padding: 0 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme: { color } }) => color.neutral.border};
 
   > span {
-    width: 56px;
-    height: 16px;
+    // width: 56px;
+    // height: 16px;
     font: ${({ theme: { font } }) => font.availableDefault12};
     color: ${({ theme: { color } }) => color.neutral.textStrong};
   }
