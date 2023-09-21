@@ -1,4 +1,5 @@
 import useIntersection from "@hooks/useIntersection";
+import useOutsideClick from "@hooks/useOutsideClick";
 import { zDropdown } from "@styles/constants/zIndex";
 import { MouseEvent, ReactNode, RefObject, useRef, useState } from "react";
 import { styled } from "styled-components";
@@ -18,6 +19,7 @@ export default function Dropdown({
 
   const [isOpen, setIsOpen] = useState(false);
   const intersectingSide = useIntersection(dropdownRef, boundaryElementRef);
+  const containerRef = useOutsideClick(() => setIsOpen(false));
 
   const onToggleIsOpen = (e: MouseEvent) => {
     e.stopPropagation();
@@ -25,10 +27,10 @@ export default function Dropdown({
   };
 
   return (
-    <StyledDropdown>
-      <DropdownButton {...{ type: "button", onClick: onToggleIsOpen }}>
+    <StyledDropdown ref={containerRef}>
+      <DropdownButtonContainer {...{ type: "button", onClick: onToggleIsOpen }}>
         {buttonContent}
-      </DropdownButton>
+      </DropdownButtonContainer>
 
       {isOpen && children && (
         <DropdownList
@@ -45,13 +47,13 @@ export default function Dropdown({
 }
 
 const StyledDropdown = styled.div`
+  height: 100%;
   position: relative;
-  display: inline-block;
+  display: flex;
   position: relative;
 `;
 
-const DropdownButton = styled.button`
-  padding: 8px;
+const DropdownButtonContainer = styled.div`
   display: flex;
   align-items: center;
 `;
@@ -59,10 +61,12 @@ const DropdownButton = styled.button`
 const DropdownList = styled.ul<{ $intersectingSide: "left" | "right" | null }>`
   width: 240px;
   position: absolute;
-  top: 48px;
+  top: 105%;
   left: ${({ $intersectingSide }) =>
-    $intersectingSide === "left" || $intersectingSide === null ? "0" : "auto"};
-  right: ${({ $intersectingSide }) => $intersectingSide === "right" && "0"};
+    $intersectingSide === "left" || $intersectingSide === null
+      ? "5px"
+      : "auto"};
+  right: ${({ $intersectingSide }) => $intersectingSide === "right" && "5px"};
   background-color: ${({ theme: { color } }) => color.neutral.background};
   border-radius: 12px;
   box-shadow: 0px 4px 4px 0px #00000040;

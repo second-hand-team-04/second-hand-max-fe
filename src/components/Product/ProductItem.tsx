@@ -2,6 +2,7 @@ import dotsIcon from "@assets/icon/dots.svg";
 import heartIcon from "@assets/icon/heart.svg";
 import messageIcon from "@assets/icon/message.svg";
 import DeleteAlert from "@components/DeleteAlert";
+import Button from "@components/common/Button";
 import { Dropdown, DropdownItem } from "@components/common/Dropdown";
 import { formatAsPrice, keepLastRegion } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
@@ -91,7 +92,11 @@ export default function ProductItem({ item }: Props) {
             <span>{item.title}</span>
             {isUserSeller && (
               <Dropdown
-                buttonContent={<img src={dotsIcon} />}
+                buttonContent={
+                  <Button variant="plain" style={{ padding: 0 }}>
+                    <img src={dotsIcon} />
+                  </Button>
+                }
                 boundaryElementRef={productItemRef}>
                 {sellerOptions.map(({ variant, item, onClick }, idx) => (
                   <DropdownItem key={idx} variant={variant} onClick={onClick}>
