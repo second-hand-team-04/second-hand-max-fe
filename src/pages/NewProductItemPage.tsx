@@ -318,16 +318,6 @@ const ContentArea = styled.textarea`
   }
 `;
 
-// const ImageInputError = styled.p`
-//   top: 60px;
-//   height: 18px;
-//   position: absolute;
-//   margin-bottom: 2px;
-//   font: ${({ theme: { font } }) => font.availableDefault12};
-//   font-size: 10px;
-//   color: ${({ theme: { color } }) => color.system.warning};
-// `;
-
 const PriceInput = styled.input`
   height: 24px;
   font: ${({ theme: { font } }) => font.availableDefault16};
