@@ -5,9 +5,9 @@ import filledHeartIcon from "@assets/icon/heart-filled.svg";
 import emptyHeartIcon from "@assets/icon/heart.svg";
 import AppBar from "@components/AppBar";
 import DeleteAlert from "@components/DeleteAlert";
-
 import { defaultThumbnail } from "@components/Product/ProductItem";
 import Button from "@components/common/Button/Button";
+import DraggableImageSlider from "@components/common/DraggableImageSlider/DraggableImageSlider";
 import { Dropdown, DropdownItem } from "@components/common/Dropdown";
 import { formatAsPrice } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
@@ -87,11 +87,7 @@ export default function ProductItemPage() {
             <span>뒤로</span>
           </ButtonContainer>
           <Dropdown
-            buttonContent={
-              <Button style={{ width: "40px", height: "40px" }} variant="plain">
-                <HeaderImage src={dotsIcon} alt="dots" />
-              </Button>
-            }
+            buttonContent={<HeaderImage src={dotsIcon} alt="dots" />}
             boundaryElementRef={productItemPageRef}>
             <DropdownItem
               onClick={() => {
@@ -104,19 +100,16 @@ export default function ProductItemPage() {
             </DropdownItem>
           </Dropdown>
         </AppBar>
-        <ImageSlider>
-          {productItemDetails && productItemDetails.images ? (
-            productItemDetails.images.map((image) => (
-              <ProductImage
-                key={image.id}
-                src={image.imageUrl}
-                alt="상품 이미지"
-              />
-            ))
-          ) : (
-            <ProductImage src={defaultThumbnail} alt="기본 이미지" />
-          )}
-        </ImageSlider>
+        <ImageSliderContainer>
+          <DraggableImageSlider
+            imageList={
+              productItemDetails?.images
+                ? productItemDetails.images
+                : [{ id: 0, imageUrl: defaultThumbnail }]
+            }
+            description={productItemDetails?.title}
+          />
+        </ImageSliderContainer>
         <ProductInfo>
           <SellerInfo>
             <h3>판매자 정보</h3>
@@ -220,13 +213,15 @@ const HeaderImage = styled.img`
   filter: ${({ theme: { filter } }) => filter.accentText};
 `;
 
-const ProductImage = styled.img`
+{
+  /* const ProductImage = styled.img`
   width: 393px;
   height: 491px;
   object-fit: cover;
-`;
+`; */
+}
 
-const ImageSlider = styled.div`
+const ImageSliderContainer = styled.div`
   display: flex;
   width: 393px;
   height: 491px;
