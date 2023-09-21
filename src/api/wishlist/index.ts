@@ -43,6 +43,5 @@ export const getWishlistItemsCategories = async () => {
   const res = await fetcher.get<Response<WishlistItemsCategoriesData>>(
     "/users/wishlist/categories"
   );
-  console.log(res);
   return res.data;
 };

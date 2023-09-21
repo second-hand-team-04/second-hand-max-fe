@@ -14,8 +14,6 @@ export default function DraggableImageSlider({
   imageList,
   description,
 }: Props) {
-  console.log(imageList);
-
   return (
     <StyledDraggableImageSlider
       modules={[Pagination]}
