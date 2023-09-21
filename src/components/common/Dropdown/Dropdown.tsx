@@ -51,6 +51,7 @@ const StyledDropdown = styled.div`
 `;
 
 const DropdownButton = styled.button`
+  padding: 8px;
   display: flex;
   align-items: center;
 `;
