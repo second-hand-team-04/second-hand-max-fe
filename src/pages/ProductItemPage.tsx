@@ -18,7 +18,7 @@ import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import useWishlistItemAddMutation from "api/queries/useWishlistItemAddMutation";
 import useWishlistItemRemoveMutation from "api/queries/useWishlistItemRemoveMutation";
 import { HTTPSTATUS } from "api/types";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -31,20 +31,33 @@ export default function ProductItemPage() {
 
   const { data: productItemDetails, isLoading: isLoadingProductItemdetails } =
     useProductItemDetailsQuery(Number(id));
+  const [likedData, setLikedData] = useState<{
+    isLiked: boolean;
+    numLikes: number;
+  }>({
+    isLiked: false,
+    numLikes: 0,
+  });
+
   const { mutateAsync: deleteProductMutationAsync } =
     useProductItemDeleteMutation(Number(id));
-  const { mutate: wishlistItemAddMutate } = useWishlistItemAddMutation(
-    Number(id)
-  );
-  const { mutate: wishlistItemRemoveMutate } = useWishlistItemRemoveMutation(
-    Number(id)
-  );
-
+  const { mutateAsync: wishlistItemAddMutateAsync } =
+    useWishlistItemAddMutation(Number(id));
+  const { mutateAsync: wishlistItemRemoveMutateAsync } =
+    useWishlistItemRemoveMutation(Number(id));
   const { mutate: statusEditMutate } = useProductItemStatusEditMutation(
     productItemDetails?.id ?? 0
   );
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
+  useEffect(() => {
+    // 찜 관련 초기화
+    if (productItemDetails) {
+      const { isLiked, numLikes } = productItemDetails;
+      setLikedData({ isLiked, numLikes });
+    }
+  }, [productItemDetails]);
 
   const goPrevPage = () => {
     navigate("/");
@@ -58,13 +71,24 @@ export default function ProductItemPage() {
     setIsDeleteAlertOpen(false);
   };
 
-  const onToggleWishlisted = () => {
-    if (!productItemDetails) return;
-
-    if (productItemDetails.isLiked) {
-      wishlistItemRemoveMutate();
+  const onToggleWishlisted = async () => {
+    if (likedData.isLiked === true) {
+      const res = await wishlistItemRemoveMutateAsync();
+      if (res.code === HTTPSTATUS.success) {
+        setLikedData((prev) => ({
+          isLiked: false,
+          numLikes: prev.numLikes - 1,
+        }));
+      }
     } else {
-      wishlistItemAddMutate();
+      const res = await wishlistItemAddMutateAsync();
+      console.log(res);
+      if (res.code === HTTPSTATUS.created) {
+        setLikedData((prev) => ({
+          isLiked: true,
+          numLikes: prev.numLikes + 1,
+        }));
+      }
     }
   };
 
@@ -185,15 +209,13 @@ export default function ProductItemPage() {
       </Wrapper>
       <AppBar padding="16px" height="64px" isTop={false}>
         <Button variant="plain" onClick={onToggleWishlisted}>
-          {productItemDetails?.isLiked ? (
+          {likedData.isLiked ? (
             <img src={filledHeartIcon} alt="찜하기" />
           ) : (
             <img src={emptyHeartIcon} alt="찜하기" />
           )}
         </Button>
-        <NumLikesText>
-          {formatAsPrice(String(productItemDetails?.numLikes))}
-        </NumLikesText>
+        <NumLikesText>{formatAsPrice(String(likedData.numLikes))}</NumLikesText>
         <Button
           style={{
             display: "flex",
