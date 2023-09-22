@@ -190,14 +190,22 @@ export default function EditProductItemPage() {
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
             <AddButton>
-              <input
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={onImageUpload}
-              />
-              <img src={cameraIcon} alt="camera" />
-              <PictureCount>{uploadedImagesList.length}/10</PictureCount>
+              <label
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
+                  position: "absolute",
+                }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={onImageUpload}
+                />
+                <img src={cameraIcon} alt="camera" />
+                <PictureCount>{uploadedImagesList.length}/10</PictureCount>
+              </label>
             </AddButton>
             {uploadedImagesList &&
               uploadedImagesList.map((picture) => {
@@ -400,6 +408,7 @@ const InputArea = styled.div`
 `;
 
 const AddButton = styled.button`
+  position: relative;
   width: 80px;
   height: 80px;
   padding: 16px;

@@ -145,7 +145,13 @@ export default function NewProductItemPage() {
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
             <AddButton>
-              <label style={{ cursor: "pointer", position: "absolute" }}>
+              <label
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
+                  position: "absolute",
+                }}>
                 <input
                   type="file"
                   accept="image/*"
@@ -353,6 +359,7 @@ const PriceInputArea = styled(InputArea)`
 `;
 
 const AddButton = styled.button`
+  position: relative;
   width: 80px;
   height: 80px;
   padding: 16px;

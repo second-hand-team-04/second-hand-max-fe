@@ -356,6 +356,7 @@ const TextInfoArea = styled.div`
     color: ${({ theme: { color } }) => color.neutral.text};
     width: 100%;
     height: 200px;
+    overflow: scroll;
   }
 
   > span {
@@ -374,7 +375,6 @@ const TextInfoHeader = styled.div`
 
   > h1 {
     width: 100%;
-    height: 32px;
     font: ${({ theme: { font } }) => font.displayStrong20};
     color: ${({ theme: { color } }) => color.neutral.textStrong};
   }
