@@ -109,23 +109,27 @@ export default function ProductItemPage() {
             </Button>
             <span>뒤로</span>
           </ButtonContainer>
-          <Dropdown
-            buttonContent={
-              <Button variant="plain">
-                <DotsImage src={dotsIcon} alt="dots" />
-              </Button>
-            }
-            boundaryElementRef={productItemPageRef}>
-            <DropdownItem
-              onClick={() => {
-                navigate(`/product/${id}/edit`);
-              }}>
-              게시글 수정
-            </DropdownItem>
-            <DropdownItem onClick={openDeleteAlert} variant="danger">
-              <DeleteText>삭제</DeleteText>
-            </DropdownItem>
-          </Dropdown>
+          <DropdownContainer>
+            {user?.userId === productItemDetails?.seller.id && (
+              <Dropdown
+                buttonContent={
+                  <Button variant="plain">
+                    <DotsImage src={dotsIcon} alt="dots" />
+                  </Button>
+                }
+                boundaryElementRef={productItemPageRef}>
+                <DropdownItem
+                  onClick={() => {
+                    navigate(`/product/${id}/edit`);
+                  }}>
+                  게시글 수정
+                </DropdownItem>
+                <DropdownItem onClick={openDeleteAlert} variant="danger">
+                  <DeleteText>삭제</DeleteText>
+                </DropdownItem>
+              </Dropdown>
+            )}
+          </DropdownContainer>
         </AppBar>
         <ImageSliderContainer>
           <DraggableImageSlider
@@ -231,12 +235,12 @@ const ButtonContainer = styled.div`
   padding: 8px;
   display: flex;
   align-items: center;
-  flex-grow: 1;
   cursor: pointer;
 
   > button {
     width: 24px;
     height: 24px;
+
     > img {
       filter: ${({ theme: { filter } }) => filter.accentText};
     }
@@ -249,6 +253,10 @@ const ButtonContainer = styled.div`
     font: ${({ theme: { font } }) => font.displayStrong16};
     color: ${({ theme: { color } }) => color.accent.text};
   }
+`;
+
+const DropdownContainer = styled.div`
+  margin-left: auto;
 `;
 
 const DotsImage = styled.img`
