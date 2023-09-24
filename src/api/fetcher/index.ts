@@ -1,3 +1,4 @@
+import { HTTPSTATUS } from "api/types";
 import { refreshAccessToken } from "api/user";
 import axios from "axios";
 import Routes from "router/Routes";
@@ -32,7 +33,10 @@ fetcher.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     // If the access token expired, attempt to refresh it.
-    if (error.response.status === 403 && !originalRequest._retry) {
+    if (
+      error.response.status === HTTPSTATUS.forbidden &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
 
       try {

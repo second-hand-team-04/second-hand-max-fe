@@ -105,3 +105,118 @@ fetcher.interceptors.response.use(
   - 예상치 못한 다른 에러 또한 보여짐.
 
 #### V2
+
+- 동일하게 `QueryCache`에서 일괄적으로 error를 핸들링하고, 특정 상황에서는 `query.meta.errorMessage`를 활용.
+  - Ex: `useUserInfoQuery`의 "AccessToken이 유효하지 않습니다" -> "로그인을 먼저 해주세요".
+-
+
+### 비동기로 받아온 데이터로 초기값 복사 및 state 초기화
+
+- `EditProductItemPage`
+  - 비동기 데이터를 이용한 input 초기값 설정을 `useEffect`를 사용하고 있음.
+
+### TypeScript Type System
+
+- TypeScript is a _structural type system_.
+  - Structural Type System: when comparing types, only the members on the type is taken into account.
+    - i.e. TS checks whether an object type has at least the required properties and their corresponding types, rather than an exact match of the properties.
+  - cf. Nominal Type System
+    - Two types that have been created cannot be assigned to each other.
+
+#### Example 1
+
+##### TypeScript (Structural Typing)
+
+```ts
+type CategoryType = {
+  id: number;
+  title: string;
+  imageUrl: string;
+};
+
+type CategoryTag = {
+  id: number;
+  title: string;
+};
+
+const arr: CategoryTag[] = [];
+
+const categoryA: CategoryType = {
+  id: 1,
+  title: "a",
+  imageUrl: "blah",
+};
+
+arr.push(categoryA); // No Error
+```
+
+##### Swift (Nominal Typing)
+
+```swift
+struct CategoryType {
+    var id: Int
+    var title: String
+    var imageUrl: String
+}
+
+struct CategoryTag {
+    var id: Int
+    var title: String
+}
+
+var arr: [CategoryTag] = []
+
+let categoryA = CategoryType(
+    id: 1,
+    title: "a",
+    imageUrl: "blah"
+)
+
+// PS: Swift throws an error even if `CategoryType` and `CategoryTag` have the same properties.
+arr.append(categoryA) // Error
+```
+
+#### Example 2
+
+##### TypeScript (Structural Typing)
+
+```ts
+type CategoryType = {
+  id: number;
+  title: string;
+};
+
+type CategoryTag = {
+  id: number;
+  title: string;
+  imageUrl: string;
+};
+
+const arr: CategoryTag[] = [];
+
+const categoryA: CategoryType = {
+  id: 1,
+  title: "a",
+};
+
+arr.push(categoryA); // Error
+```
+
+### `URL.createObjectURL()`
+
+https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static#memory_management
+
+### `z-index` 상수화
+
+```ts
+const base = 0;
+const above = 1;
+const below = -1;
+
+export const zAppBar = base + above;
+export const zDropdown = zAppBar + above;
+export const zModal = zDropdown + above;
+export const zAlert = zModal + above;
+```
+
+Reference: https://www.smashingmagazine.com/2021/02/css-z-index-large-projects/

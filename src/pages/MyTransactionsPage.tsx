@@ -29,7 +29,7 @@ export default function MyTransactionsPage() {
   });
 
   return (
-    <StyledMyWishListPage>
+    <StyledMyTransactionsPage>
       <AppBar>
         <PageTitle>판매 내역</PageTitle>
       </AppBar>
@@ -63,11 +63,11 @@ export default function MyTransactionsPage() {
       </Wrapper>
 
       <NavBar />
-    </StyledMyWishListPage>
+    </StyledMyTransactionsPage>
   );
 }
 
-const StyledMyWishListPage = styled.div`
+const StyledMyTransactionsPage = styled.div`
   width: inherit;
   height: 100%;
   display: flex;
@@ -75,7 +75,6 @@ const StyledMyWishListPage = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${({ theme: { color } }) => color.neutral.background};
-  overflow: hidden;
 `;
 
 const PageTitle = styled.h2`

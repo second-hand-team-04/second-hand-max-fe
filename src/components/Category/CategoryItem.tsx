@@ -1,9 +1,9 @@
 import { ModalListItem } from "@components/common/Modal/ModalStyles";
-import { CategoryType } from "api/category";
+import { CategoryTag } from "@hooks/useRandomCategories";
 
 type Props = {
-  item: CategoryType;
-  onClick: (category: CategoryType) => void;
+  item: CategoryTag;
+  onClick: (category: CategoryTag) => void;
   isSelected: boolean;
 };
 

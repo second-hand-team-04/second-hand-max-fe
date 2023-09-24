@@ -15,18 +15,18 @@ export function Tag({ title, isSelected, onClick }: TagType) {
 }
 
 const StyledTag = styled.button<{ $isSelected: boolean }>`
-  display: flex;
   height: 32px;
   padding: 0px 16px;
+  display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50px;
-  font: ${({ theme: { font } }) => font.displayDefault12};
-  border: 1px solid
-    ${({ $isSelected, theme: { color } }) =>
-      $isSelected ? "none" : color.neutral.border};
+  white-space: nowrap;
   color: ${({ $isSelected, theme: { color } }) =>
     $isSelected ? color.accent.text : color.accent.textWeak};
   background: ${({ $isSelected, theme: { color } }) =>
     $isSelected ? color.accent.backgroundPrimary : color.accent.text};
+  border: ${({ $isSelected, theme: { color } }) =>
+    $isSelected ? "none" : `1px solid ${color.neutral.border}`};
+  border-radius: 50px;
+  font: ${({ theme: { font } }) => font.displayDefault12};
 `;

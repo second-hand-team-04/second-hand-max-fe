@@ -115,13 +115,12 @@ export default function HomePage() {
 }
 
 const StyledHomePage = styled.div`
-  position: relative;
-  overflow: hidden;
   width: 393px;
   height: 852px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 `;
 
 const ProductItemArea = styled.div`

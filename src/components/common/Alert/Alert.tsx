@@ -1,3 +1,4 @@
+import { zAlert } from "@styles/constants/zIndex";
 import React from "react";
 import ReactDOM from "react-dom";
 import { styled } from "styled-components";
@@ -31,5 +32,5 @@ const StyledAlert = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 100;
+  z-index: ${zAlert};
 `;

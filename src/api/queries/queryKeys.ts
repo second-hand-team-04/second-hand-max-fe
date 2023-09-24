@@ -60,6 +60,15 @@ export const wishlistKeys = createQueryKeys("wishlist", {
   list: (filters: { categoryId: number }) => ({
     queryKey: [filters],
   }),
+  categories: () => ({
+    queryKey: ["categories"],
+  }),
+  add: () => ({
+    queryKey: ["add"],
+  }),
+  remove: () => ({
+    queryKey: ["remove"],
+  }),
 });
 
 export const queryKeys = mergeQueryKeys(

@@ -24,7 +24,7 @@ export type ProductItemDetails = {
   content: string;
   updatedAt: string;
   price: number;
-  category: string;
+  category: { id: number; title: string };
   seller: {
     id: number;
     nickname: string;
@@ -32,15 +32,15 @@ export type ProductItemDetails = {
   numChat: number;
   numLikes: number;
   numViews: number;
-  isWishlisted: boolean;
-  images: PictureType[];
+  isLiked: boolean;
+  images: PictureType[] | null;
 };
 
 export type ProductItemBody = {
   title: string;
   price: number | null;
   content: string;
-  imageIds: number[];
+  imageIds: number[] | null;
   categoryId: number;
   regionId: number;
 };
@@ -71,7 +71,7 @@ export const getProductItemDetails = async (id: number) => {
 };
 
 export const postProductItem = async (body: ProductItemBody) => {
-  const res = await fetcher.post<Response<null>>("/items", body);
+  const res = await fetcher.post<Response<{ id: number }>>("/items", body);
   return res.data;
 };
 
@@ -93,10 +93,15 @@ export const deleteProductItem = async (id: number) => {
   return res.data;
 };
 
-export const postImage = async (body: FormData) => {
+export const postImageToS3 = async (body: FormData) => {
   const res = await fetcher.post<Response<{ id: number; imageUrl: string }>>(
     "/images",
-    body
+    body,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   return res.data;
 };

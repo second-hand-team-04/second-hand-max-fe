@@ -8,20 +8,18 @@ import Button from "@components/common/Button/Button";
 import { Tag } from "@components/common/Tag/Tag";
 import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import useDraggable from "@hooks/useDraggable";
+import useRandomCategories, { CategoryTag } from "@hooks/useRandomCategories";
 import useText from "@hooks/useText";
+import useUploadedImagesList from "@hooks/useUploadedImagesList";
 import {
   formatAsNumber,
   formatAsPrice,
   keepLastRegion,
 } from "@utils/stringFormatters";
-import useRandomCategories from "@utils/useRandomCategories";
-import { CategoryType } from "api/category";
-import { fetcher } from "api/fetcher";
 import { PictureType } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
 import useNewProductItemMutation from "api/queries/useNewProductItemMutation";
-import { AxiosError } from "axios";
-import { ChangeEvent, MouseEvent, useContext, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
@@ -29,30 +27,24 @@ import { styled } from "styled-components";
 export default function NewProductItemPage() {
   const navigate = useNavigate();
 
-  const { selectedRegion, onChangeSelectedCategory } = useContext(
-    ProductItemsFiltersContext
-  );
+  const { selectedRegion } = useContext(ProductItemsFiltersContext);
 
   const { data: categoryList, isLoading } = useCategoriesQuery();
 
-  const [pictureList, setPictureList] = useState<PictureType[]>([]);
   const { value: titleInputValue, onChange: onTitleInputChange } = useText();
   const { value: contentInputValue, onChange: onContentInputChange } =
     useText();
-  const { value: priceInputValue, onChange: onPriceChange } = useText();
-  const { categoryTags, selectedCategoryTag, setSelectedCategoryTag } =
+  const { value: priceInputValue, onChange: onPriceInputChange } = useText();
+  const { threeCategoryTags, selectedCategoryTag, onCategoryTagSelect } =
     useRandomCategories({ categoryList: categoryList ?? [] });
+
+  const { uploadedImagesList, onImageUpload, onImageDelete } =
+    useUploadedImagesList();
 
   const { mutate: newProductItemMutate } = useNewProductItemMutation({
     regionId: selectedRegion.id,
     categoryId: selectedCategoryTag.id,
   });
-
-  // const {
-  //   imageFile: productPictureImage,
-  //   error: imageFileError,
-  //   onChange: onProductPictureChange,
-  // } = useImageInput({ sizeLimit: 2000000 });
 
   const { scrollContainerRef, onDragStart, onDragMove, onDragEnd } =
     useDraggable();
@@ -60,46 +52,12 @@ export default function NewProductItemPage() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPictureHover, setIsPictureHover] = useState(false);
 
-  // useEffect(() => {
-  //   if (productPictureImage) {
-  //     // setPictureList((prevList) => [...prevList, productPictureImage]);
-  //   }
-  // }, [productPictureImage]);
-
-  const onImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const files = e.target.files;
-
-      if (!files) return;
-
-      const newImageFile = files[0];
-
-      const formData = new FormData();
-      formData.append(
-        "request",
-        new Blob([JSON.stringify({ type: "item" })], {
-          type: "application/json",
-        })
-      );
-
-      formData.append("image", newImageFile);
-
-      const res = await fetcher.post("/images", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (res.data.code === 200) {
-        const id = res.data.data.id;
-        const imageUrl = res.data.data.imageUrl;
-        setPictureList((prevList) => [...prevList, { id, imageUrl }]);
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
-      }
-      toast.error(String(error));
+  const onPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newVal = e.target.value.trim();
+    if (newVal.length > 11) {
+      onPriceInputChange("999,999,999");
+    } else {
+      onPriceInputChange(newVal);
     }
   };
 
@@ -120,37 +78,6 @@ export default function NewProductItemPage() {
     setIsCategoryOpen(false);
   };
 
-  const onCategoryItemSelect = (category: CategoryType) => {
-    setSelectedCategoryTag(category);
-  };
-
-  const onSelectCategoryTag = (category: CategoryType) => {
-    setSelectedCategoryTag(category);
-  };
-
-  const onPriceInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length > 12) return;
-
-    onPriceChange(e);
-  };
-
-  const onAddPicture = (e: MouseEvent<HTMLButtonElement>) => {
-    if (pictureList.length >= 10) {
-      toast.error("이미지는 10개 이하이여야 합니다");
-      return;
-    }
-    const inputFile = e.currentTarget.querySelector('input[type="file"]');
-    if (inputFile as HTMLInputElement) {
-      (inputFile as HTMLInputElement).click();
-    }
-  };
-
-  const onDeletePicture = (pictureId: number) => {
-    setPictureList((prevList) =>
-      prevList.filter((picture) => picture.id !== pictureId)
-    );
-  };
-
   const onPostNewProduct = async () => {
     if (!categoryList) return;
 
@@ -159,17 +86,15 @@ export default function NewProductItemPage() {
     );
 
     if (selectedCategory === undefined) {
-      toast.error("카테고리가 선택되지 않았습니다.");
+      toast.error("카테고리가 선택되지 않았습니다");
       return;
     }
-
-    onChangeSelectedCategory(selectedCategory);
 
     const requestData = {
       title: titleInputValue,
       price: Number(formatAsNumber(priceInputValue)),
       content: contentInputValue,
-      imageIds: pictureList.map((picture) => Number(picture.id)),
+      imageIds: uploadedImagesList.map((picture) => Number(picture.id)),
       categoryId: selectedCategory.id,
       regionId: selectedRegion.id,
     };
@@ -180,7 +105,7 @@ export default function NewProductItemPage() {
   const isValid =
     titleInputValue.length > 0 &&
     contentInputValue.length > 0 &&
-    pictureList.length <= 10;
+    uploadedImagesList.length <= 10;
 
   // TODO
   if (isLoading) return <div>로딩중</div>;
@@ -192,7 +117,7 @@ export default function NewProductItemPage() {
           categoryList={categoryList ?? []}
           currentSelectedCategory={selectedCategoryTag}
           onCategoryModalClose={onCategoryClose}
-          onCategoryItemSelect={onCategoryItemSelect}
+          onCategoryItemSelect={onCategoryTagSelect}
         />
       ) : null}
       <AppBar>
@@ -211,7 +136,6 @@ export default function NewProductItemPage() {
       </AppBar>
       <Main>
         <Container>
-          {/* <ImageInputError>{imageFileError}</ImageInputError> */}
           <PictureArea
             ref={scrollContainerRef}
             onMouseDown={onDragStart}
@@ -220,29 +144,36 @@ export default function NewProductItemPage() {
             onMouseLeave={onDragSlideEnd}
             onMouseEnter={onShowScrollBar}
             $isPictureHover={isPictureHover}>
-            <AddButton onClick={onAddPicture}>
-              <input
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                ref={(input) => {
-                  if (input)
-                    input.onclick = (e) => {
-                      (e.target as HTMLInputElement).value = "";
-                    };
-                }}
-                onChange={onImageUpload}
-              />
+            <AddButton>
+              <label
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
+                  position: "absolute",
+                }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{
+                    visibility: "hidden",
+                    width: "inherit",
+                    height: "inherit",
+                    zIndex: "999",
+                  }}
+                  onChange={onImageUpload}
+                />
+              </label>
               <img src={cameraIcon} alt="camera" />
-              <PictureCount>{pictureList.length}/10</PictureCount>
+              <PictureCount>{uploadedImagesList.length}/10</PictureCount>
             </AddButton>
-            {pictureList &&
-              pictureList.map((picture: PictureType) => {
+            {uploadedImagesList &&
+              uploadedImagesList.map((picture: PictureType) => {
                 return (
                   <PictureWrapper key={picture.id}>
                     <Picture src={picture.imageUrl} alt={String(picture.id)} />
                     <Button
-                      onClick={() => onDeletePicture(picture.id)}
+                      onClick={() => onImageDelete(picture.id)}
                       variant="plain"
                       style={{
                         zIndex: 10,
@@ -259,45 +190,43 @@ export default function NewProductItemPage() {
           </PictureArea>
           <InputArea>
             <TitleInput
-              onChange={onTitleInputChange}
               type="text"
               placeholder="내용을 입력하세요"
+              onChange={(e) => onTitleInputChange(e.target.value.trim())}
             />
             {titleInputValue.length > 0 && (
               <CategoryArea>
                 <TagArea>
-                  {categoryTags.map(
-                    (tag: { id: number; title: string; imageUrl: string }) => (
-                      <Tag
-                        key={tag.id}
-                        title={tag.title}
-                        isSelected={selectedCategoryTag.title === tag.title}
-                        onClick={() => onSelectCategoryTag(tag)}
-                      />
-                    )
-                  )}
+                  {threeCategoryTags.map((tag: CategoryTag) => (
+                    <Tag
+                      key={tag.id}
+                      title={tag.title}
+                      isSelected={selectedCategoryTag.title === tag.title}
+                      onClick={() => onCategoryTagSelect(tag)}
+                    />
+                  ))}
                 </TagArea>
                 <Button
-                  onClick={onCategoryOpen}
                   variant="plain"
-                  style={{ padding: "0" }}>
+                  style={{ padding: "0" }}
+                  onClick={onCategoryOpen}>
                   <img src={chevronRightIcon} alt="chevronRightIcon" />
                 </Button>
               </CategoryArea>
             )}
           </InputArea>
-          <InputArea>
+          <PriceInputArea>
             <WonSymbol>₩</WonSymbol>
             <PriceInput
-              value={formatAsPrice(priceInputValue) || ""}
-              onChange={onPriceInputChange}
               type="text"
-              placeholder="가격(선택사항)"
+              placeholder="가격 (선택사항)"
+              value={formatAsPrice(priceInputValue) || ""}
+              onChange={onPriceChange}
             />
-          </InputArea>
+          </PriceInputArea>
           <ContentArea
-            onChange={onContentInputChange}
-            placeholder="역삼 1동에 올릴 게시물 내용을 작성해주세요.(판매금지 물품은 게시가 제한될 수 있어요.)"
+            placeholder="게시물 내용을 작성해주세요 (판매금지 물품은 게시가 제한될 수 있어요)"
+            onChange={(e) => onContentInputChange(e.target.value.trim())}
           />
         </Container>
       </Main>
@@ -395,16 +324,6 @@ const ContentArea = styled.textarea`
   }
 `;
 
-// const ImageInputError = styled.p`
-//   top: 60px;
-//   height: 18px;
-//   position: absolute;
-//   margin-bottom: 2px;
-//   font: ${({ theme: { font } }) => font.availableDefault12};
-//   font-size: 10px;
-//   color: ${({ theme: { color } }) => color.system.warning};
-// `;
-
 const PriceInput = styled.input`
   height: 24px;
   font: ${({ theme: { font } }) => font.availableDefault16};
@@ -435,7 +354,12 @@ const InputArea = styled.div`
   border-bottom: 0.8px solid ${({ theme: { color } }) => color.neutral.border};
 `;
 
+const PriceInputArea = styled(InputArea)`
+  flex-direction: row;
+`;
+
 const AddButton = styled.button`
+  position: relative;
   width: 80px;
   height: 80px;
   padding: 16px;
@@ -459,6 +383,7 @@ const Picture = styled.img`
   height: 80px;
   border: 0.8px solid ${({ theme: { color } }) => color.neutral.border};
   border-radius: 16px;
+  cursor: grab;
 `;
 const StyledNewProductPage = styled.div`
   width: 393px;

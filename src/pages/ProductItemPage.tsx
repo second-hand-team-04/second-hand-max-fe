@@ -1,48 +1,67 @@
 import chevronDownIcon from "@assets/icon/chevron-down.svg";
 import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import dotsIcon from "@assets/icon/dots.svg";
-import heartIcon from "@assets/icon/heart.svg";
+import filledHeartIcon from "@assets/icon/heart-filled.svg";
+import emptyHeartIcon from "@assets/icon/heart.svg";
 import AppBar from "@components/AppBar";
+import DeleteAlert from "@components/DeleteAlert";
 import { defaultThumbnail } from "@components/Product/ProductItem";
-import { Alert } from "@components/common/Alert";
 import Button from "@components/common/Button/Button";
-import { SelectItem } from "@components/common/SelectInput";
-import useOutsideClick from "@hooks/useOutsideClick";
+import DraggableImageSlider from "@components/common/DraggableImageSlider/DraggableImageSlider";
+import { Dropdown, DropdownItem } from "@components/common/Dropdown";
 import { formatAsPrice } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
 import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
 import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
-import { AxiosError } from "axios";
-import { useState } from "react";
-import { toast } from "react-hot-toast";
+import useProductItemStatusEditMutation from "api/queries/useProductItemStatusEditMutation";
+import useUserInfoQuery from "api/queries/useUserInfoQuery";
+import useWishlistItemAddMutation from "api/queries/useWishlistItemAddMutation";
+import useWishlistItemRemoveMutation from "api/queries/useWishlistItemRemoveMutation";
+import { HTTPSTATUS } from "api/types";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 
 export default function ProductItemPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { mutateAsync: deleteProductMutation } = useProductItemDeleteMutation(
-    Number(id)
+  const productItemPageRef = useRef(null);
+
+  const { data: user } = useUserInfoQuery();
+
+  const { data: productItemDetails, isLoading: isLoadingProductItemdetails } =
+    useProductItemDetailsQuery(Number(id));
+  const [likedData, setLikedData] = useState<{
+    isLiked: boolean;
+    numLikes: number;
+  }>({
+    isLiked: false,
+    numLikes: 0,
+  });
+
+  const { mutateAsync: deleteProductMutationAsync } =
+    useProductItemDeleteMutation(Number(id));
+  const { mutateAsync: wishlistItemAddMutateAsync } =
+    useWishlistItemAddMutation(Number(id));
+  const { mutateAsync: wishlistItemRemoveMutateAsync } =
+    useWishlistItemRemoveMutation(Number(id));
+  const { mutate: statusEditMutate } = useProductItemStatusEditMutation(
+    productItemDetails?.id ?? 0
   );
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
+
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
 
-  const { data: productItemDetails, isLoading } = useProductItemDetailsQuery(
-    Number(id)
-  );
-  const containerRef = useOutsideClick<HTMLDivElement>(closeSelectModal);
-
-  const toggleSelectModal = () => {
-    setIsSelectOpen((prev) => !prev);
-  };
+  useEffect(() => {
+    // 찜 관련 초기화
+    if (productItemDetails) {
+      const { isLiked, numLikes } = productItemDetails;
+      setLikedData({ isLiked, numLikes });
+    }
+  }, [productItemDetails]);
 
   const goPrevPage = () => {
-    navigate(-1);
+    navigate("/");
   };
-
-  function closeSelectModal() {
-    setIsSelectOpen(false);
-  }
 
   const openDeleteAlert = () => {
     setIsDeleteAlertOpen(true);
@@ -52,54 +71,60 @@ export default function ProductItemPage() {
     setIsDeleteAlertOpen(false);
   };
 
-  const deleteProductItem = async (id: number): Promise<void> => {
-    try {
-      const res = await deleteProductMutation(id);
-      if (res.code === 200) {
-        toast.success("등록한 상품이 삭제되었습니다.");
-        navigate(-1);
+  const onToggleWishlisted = async () => {
+    if (likedData.isLiked === true) {
+      const res = await wishlistItemRemoveMutateAsync();
+      if (res.code === HTTPSTATUS.success) {
+        setLikedData((prev) => ({
+          isLiked: false,
+          numLikes: prev.numLikes - 1,
+        }));
       }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-        return;
+    } else {
+      const res = await wishlistItemAddMutateAsync();
+      console.log(res);
+      if (res.code === HTTPSTATUS.created) {
+        setLikedData((prev) => ({
+          isLiked: true,
+          numLikes: prev.numLikes + 1,
+        }));
       }
-      toast.error(String(error));
     }
-    closeDeleteAlert();
   };
 
-  if (isLoading && !productItemDetails) return <div>로딩중</div>;
+  const deleteProductItem = async (id: number): Promise<void> => {
+    const res = await deleteProductMutationAsync(id);
+    if (res.code === HTTPSTATUS.success) {
+      closeDeleteAlert();
+    }
+  };
+
+  const sellerOptions = [
+    {
+      item: { id: 0, title: "판매중" },
+      onClick: () => statusEditMutate({ status: 1 }),
+    },
+    {
+      item: { id: 0, title: "예약중" },
+      onClick: () => statusEditMutate({ status: 3 }),
+    },
+    {
+      item: { id: 0, title: "판매완료" },
+      onClick: () => statusEditMutate({ status: 2 }),
+    },
+  ];
+
+  // TODO: 내부에서 loader 띄우기
+  if (isLoadingProductItemdetails && !productItemDetails)
+    return <div>로딩중</div>;
 
   return (
-    <StyledProductItemPage>
-      {isDeleteAlertOpen ? (
-        <Alert>
-          <AlertBody>
-            <DeleteAlertTitle>
-              등록한 상품을 정말로 삭제하시겠어요?
-            </DeleteAlertTitle>
-          </AlertBody>
-          <AlertBody>
-            <AlertButtonContainer>
-              <Button
-                style={{ textAlign: "center", padding: 0 }}
-                onClick={closeDeleteAlert}
-                variant="plain">
-                취소
-              </Button>
-              <Button
-                style={{ padding: 0 }}
-                onClick={() => {
-                  deleteProductItem(Number(id));
-                }}
-                variant="plain">
-                <span>삭제</span>
-              </Button>
-            </AlertButtonContainer>
-          </AlertBody>
-        </Alert>
-      ) : null}
+    <StyledProductItemPage ref={productItemPageRef}>
+      <DeleteAlert
+        isOpen={isDeleteAlertOpen}
+        onClose={closeDeleteAlert}
+        onDelete={() => deleteProductItem(Number(id))}
+      />
       <Wrapper>
         <AppBar padding="8px 0" height="56px" isTop={true} isTransparent={true}>
           <ButtonContainer onClick={goPrevPage}>
@@ -108,64 +133,69 @@ export default function ProductItemPage() {
             </Button>
             <span>뒤로</span>
           </ButtonContainer>
-
-          {/* TODO: Dropdown 활용 */}
-          {/* PS: 삭제 옵션은 DropdownItem variant="danger" 사용 */}
-          <SelectContainer ref={containerRef}>
-            <Button
-              onClick={toggleSelectModal}
-              style={{ padding: 0 }}
-              variant="plain">
-              <img src={dotsIcon} alt="dots" />
-              {isSelectOpen ? (
-                <SelectList>
-                  <SelectItem
-                    onClick={() => {
-                      navigate(`/product/${id}/edit`);
-                    }}
-                    item={{ id: 0, title: "게시글 수정하기" }}>
-                    게시글 수정
-                  </SelectItem>
-                  <SelectItem
-                    onClick={openDeleteAlert}
-                    item={{ id: 0, title: "삭제" }}>
-                    <DeleteText>삭제</DeleteText>
-                  </SelectItem>
-                </SelectList>
-              ) : null}
-            </Button>
-          </SelectContainer>
+          <DropdownContainer>
+            {user?.userId === productItemDetails?.seller.id && (
+              <Dropdown
+                buttonContent={
+                  <Button variant="plain">
+                    <DotsImage src={dotsIcon} alt="dots" />
+                  </Button>
+                }
+                boundaryElementRef={productItemPageRef}>
+                <DropdownItem
+                  onClick={() => {
+                    navigate(`/product/${id}/edit`);
+                  }}>
+                  게시글 수정
+                </DropdownItem>
+                <DropdownItem onClick={openDeleteAlert} variant="danger">
+                  <DeleteText>삭제</DeleteText>
+                </DropdownItem>
+              </Dropdown>
+            )}
+          </DropdownContainer>
         </AppBar>
-        <ImageSlider>
-          {productItemDetails && productItemDetails.images.length > 0 ? (
-            productItemDetails.images.map((image) => (
-              <ProductImage
-                key={image.id}
-                src={image.imageUrl}
-                alt="상품 이미지"
-              />
-            ))
-          ) : (
-            <ProductImage src={defaultThumbnail} alt="기본 이미지" />
-          )}
-        </ImageSlider>
+        <ImageSliderContainer>
+          <DraggableImageSlider
+            imageList={
+              productItemDetails?.images
+                ? productItemDetails.images
+                : [{ id: 0, imageUrl: defaultThumbnail }]
+            }
+            description={productItemDetails?.title}
+          />
+        </ImageSliderContainer>
         <ProductInfo>
           <SellerInfo>
             <h3>판매자 정보</h3>
             <span>{productItemDetails?.seller.nickname}</span>
-            {/* TODO: seller.nickname으로 바꿔야함 */}
           </SellerInfo>
-          {/* TODO: Dropdown으로 구현 */}
-          <StatusTab>
-            <span>{productItemDetails?.status}</span>
-            <img src={chevronDownIcon} alt="펼치기" />
-          </StatusTab>
+          {user?.userId === productItemDetails?.seller.id && (
+            <StatusTab>
+              <Dropdown
+                buttonContent={
+                  <Button
+                    variant="plain"
+                    style={{ padding: "0 16px", flexDirection: "row" }}>
+                    <ProductStatus>{productItemDetails?.status}</ProductStatus>
+                    <ChevronImage src={chevronDownIcon} alt="펼치기" />
+                  </Button>
+                }
+                boundaryElementRef={productItemPageRef}>
+                {sellerOptions.map(({ item, onClick }, idx) => (
+                  <DropdownItem key={idx} onClick={onClick}>
+                    {item.title}
+                  </DropdownItem>
+                ))}
+              </Dropdown>
+            </StatusTab>
+          )}
 
           <TextInfoArea>
             <TextInfoHeader>
               <h1>{productItemDetails?.title}</h1>
               <span>
-                {productItemDetails?.category} ・{" "}
+                {productItemDetails?.category.title} ・{" "}
                 {convertPastTimestamp(productItemDetails?.updatedAt ?? "")}
               </span>
             </TextInfoHeader>
@@ -178,12 +208,14 @@ export default function ProductItemPage() {
         </ProductInfo>
       </Wrapper>
       <AppBar padding="16px" height="64px" isTop={false}>
-        <Button variant="plain">
-          <img src={heartIcon} alt="찜하기" />
+        <Button variant="plain" onClick={onToggleWishlisted}>
+          {likedData.isLiked ? (
+            <img src={filledHeartIcon} alt="찜하기" />
+          ) : (
+            <img src={emptyHeartIcon} alt="찜하기" />
+          )}
         </Button>
-        <NumLikesText>
-          {formatAsPrice(String(productItemDetails?.numLikes))}
-        </NumLikesText>
+        <NumLikesText>{formatAsPrice(String(likedData.numLikes))}</NumLikesText>
         <Button
           style={{
             display: "flex",
@@ -211,28 +243,6 @@ const StyledProductItemPage = styled.div`
   position: relative;
 `;
 
-const AlertBody = styled.div`
-  padding: 24px 32px;
-  width: 100%;
-  display: flex;
-  box-sizing: border-box;
-`;
-
-const AlertButtonContainer = styled.div`
-  width: 100%;
-  height: 24px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 32px;
-
-  > button {
-    font: ${({ theme: { font } }) => font.displayDefault16};
-    > span {
-      color: ${({ theme: { color } }) => color.system.warning};
-    }
-  }
-`;
-
 const Wrapper = styled.div`
   width: inherit;
   overflow: scroll;
@@ -247,12 +257,12 @@ const ButtonContainer = styled.div`
   padding: 8px;
   display: flex;
   align-items: center;
-  flex-grow: 1;
   cursor: pointer;
 
   > button {
     width: 24px;
     height: 24px;
+
     > img {
       filter: ${({ theme: { filter } }) => filter.accentText};
     }
@@ -267,43 +277,15 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const SelectContainer = styled.div`
-  width: 40px;
-  height: 40px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  > button {
-    > img {
-      filter: ${({ theme: { filter } }) => filter.accentText};
-    }
-  }
+const DropdownContainer = styled.div`
+  margin-left: auto;
 `;
 
-const SelectList = styled.ul`
-  width: 240px;
-  position: absolute;
-  top: 48px;
-  right: 16px;
-  background-color: ${({ theme: { color } }) => color.white};
-  border-radius: 12px;
-  box-shadow: 0px 4px 4px 0px #00000040;
+const DotsImage = styled.img`
+  filter: ${({ theme: { filter } }) => filter.accentText};
 `;
 
-const DeleteAlertTitle = styled.p`
-  color: ${({ theme: { color } }) => color.neutral.textStrong};
-  font: ${({ theme: { font } }) => font.displayStrong16};
-  height: 24px;
-`;
-
-const ProductImage = styled.img`
-  width: 393px;
-  height: 491px;
-  object-fit: cover;
-`;
-
-const ImageSlider = styled.div`
+const ImageSliderContainer = styled.div`
   display: flex;
   width: 393px;
   height: 491px;
@@ -359,29 +341,27 @@ const SellerInfo = styled.div`
 `;
 
 const StatusTab = styled.div`
-  position: relative;
+  height: 32px;
   margin-top: 14px;
   margin-right: auto;
   display: flex;
-  gap: 4px;
   align-items: center;
-  width: 108px;
-  height: 32px;
-  padding: 0 16px;
+  gap: 4px;
+  position: relative;
   border-radius: 8px;
   border: 1px solid ${({ theme: { color } }) => color.neutral.border};
+`;
 
-  > span {
-    width: 56px;
-    height: 16px;
-    font: ${({ theme: { font } }) => font.availableDefault12};
-    color: ${({ theme: { color } }) => color.neutral.textStrong};
-  }
+const ProductStatus = styled.span`
+  width: 56px;
+  font: ${({ theme: { font } }) => font.availableDefault12};
+  color: ${({ theme: { color } }) => color.neutral.textStrong};
+  text-align: left;
+`;
 
-  > img {
-    width: 16px;
-    height: 16px;
-  }
+const ChevronImage = styled.img`
+  width: 16px;
+  height: 16px;
 `;
 
 const TextInfoArea = styled.div`
@@ -398,6 +378,7 @@ const TextInfoArea = styled.div`
     color: ${({ theme: { color } }) => color.neutral.text};
     width: 100%;
     height: 200px;
+    overflow: scroll;
   }
 
   > span {
@@ -416,7 +397,6 @@ const TextInfoHeader = styled.div`
 
   > h1 {
     width: 100%;
-    height: 32px;
     font: ${({ theme: { font } }) => font.displayStrong20};
     color: ${({ theme: { color } }) => color.neutral.textStrong};
   }

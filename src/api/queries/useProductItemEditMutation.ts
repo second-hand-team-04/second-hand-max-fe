@@ -8,7 +8,7 @@ export default function useProductItemEditMutation(id: number) {
     mutationKey: queryKeys.productItems.edit(id).queryKey,
     mutationFn: (body: ProductItemBody) => putProductItem(id, body),
     onSuccess: () => {
-      toast.success("상품이 수정되었습니다.");
+      toast.success("상품이 수정되었습니다");
     },
   });
 }
