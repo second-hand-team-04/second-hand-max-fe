@@ -376,11 +376,16 @@ const TextInfoArea = styled.div`
   gap: 16px;
 
   > p {
+    width: inherit;
+    height: 200px;
     font: ${({ theme: { font } }) => font.displayDefault16};
     color: ${({ theme: { color } }) => color.neutral.text};
-    width: 100%;
-    height: 200px;
-    overflow: scroll;
+    white-space: normal;
+    word-break: break-all;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   > span {
