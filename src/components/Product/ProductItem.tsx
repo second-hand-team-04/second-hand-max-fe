@@ -4,7 +4,7 @@ import messageIcon from "@assets/icon/message.svg";
 import DeleteAlert from "@components/DeleteAlert";
 import Button from "@components/common/Button";
 import { Dropdown, DropdownItem } from "@components/common/Dropdown";
-import { formatAsPrice, keepLastRegion } from "@utils/stringFormatters";
+import { formatAsPrice, parseNeighborhood } from "@utils/stringFormatters";
 import { convertPastTimestamp } from "@utils/time";
 import { ProductItemType } from "api/productItem";
 import useProductItemDeleteMutation from "api/queries/useProductItemDeleteMutation";
@@ -92,6 +92,7 @@ export default function ProductItem({ item }: Props) {
             <span>{item.title}</span>
             {isUserSeller && (
               <Dropdown
+                leftOrRight="right"
                 buttonContent={
                   <Button variant="plain" style={{ padding: 0 }}>
                     <img src={dotsIcon} />
@@ -107,7 +108,7 @@ export default function ProductItem({ item }: Props) {
             )}
           </ContentHeader>
           <RegionAndTime>
-            {keepLastRegion(item.region)}・
+            {parseNeighborhood(item.region)}・
             {convertPastTimestamp(item.updatedAt)}
           </RegionAndTime>
           <BadgeAndPrice>

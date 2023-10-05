@@ -18,7 +18,7 @@ import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import useWishlistItemAddMutation from "api/queries/useWishlistItemAddMutation";
 import useWishlistItemRemoveMutation from "api/queries/useWishlistItemRemoveMutation";
 import { HTTPSTATUS } from "api/types";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -31,20 +31,33 @@ export default function ProductItemPage() {
 
   const { data: productItemDetails, isLoading: isLoadingProductItemdetails } =
     useProductItemDetailsQuery(Number(id));
+  const [likedData, setLikedData] = useState<{
+    isLiked: boolean;
+    numLikes: number;
+  }>({
+    isLiked: false,
+    numLikes: 0,
+  });
+
   const { mutateAsync: deleteProductMutationAsync } =
     useProductItemDeleteMutation(Number(id));
-  const { mutate: wishlistItemAddMutate } = useWishlistItemAddMutation(
-    Number(id)
-  );
-  const { mutate: wishlistItemRemoveMutate } = useWishlistItemRemoveMutation(
-    Number(id)
-  );
-
+  const { mutateAsync: wishlistItemAddMutateAsync } =
+    useWishlistItemAddMutation(Number(id));
+  const { mutateAsync: wishlistItemRemoveMutateAsync } =
+    useWishlistItemRemoveMutation(Number(id));
   const { mutate: statusEditMutate } = useProductItemStatusEditMutation(
     productItemDetails?.id ?? 0
   );
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
+  useEffect(() => {
+    // 찜 관련 초기화
+    if (productItemDetails) {
+      const { isLiked, numLikes } = productItemDetails;
+      setLikedData({ isLiked, numLikes });
+    }
+  }, [productItemDetails]);
 
   const goPrevPage = () => {
     navigate("/");
@@ -58,13 +71,24 @@ export default function ProductItemPage() {
     setIsDeleteAlertOpen(false);
   };
 
-  const onToggleWishlisted = () => {
-    if (!productItemDetails) return;
-
-    if (productItemDetails.isLiked) {
-      wishlistItemRemoveMutate();
+  const onToggleWishlisted = async () => {
+    if (likedData.isLiked === true) {
+      const res = await wishlistItemRemoveMutateAsync();
+      if (res.code === HTTPSTATUS.success) {
+        setLikedData((prev) => ({
+          isLiked: false,
+          numLikes: prev.numLikes - 1,
+        }));
+      }
     } else {
-      wishlistItemAddMutate();
+      const res = await wishlistItemAddMutateAsync();
+      console.log(res);
+      if (res.code === HTTPSTATUS.created) {
+        setLikedData((prev) => ({
+          isLiked: true,
+          numLikes: prev.numLikes + 1,
+        }));
+      }
     }
   };
 
@@ -109,23 +133,28 @@ export default function ProductItemPage() {
             </Button>
             <span>뒤로</span>
           </ButtonContainer>
-          <Dropdown
-            buttonContent={
-              <Button variant="plain">
-                <DotsImage src={dotsIcon} alt="dots" />
-              </Button>
-            }
-            boundaryElementRef={productItemPageRef}>
-            <DropdownItem
-              onClick={() => {
-                navigate(`/product/${id}/edit`);
-              }}>
-              게시글 수정
-            </DropdownItem>
-            <DropdownItem onClick={openDeleteAlert} variant="danger">
-              <DeleteText>삭제</DeleteText>
-            </DropdownItem>
-          </Dropdown>
+          <DropdownContainer>
+            {user?.userId === productItemDetails?.seller.id && (
+              <Dropdown
+                leftOrRight="right"
+                buttonContent={
+                  <Button variant="plain">
+                    <DotsImage src={dotsIcon} alt="dots" />
+                  </Button>
+                }
+                boundaryElementRef={productItemPageRef}>
+                <DropdownItem
+                  onClick={() => {
+                    navigate(`/product/${id}/edit`);
+                  }}>
+                  게시글 수정
+                </DropdownItem>
+                <DropdownItem onClick={openDeleteAlert} variant="danger">
+                  <DeleteText>삭제</DeleteText>
+                </DropdownItem>
+              </Dropdown>
+            )}
+          </DropdownContainer>
         </AppBar>
         <ImageSliderContainer>
           <DraggableImageSlider
@@ -145,6 +174,7 @@ export default function ProductItemPage() {
           {user?.userId === productItemDetails?.seller.id && (
             <StatusTab>
               <Dropdown
+                leftOrRight="left"
                 buttonContent={
                   <Button
                     variant="plain"
@@ -181,15 +211,13 @@ export default function ProductItemPage() {
       </Wrapper>
       <AppBar padding="16px" height="64px" isTop={false}>
         <Button variant="plain" onClick={onToggleWishlisted}>
-          {productItemDetails?.isLiked ? (
+          {likedData.isLiked ? (
             <img src={filledHeartIcon} alt="찜하기" />
           ) : (
             <img src={emptyHeartIcon} alt="찜하기" />
           )}
         </Button>
-        <NumLikesText>
-          {formatAsPrice(String(productItemDetails?.numLikes))}
-        </NumLikesText>
+        <NumLikesText>{formatAsPrice(String(likedData.numLikes))}</NumLikesText>
         <Button
           style={{
             display: "flex",
@@ -231,12 +259,12 @@ const ButtonContainer = styled.div`
   padding: 8px;
   display: flex;
   align-items: center;
-  flex-grow: 1;
   cursor: pointer;
 
   > button {
     width: 24px;
     height: 24px;
+
     > img {
       filter: ${({ theme: { filter } }) => filter.accentText};
     }
@@ -249,6 +277,10 @@ const ButtonContainer = styled.div`
     font: ${({ theme: { font } }) => font.displayStrong16};
     color: ${({ theme: { color } }) => color.accent.text};
   }
+`;
+
+const DropdownContainer = styled.div`
+  margin-left: auto;
 `;
 
 const DotsImage = styled.img`
@@ -344,10 +376,16 @@ const TextInfoArea = styled.div`
   gap: 16px;
 
   > p {
+    width: inherit;
+    height: 200px;
     font: ${({ theme: { font } }) => font.displayDefault16};
     color: ${({ theme: { color } }) => color.neutral.text};
-    width: 100%;
-    height: 200px;
+    white-space: normal;
+    word-break: break-all;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   > span {
@@ -366,7 +404,6 @@ const TextInfoHeader = styled.div`
 
   > h1 {
     width: 100%;
-    height: 32px;
     font: ${({ theme: { font } }) => font.displayStrong20};
     color: ${({ theme: { color } }) => color.neutral.textStrong};
   }
