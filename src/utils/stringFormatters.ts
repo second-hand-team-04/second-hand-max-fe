@@ -8,7 +8,7 @@ export function formatAsPrice(input: string) {
   return formattedPrice;
 }
 
-export function keepLastRegion(address: string): string | null {
+export function parseNeighborhood(address: string): string | null {
   const regex = /(\S*동|\S*읍|\S*면)/;
   const match = address.match(regex);
 

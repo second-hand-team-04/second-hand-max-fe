@@ -1,6 +1,6 @@
 import {
   formatAsPrice,
-  keepLastRegion,
+  parseNeighborhood,
 } from "../../src/utils/stringFormatters";
 
 describe("formatAsPrice", () => {
@@ -15,28 +15,28 @@ describe("formatAsPrice", () => {
   });
 });
 
-describe("keepLastRegion function", () => {
+describe("parseNeighborhood function", () => {
   it('should return "동" containing word from address string', () => {
     const address = "서울시 강남구 역삼동";
-    const result = keepLastRegion(address);
+    const result = parseNeighborhood(address);
     expect(result).toBe("역삼동");
   });
 
   it('should return "면" containing word from address string', () => {
     const address = "강원도 정선군 여량면";
-    const result = keepLastRegion(address);
+    const result = parseNeighborhood(address);
     expect(result).toBe("여량면");
   });
 
   it('should return "읍" containing word from address string', () => {
     const address = "충청남도 아산시 배방읍";
-    const result = keepLastRegion(address);
+    const result = parseNeighborhood(address);
     expect(result).toBe("배방읍");
   });
 
   it("should return null if no matching region is found", () => {
     const address = "서울시 강남구";
-    const result = keepLastRegion(address);
+    const result = parseNeighborhood(address);
     expect(result).toBeNull();
   });
 });

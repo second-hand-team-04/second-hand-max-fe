@@ -15,7 +15,7 @@ import { areDifferent } from "@utils/objectDifferences";
 import {
   formatAsNumber,
   formatAsPrice,
-  keepLastRegion,
+  parseNeighborhood,
 } from "@utils/stringFormatters";
 import { ProductItemDetails } from "api/productItem";
 import useCategoriesQuery from "api/queries/useCategoriesQuery";
@@ -271,7 +271,7 @@ export default function EditProductItemPage() {
             gap: "8px",
           }}>
           <img src={mapIcon} alt="map" />
-          <RegionText>{keepLastRegion(selectedRegion.title)}</RegionText>
+          <RegionText>{parseNeighborhood(selectedRegion.title)}</RegionText>
         </Button>
       </AppBar>
     </StyledEditProductItemPage>
