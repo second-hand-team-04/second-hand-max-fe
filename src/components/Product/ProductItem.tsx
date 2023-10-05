@@ -92,6 +92,7 @@ export default function ProductItem({ item }: Props) {
             <span>{item.title}</span>
             {isUserSeller && (
               <Dropdown
+                leftOrRight="right"
                 buttonContent={
                   <Button variant="plain" style={{ padding: 0 }}>
                     <img src={dotsIcon} />

@@ -136,6 +136,7 @@ export default function ProductItemPage() {
           <DropdownContainer>
             {user?.userId === productItemDetails?.seller.id && (
               <Dropdown
+                leftOrRight="right"
                 buttonContent={
                   <Button variant="plain">
                     <DotsImage src={dotsIcon} alt="dots" />
@@ -173,6 +174,7 @@ export default function ProductItemPage() {
           {user?.userId === productItemDetails?.seller.id && (
             <StatusTab>
               <Dropdown
+                leftOrRight="left"
                 buttonContent={
                   <Button
                     variant="plain"
