@@ -17,7 +17,7 @@ export default function useText(options?: Props) {
       return;
     }
 
-    validators.forEach((validator) => {
+    for (const validator of validators) {
       try {
         validator(newVal);
         setError("");
@@ -25,7 +25,7 @@ export default function useText(options?: Props) {
         setError((error as Error).message);
         return;
       }
-    });
+    }
 
     setValue(newVal);
   };
