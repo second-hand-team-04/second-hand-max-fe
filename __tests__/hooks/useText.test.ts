@@ -6,7 +6,7 @@ import {
   validatePassword,
 } from "../../src/utils/textValidators";
 
-describe("useText", () => {
+describe("useText hook", () => {
   it("should successfully change the value", () => {
     const { result } = renderHook(() => useText());
     const { onChange } = result.current;
