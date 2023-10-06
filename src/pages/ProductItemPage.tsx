@@ -3,9 +3,9 @@ import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import dotsIcon from "@assets/icon/dots.svg";
 import filledHeartIcon from "@assets/icon/heart-filled.svg";
 import emptyHeartIcon from "@assets/icon/heart.svg";
+import defaultProductThumbnail from "@assets/images/default-thumbnail.png";
 import AppBar from "@components/AppBar";
 import DeleteAlert from "@components/DeleteAlert";
-import { defaultThumbnail } from "@components/Product/ProductItem";
 import Button from "@components/common/Button/Button";
 import DraggableImageSlider from "@components/common/DraggableImageSlider/DraggableImageSlider";
 import { Dropdown, DropdownItem } from "@components/common/Dropdown";
@@ -160,7 +160,7 @@ export default function ProductItemPage() {
             imageList={
               productItemDetails?.images
                 ? productItemDetails.images
-                : [{ id: 0, imageUrl: defaultThumbnail }]
+                : [{ id: 0, imageUrl: defaultProductThumbnail }]
             }
             description={productItemDetails?.title}
           />
