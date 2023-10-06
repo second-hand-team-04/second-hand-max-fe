@@ -82,7 +82,6 @@ export default function ProductItemPage() {
       }
     } else {
       const res = await wishlistItemAddMutateAsync();
-      console.log(res);
       if (res.code === HTTPSTATUS.created) {
         setLikedData((prev) => ({
           isLiked: true,
