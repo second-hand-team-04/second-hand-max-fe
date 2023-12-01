@@ -1,16 +1,15 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { getWishlistItems } from "api/wishlist";
+import { wishlistKeys } from "./queryKey";
 
-import { getTransactions } from "api/transactions";
-import queryKeys from "./queryKeys";
-
-export default function useTransactionsInfiniteQuery(filters: {
-  status?: "0" | "1,3" | "2";
+export default function useWishlistItemsInfiniteQuery(filters: {
+  categoryId: number;
 }) {
   return useInfiniteQuery({
-    queryKey: [queryKeys.transactions.list(filters).queryKey],
+    queryKey: wishlistKeys.list(filters).queryKey,
     queryFn: (ctx) =>
-      getTransactions({
-        status: filters.status === "0" ? undefined : filters.status,
+      getWishlistItems({
+        categoryId: filters.categoryId,
         page: ctx.pageParam,
       }),
     getNextPageParam: (lastPage, allPages) => {
@@ -19,5 +18,6 @@ export default function useTransactionsInfiniteQuery(filters: {
         : undefined;
       return nextPageParam;
     },
+    cacheTime: 0,
   });
 }

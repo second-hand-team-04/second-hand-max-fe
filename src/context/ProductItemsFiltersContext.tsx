@@ -1,5 +1,5 @@
-import useUserRegionPatchMutation from "api/queries/useUserRegionPatchMutation";
-import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
+import useUserRegionPatchMutation from "api/region/queries/useUserRegionPatchMutation";
+import useUserRegionsQuery from "api/region/queries/useUserRegionsQuery";
 import { HTTPSTATUS } from "api/types";
 import {
   ReactNode,

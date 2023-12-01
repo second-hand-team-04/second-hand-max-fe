@@ -1,7 +1,7 @@
 import CustomToaster from "@components/CustomToaster";
 import GlobalStyles from "@styles/GlobalStyles";
 import designSystem from "@styles/designSystem";
-import useUserInfoQuery from "api/queries/useUserInfoQuery";
+import useUserInfoQuery from "api/user/queries/useUserInfoQuery";
 import { RouterProvider } from "react-router-dom";
 import router from "router/router";
 import { ThemeProvider, styled } from "styled-components";

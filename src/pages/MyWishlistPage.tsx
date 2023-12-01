@@ -3,8 +3,8 @@ import NavBar from "@components/NavBar/NavBar";
 import ProductItem from "@components/Product/ProductItem";
 import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScrollList";
 import { Tag } from "@components/common/Tag/Tag";
-import useWishlistItemsCategoriesQuery from "api/queries/useWishlistItemsCategoriesQuery";
-import useWishlistItemsInfiniteQuery from "api/queries/useWishlistItemsInfiniteQuery";
+import useWishlistItemsCategoriesQuery from "api/wishlist/queries/useWishlistItemsCategoriesQuery";
+import useWishlistItemsInfiniteQuery from "api/wishlist/queries/useWishlistItemsInfiniteQuery";
 import { Fragment, useState } from "react";
 import styled from "styled-components";
 

@@ -9,9 +9,9 @@ import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScroll
 import { SelectInput, SelectItem } from "@components/common/SelectInput";
 import { ProductItemsFiltersContext } from "@context/ProductItemsFiltersContext";
 import { parseNeighborhood } from "@utils/stringFormatters";
-import useProductItemsInfiniteQuery from "api/queries/useProductItemsInfiniteQuery";
-import useUserRegionsQuery from "api/queries/useUserRegionsQuery";
+import useProductItemsInfiniteQuery from "api/productItem/queries/useProductItemsInfiniteQuery";
 import { RegionType } from "api/region";
+import useUserRegionsQuery from "api/region/queries/useUserRegionsQuery";
 import { Fragment, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Routes from "router/Routes";

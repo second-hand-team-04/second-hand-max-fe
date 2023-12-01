@@ -16,9 +16,9 @@ import {
   formatAsPrice,
   parseNeighborhood,
 } from "@utils/stringFormatters";
+import useCategoriesQuery from "api/category/queries/useCategoriesQuery";
 import { PictureType } from "api/productItem";
-import useCategoriesQuery from "api/queries/useCategoriesQuery";
-import useNewProductItemMutation from "api/queries/useNewProductItemMutation";
+import useNewProductItemMutation from "api/productItem/queries/useNewProductItemMutation";
 import { ChangeEvent, useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";

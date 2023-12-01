@@ -2,7 +2,7 @@ import chevronLeftIcon from "@assets/icon/chevron-left.svg";
 import AppBar from "@components/AppBar";
 import CategoryButton from "@components/Category/CategoryButton";
 import Button from "@components/common/Button/Button";
-import useCategoriesQuery from "api/queries/useCategoriesQuery";
+import useCategoriesQuery from "api/category/queries/useCategoriesQuery";
 import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";
 import { styled } from "styled-components";

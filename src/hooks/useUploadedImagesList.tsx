@@ -1,11 +1,12 @@
 import { PictureType } from "api/productItem";
-import useImageUploadMutation from "api/queries/useImageUploadMutation";
+import useProductImageUploadMutation from "api/productItem/queries/useProductImageUploadMutation";
 import { HTTPSTATUS } from "api/types";
 import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function useUploadedImagesList() {
-  const { mutateAsync: imageUploadMutateAsync } = useImageUploadMutation();
+  const { mutateAsync: imageUploadMutateAsync } =
+    useProductImageUploadMutation();
 
   const [uploadedImagesList, setUploadedImagesList] = useState<PictureType[]>(
     []

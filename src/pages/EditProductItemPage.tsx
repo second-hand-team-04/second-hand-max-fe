@@ -17,10 +17,10 @@ import {
   formatAsPrice,
   parseNeighborhood,
 } from "@utils/stringFormatters";
+import useCategoriesQuery from "api/category/queries/useCategoriesQuery";
 import { ProductItemDetails } from "api/productItem";
-import useCategoriesQuery from "api/queries/useCategoriesQuery";
-import { useProductItemDetailsQuery } from "api/queries/useProductItemDetailsQuery";
-import useProductItemEditMutation from "api/queries/useProductItemEditMutation";
+import { useProductItemDetailsQuery } from "api/productItem/queries/useProductItemDetailsQuery";
+import useProductItemEditMutation from "api/productItem/queries/useProductItemEditMutation";
 import {
   MutableRefObject,
   useContext,

@@ -9,7 +9,7 @@ import {
   validateNickname,
   validatePassword,
 } from "@utils/textValidators";
-import useSignUpMutation from "api/queries/useSignUpMutation";
+import useSignUpMutation from "api/user/queries/useSignUpMutation";
 import { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Routes from "router/Routes";

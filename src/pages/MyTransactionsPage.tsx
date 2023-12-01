@@ -3,7 +3,7 @@ import NavBar from "@components/NavBar/NavBar";
 import ProductItem from "@components/Product/ProductItem";
 import InfiniteScrollList from "@components/common/InfiniteScroll/InfiniteScrollList";
 import { Tag } from "@components/common/Tag/Tag";
-import useTransactionsInfiniteQuery from "api/queries/useTransactionsInfiniteQuery";
+import useTransactionsInfiniteQuery from "api/transactions/queries/useTransactionsInfiniteQuery";
 import { Fragment, useState } from "react";
 import { styled } from "styled-components";
 

@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getRegions } from "api/region";
-import queryKeys from "./queryKeys";
+import { regionKeys } from "./queryKey";
 
 export default function useRegionsInfiniteQuery(regionTitle?: string) {
   return useInfiniteQuery({
-    queryKey: queryKeys.region.list({ regionTitle }).queryKey,
+    queryKey: regionKeys.list({ regionTitle }).queryKey,
     queryFn: (ctx) =>
       getRegions({
         page: ctx.pageParam,

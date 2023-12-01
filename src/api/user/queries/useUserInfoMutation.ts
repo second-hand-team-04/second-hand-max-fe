@@ -1,18 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { patchUserInfo } from "api/user";
 import { toast } from "react-hot-toast";
-import queryKeys from "./queryKeys";
+import { userKeys } from "./queryKey";
 
 export default function useUserInfoMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeys.user.edit().queryKey,
+    mutationKey: userKeys.edit().queryKey,
     mutationFn: patchUserInfo,
     onSuccess: () => {
       toast.success("프로필이 수정되었습니다");
       queryClient.invalidateQueries({
-        queryKey: queryKeys.user.info().queryKey,
+        queryKey: userKeys.info().queryKey,
       });
     },
     meta: {

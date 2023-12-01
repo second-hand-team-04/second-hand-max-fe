@@ -5,10 +5,10 @@ import Button from "@components/common/Button/Button";
 import useImageInput from "@hooks/useImageInput";
 import useText from "@hooks/useText";
 import { validateNickname } from "@utils/textValidators";
-import useSignOutMutation from "api/queries/useSignOutMutation";
-import useUserInfoMutation from "api/queries/useUserInfoMutation";
-import useUserInfoQuery from "api/queries/useUserInfoQuery";
 import { HTTPSTATUS } from "api/types";
+import useSignOutMutation from "api/user/queries/useSignOutMutation";
+import useUserInfoMutation from "api/user/queries/useUserInfoMutation";
+import useUserInfoQuery from "api/user/queries/useUserInfoQuery";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
