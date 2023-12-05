@@ -52,6 +52,17 @@ export default function HomePage() {
     setIsRegionModalOpen(false);
   };
 
+  const onInfiniteScrollEndReached = () => {
+    if (!productItemsData?.pages) return;
+
+    const lastPageIndex = productItemsData.pages.length - 1;
+    const hasMoreToFetch = productItemsData.pages[lastPageIndex].data.hasMore;
+
+    if (!isFetchingProductItems && hasMoreToFetch) {
+      fetchMoreProductItems();
+    }
+  };
+
   if (isLoadingProductItems) return <div>로딩중...</div>;
 
   return (
@@ -93,9 +104,7 @@ export default function HomePage() {
         {isLoadingProductItems && <div>로딩중...</div>}
         <InfiniteScrollList
           style={{ padding: "56px 0 64px 0" }}
-          onEndReached={() =>
-            !isFetchingProductItems && fetchMoreProductItems()
-          }>
+          onEndReached={onInfiniteScrollEndReached}>
           {productItemsData &&
             productItemsData.pages.map((group, idx) => (
               <Fragment key={idx}>
