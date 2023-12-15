@@ -21,7 +21,6 @@ export const convertPastTimestamp = (timestamp: string) => {
   const currDate = new Date();
 
   const diffMs = currDate.getTime() - startDate.getTime();
-  if (diffMs < 0) throw Error("Timestamp cannot be in the future");
 
   if (diffMs < minuteInMs) {
     return "방금 전";
