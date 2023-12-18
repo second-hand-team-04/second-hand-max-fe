@@ -1,7 +1,9 @@
 import CategoryPage from "@pages/CategoryPage";
+import ChatPage from "@pages/ChatPage";
 import EditProductItemPage from "@pages/EditProductItemPage";
 import FallbackPage from "@pages/FallbackPage";
 import HomePage from "@pages/HomePage";
+import MyChatsPage from "@pages/MyChatsPage";
 import MyProfilePage from "@pages/MyProfilePage";
 import MyTransactionsPage from "@pages/MyTransactionsPage";
 import MyWishListPage from "@pages/MyWishlistPage";
@@ -38,8 +40,8 @@ const router = (user: User | undefined) =>
           <Route path={Routes.TRANSACTIONS} element={<MyTransactionsPage />} />
           <Route path={Routes.WISHLIST} element={<MyWishListPage />} />
           <Route path={Routes.PROFILE} element={<MyProfilePage />} />
-          {/* <Route path={Routes.CHATS} element={<MyChatsPage />} /> */}
-          {/* <Route path={Route.CHAT} element={<ChatPage />} /> */}
+          <Route path={Routes.CHATS} element={<MyChatsPage />} />
+          <Route path={Routes.CHAT} element={<ChatPage />} />
         </Route>
 
         <Route path="*" element={<FallbackPage />} />

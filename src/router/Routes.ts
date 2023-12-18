@@ -10,5 +10,5 @@ export default {
   WISHLIST: "/wishlist",
   PROFILE: "/profile",
   CHATS: "/chats",
-  CHAT: "/chats/:chatId",
+  CHAT: "/chats/:chatRoomId",
 };

@@ -59,7 +59,7 @@ const navBarList = [
   {
     title: "채팅",
     imgSrc: messageIcon,
-    path: "/chat",
+    path: "/chats",
   },
   {
     title: "내 계정",
